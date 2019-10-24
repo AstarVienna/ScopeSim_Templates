@@ -1,1 +1,4 @@
 *OLD*
+*.pytest_cache/
+*.idea/
+data

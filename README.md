@@ -4,13 +4,19 @@ A package that contains functions to create ``Source`` objects for ``ScopeSim``.
 
 Please feel free to add new templates by submitting a pull request to github 
 
-### Currently included packages
+## Current package structure
+- galaxy.py
+  |
+  |- elliptical()
+  |- spiral()
 
-* Near-infrared (``scopesim_templates.near_ir``)
-    * ``.stellar``
-    * ``.galactic`` 
-    
-### Soon to be included packages
+- stars.py 
+  |
+  |- stars()
+  |- cluster() 
 
-* Mid-infrared (``scopesim_templates.mid_ir``)
-* Visual (``scopesim_templates.visual``)
+- misc.py
+  |
+  |- empty_sky()
+  
+ 
