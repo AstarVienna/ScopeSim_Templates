@@ -1,5 +1,5 @@
 *OLD*
 *.pytest_cache/
+*__pycache__/
 *.idea/
 data
-*__pycache__/
