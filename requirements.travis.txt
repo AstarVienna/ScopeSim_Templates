@@ -1,0 +1,13 @@
+numpy>=1.13
+scipy
+astropy
+matplotlib
+
+requests
+beautifulsoup4
+pyyaml
+
+synphot
+
+pyckles
+# scopesim
