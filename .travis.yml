@@ -1,0 +1,15 @@
+dist: xenial
+language: python
+python:
+    # - 2.7   # Come back to this later, if the need exists =) [or not]
+    - 3.5
+    - 3.6
+    - 3.7
+    
+install:
+    - pip install -r requirements.travis.txt
+    - pip install .
+    
+script: 
+    - pytest
+    # - pytest --doctest-modules
