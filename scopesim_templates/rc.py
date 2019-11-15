@@ -3,10 +3,12 @@ import yaml
 
 try:
     import scopesim
+    from scopesim.effects.ter_curve_utils import scale_spectrum
 except:
     import sys
     sys.path.append("C:/Work/ScopeSim/")
     import scopesim
+    from scopesim.effects.ter_curve_utils import scale_spectrum
 
 Source = scopesim.source.source.Source
 SystemDict = scopesim.system_dict.SystemDict

@@ -5,13 +5,17 @@ from astropy.utils.data import download_file
 from astropy import units
 
 from synphot import Empirical1D, SpectralElement, SourceSpectrum
+import pyckles
 
 from .. import rc
+from .. import utils
 
 
 def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     """
-    Creates a spiral galaxy using NGC
+    Creates a spiral galaxy using NGC1232L as the template
+
+    Two components are included - the spiral arm
 
     Parameters
     ----------
@@ -30,8 +34,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         if extent.unit.physical_type == "angle":
             extent = extent.to(u.deg).value
         else:
-            raise ValueError("Physical type of extent must be 'angle': ".format(
-                extent.unit.physical_type))
+            raise ValueError("Physical type of extent must be 'angle': "
+                             "".format(extent.unit.physical_type))
     else:
         extent /= 3600.
 
@@ -40,7 +44,6 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     use_cache = rc.__config__["!file.use_cache"]
     print(url+filename)
 
-
     path = download_file(remote_url=url+filename, cache=use_cache)
     hdulist = fits.open(path)
     img_ext = hdulist[0].header["IMG_EXT"]
@@ -48,7 +51,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
     src = rc.Source()
     src.fields = hdulist[img_ext:spec_ext]
-    src.spectra = [hdu_to_synphot(hdu) for hdu in hdulist[spec_ext:]]
+    src.spectra = [utils.hdu_to_synphot(hdu) for hdu in hdulist[spec_ext:]]
 
     for ii in range(len(src.fields)):
         w, h = src.fields[ii].data.shape
@@ -62,17 +65,3 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         src.fields[ii].header["CUNIT2"] = "DEG"
 
     return src
-
-
-def hdu_to_synphot(hdu):
-
-    wave = hdu.data["wavelength"]
-    wave_unit = u.Unit(hdu.header["TUNIT1"])
-    flux = hdu.data["flux"]
-    flux_unit = u.Unit(hdu.header["TUNIT2"])
-
-    spec = SourceSpectrum(Empirical1D, points=wave*wave_unit,
-                          lookup_table=flux*flux_unit)
-
-    return spec
-
