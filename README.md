@@ -9,10 +9,12 @@ Please feel free to add new templates by submitting a pull request to github
   |
   |- elliptical()
   |- spiral()
+  |- spiral_two_component()
 
 - stars.py 
   |
   |- stars()
+  |- star_field()
   |- cluster() 
 
 - misc.py

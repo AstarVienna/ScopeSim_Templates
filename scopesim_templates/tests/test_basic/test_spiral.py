@@ -12,3 +12,8 @@ class TestSpiralTwoComponent:
         assert len(src.fields) == 2
         assert src.fields[0].data.shape == (1200, 1200)
         assert isinstance(src.spectra[1], SourceSpectrum)
+
+    def test_rescale_flux(self):
+        src = galaxy.spiral_two_component()
+
+
