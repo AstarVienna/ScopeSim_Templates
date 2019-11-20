@@ -34,7 +34,7 @@ def setup_package():
                             "synphot>0.1",
                             "pyckles",
                             ],
-    classifiers=["Programming Language :: Python :: 3",
+          classifiers=["Programming Language :: Python :: 3",
                        "License :: OSI Approved :: MIT License",
                        "Operating System :: OS Independent",
                        "Intended Audience :: Science/Research",

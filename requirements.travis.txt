@@ -5,8 +5,7 @@ matplotlib
 
 requests
 pyyaml
-
 synphot
 
 pyckles
-# scopesim
+git+https://github.com/astronomyk/ScopeSim
