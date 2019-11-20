@@ -4,7 +4,6 @@ astropy
 matplotlib
 
 requests
-beautifulsoup4
 pyyaml
 
 synphot
