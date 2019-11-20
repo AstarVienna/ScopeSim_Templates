@@ -5,3 +5,6 @@ spectral :
 file :
   server_url : "https://www.univie.ac.at/simcado/scopesim_templates/"
   use_cache : True
+
+random :
+  seed : 9001

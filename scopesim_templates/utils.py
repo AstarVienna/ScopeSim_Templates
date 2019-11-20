@@ -46,7 +46,7 @@ def nearest_spec_type(spec, cat_tbl):
         Closest spectral type in the Pickles catalogue
 
     """
-    if isinstance(spec, list):
+    if isinstance(spec, (list, tuple, np.ndarray)):
         return [nearest_spec_type(spt, cat_tbl) for spt in spec]
     else:
         if spec in cat_tbl["name"]:
