@@ -4,10 +4,11 @@ matplotlib
 astropy
 
 requests
+pyyaml
 synphot
 
 pyckles
-# scopesim
+scopesim
 
 numpydoc==0.6.0
 sphinxcontrib-apidoc

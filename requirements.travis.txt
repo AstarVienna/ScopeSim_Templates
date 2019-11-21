@@ -1,11 +1,11 @@
 numpy>=1.13
 scipy
-astropy
 matplotlib
+astropy
 
 requests
 pyyaml
 synphot
 
 pyckles
-git+https://github.com/astronomyk/ScopeSim
+scopesim
