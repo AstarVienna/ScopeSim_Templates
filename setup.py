@@ -16,7 +16,7 @@ VERSION = '%d.%d%s' % (MAJOR, MINOR, ATTR)
 
 
 def setup_package():
-    setup(name='ScopeSim',
+    setup(name='ScopeSim_Templates',
           version=VERSION,
           description="On-sky source templates for ScopeSim",
           author="Kieran Leschinski",
