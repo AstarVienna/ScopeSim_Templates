@@ -33,7 +33,7 @@ def setup_package():
                             "pyyaml>3",
                             "synphot>0.1",
                             "pyckles",
-                            "scopesim"
+                            "scopesim",
                             ],
           classifiers=["Programming Language :: Python :: 3",
                        "License :: OSI Approved :: MIT License",
