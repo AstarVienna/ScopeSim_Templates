@@ -1,0 +1,5 @@
+include README.md
+include LICENCE.txt
+include scopesim_templates/defaults.yaml
+prune scopesim_templates/tests*
+prune *OLD_*
