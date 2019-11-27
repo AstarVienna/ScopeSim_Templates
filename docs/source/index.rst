@@ -32,7 +32,7 @@ This package provides templates and helper functions for creating
 
 This package has not yet been released on PyPi, but it is in a usable state::
 
-   pip install git+https://github.com/astronomyk/ScopeSim_templates
+   pip install scopesim_templates
 
 Available templates
 -------------------

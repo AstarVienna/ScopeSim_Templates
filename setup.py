@@ -10,7 +10,7 @@ from setuptools import find_packages
 # Version number
 MAJOR = 0
 MINOR = 1
-ATTR = 'dev0'
+ATTR = 0
 
 VERSION = '%d.%d%s' % (MAJOR, MINOR, ATTR)
 
