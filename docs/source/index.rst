@@ -3,34 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ScopeSim_templates's documentation!
-==============================================
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-=======
-.. ScopeSim Templates documentation master file, created by
-   sphinx-quickstart on Thu Nov 14 14:43:39 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to the ScopeSim Templates documentation!
 ================================================
 
 This package provides templates and helper functions for creating
 :class:`scopesim.source.source.Source` objects.
 
-This package has not yet been released on PyPi, but it is in a usable state::
+This package has been released on PyPi::
 
    pip install scopesim_templates
 
@@ -39,10 +18,17 @@ Available templates
 
 Currently the package only includes the following functions:
 
-* :func:`spiral_two_component`
+* in ``basic.stars``:
+   * :func:`stars`
+   * :func:`stars_field`
+   * :func:`star_grid`
+* in ``basic.galaxy``
+   * :func:`spiral_two_component`
+* in ``basic.misc``
 * :func:`empty_sky`
 
-We will be porting the old templates from SimCADO in the very near future
+
+We will be porting the old templates from ``SimCADO`` in the very near future
 
 
 Input required for a Source object
