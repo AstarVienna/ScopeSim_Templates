@@ -204,7 +204,8 @@ def stars(filter_name, amplitudes, spec_types, x, y):
 
 
 def star(filter_name, amplitude, spec_type="A0V", x=0, y=0):
-    src = stars(filter_name, [amplitude], [spec_type], [x], [y])
+    src = stars(filter_name, [amplitude.value]*amplitude.unit,
+                [spec_type], [x], [y])
     return src
 
 

@@ -60,12 +60,19 @@ Extended souces should provide an intensity map in the form of an
 ``fits.HDUImage`` object. The header keywords should contain information
 regarding position or the centre of the image (``CRPIXn``) relative to the
 centre of the field of view (``CRVALn``) [degrees], and pixel scale
-[``CDELTn`` | ``CDn_m``] [degress / pixel]
+[``CDELTn`` | ``CDn_m``] [degress / pixel].
 
+Each ``ImageHDU`` should also be
+associated with an appropriate spectrum (``synphot.SourceSpectrum``) contained
+in the list ``<Source>.spectra``. The keyword ``SPEC_REF`` must be present and
+refer to the list index of the corresponding spectrum in ``<Source>.spectra``.
 
 
 Spectral description
 --------------------
+
+
+
 
 Series of arrays
 ++++++++++++++++

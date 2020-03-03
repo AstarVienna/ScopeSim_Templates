@@ -15,15 +15,18 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     """
     Creates a spiral galaxy using NGC1232L as the template
 
-    Two components are included - the spiral arm
+    Two components are included
+        - the newer population (spiral arms), and
+        - the older popultaion (bulge)
 
     Parameters
     ----------
     extent : float
         [arcsec]
-    fluxes : list of floats
-        [mag_AB | mag_vega | jansky | FLAM | FNU | PHOTLAM | PHOTNU]
+    fluxes : list of floats, Quantity
+        [mag | ABmag | jansky | FLAM | FNU | PHOTLAM | PHOTNU]
     offset : tuple of floats
+        [arcsec]
 
     Returns
     -------
@@ -63,5 +66,11 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         src.fields[ii].header["CDELT2"] = extent / w
         src.fields[ii].header["CUNIT1"] = "DEG"
         src.fields[ii].header["CUNIT2"] = "DEG"
+        src.fields[ii].header["CTYPE1"] = "RA---TAN"
+        src.fields[ii].header["CTYPE2"] = "DEC--TAN"
+        src.fields[ii].header["SPEC_REF"] = src.fields[ii].header["SPEC_EXT"] - spec_ext
+
+    # ..todo: scale image plane according to fluxes
+    # ..todo: shift header values according to offset
 
     return src
