@@ -2,8 +2,8 @@ import pytest
 
 from astropy import units as u
 from astropy.table import Table
-from astropy.io.fits import ImageHDU, BinTableHDU
-from synphot import SourceSpectrum, SpectralElement
+from astropy.io.fits import ImageHDU
+from synphot import SourceSpectrum
 
 from scopesim_templates.basic.stars import star
 from scopesim_templates.basic.galaxy import spiral_two_component
@@ -19,6 +19,9 @@ SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
 ### Run all tests on each source indivdually
 @pytest.mark.parametrize("src", SOURCE_LIST)
 class TestContentOfFields:
+    """
+    Test the <Source>.fields attribute to check that the content is correct
+    """
     def test_is_fields_a_list(self, src):
         assert isinstance(src.fields, list)
 
@@ -40,3 +43,45 @@ class TestContentOfFields:
                             "CDELT2", "CRVAL1", "CRVAL2", "CRPIX1", "CRPIX2",
                             ]
                 assert all([key in field.header for key in req_keys])
+
+
+@pytest.mark.parametrize("src", SOURCE_LIST)
+class TestContentOfSpectra:
+    """
+    Test the <Source>.spectra attribute to check that all spectra are useful
+    """
+    def test_is_spectra_a_list(self, src):
+        assert isinstance(src.spectra, list)
+
+    def test_spectra_list_has_only_synphot_sourcespectrum_objects(self, src):
+        for spectrum in src.spectra:
+            assert isinstance(spectrum, SourceSpectrum)
+
+
+@pytest.mark.parametrize("src", SOURCE_LIST)
+class TestConnectionBetweenFieldsAndSpectra:
+    """
+    Test that all spectra referenced by .fields are in .spectra
+    """
+    def test_all_spectra_in_table_ref_column_exist(self, src):
+        for field in src.fields:
+            if isinstance(field, Table):
+                for ref in field["ref"]:
+                    assert isinstance(src.spectra[ref], SourceSpectrum)
+
+    def test_all_spectra_refereced_in_imagehdu_header_exist(self, src):
+        for field in src.fields:
+            if isinstance(field, ImageHDU):
+                ref = field.header["SPEC_REF"]
+                assert isinstance(src.spectra[ref], SourceSpectrum)
+
+
+# @pytest.mark.parametrize("src", SOURCE_LIST[:1])
+# class TestImage:
+#     def test_make_image(self, src):
+#         import matplotlib.pyplot as plt
+#         im = src.image(1.1*u.um, 1.3*u.um).data
+#         plt.imshow(im)
+#         plt.show()
+
+
