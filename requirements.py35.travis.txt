@@ -1,0 +1,12 @@
+numpy>=1.16
+scipy
+matplotlib
+astropy
+
+requests
+pyyaml
+synphot
+
+scopesim
+pyckles
+skycalc_ipy
