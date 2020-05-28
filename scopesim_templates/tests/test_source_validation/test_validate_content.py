@@ -9,14 +9,14 @@ from scopesim_templates.basic.stars import star
 from scopesim_templates.basic.galaxy import spiral_two_component
 
 
-### Add all initialied examples of sources to be tested to this list
+# Add all initialied examples of sources to be tested to this list
 SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
                star(filter_name="Paranal/HAWKI.J", amplitude=10*u.Jansky),
                spiral_two_component()
                ]
 
 
-### Run all tests on each source indivdually
+# Run all tests on each source indivdually
 @pytest.mark.parametrize("src", SOURCE_LIST)
 class TestContentOfFields:
     """

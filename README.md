@@ -7,22 +7,14 @@ A package that contains functions to create ``Source`` objects for ``ScopeSim``.
 
 Please feel free to add new templates by submitting a pull request to github 
 
-## Current package structure
+## Wish-List of function
 
-    - galaxy.py
-      |
-      |- elliptical()
-      |- spiral()
-      |- spiral_two_component()
+### Basic
+This module is really only for the most basic functions
 
-    - stars.py 
-      |
-      |- stars()
-      |- star_field()
-      |- cluster() 
+- Stars
+    - star() 
+    
+      A single star with a position (x,y) and luminosity ``(mag | magAB | Jy)`` 
 
-    - misc.py
-      |
-      |- empty_sky()
-  
- 
+    - star_gird()
