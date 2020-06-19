@@ -26,3 +26,11 @@ def st_spectrum(mag=0):
 
 def ab_spectrum(mag=0):
     return SourceSpectrum(ConstFlux1D, amplitude=mag*u.ABmag)
+
+
+def function_call_str(func, args):
+    func_str = ".".join([func.__module__, func.__name__])
+    args_str = ", ".join(["{}={}".format(key, args[key]) for key in args])
+    func_call = "{}({})".format(func_str, args_str)
+
+    return func_call

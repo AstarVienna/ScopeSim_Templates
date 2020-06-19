@@ -8,16 +8,13 @@ from distutils.core import setup
 from setuptools import find_packages
 
 # Version number
-MAJOR = 0
-MINOR = 1
-ATTR = 0
-
-VERSION = '%d.%d%s' % (MAJOR, MINOR, ATTR)
+with open('scopesim/version.py') as f:
+    __version__ = f.readline().split("'")[1]
 
 
 def setup_package():
     setup(name='ScopeSim_Templates',
-          version=VERSION,
+          version=__version__,
           description="On-sky source templates for ScopeSim",
           author="Kieran Leschinski",
           author_email="kieran.leschinski@unive.ac.at",

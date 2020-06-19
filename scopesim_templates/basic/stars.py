@@ -7,6 +7,7 @@ import pyckles
 
 from ..utils import stars_utils as su
 from ..utils import cluster_utils as cu
+from ..utils.general_utils import function_call_str
 from ..utils import imf
 from .. import rc
 from ..rc import ter_curve_utils as tcu
@@ -29,8 +30,9 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
     filter_name : str
         For scaling the stars. Use either common names or Spanish-VO identifiers
 
-    kwargs
-    ------
+
+    Additional parameters
+    ---------------------
     x, y : lists, arrays
         [arcsec] The positions of the stars can be overridden by specifying the
         coordinates. The lists must contain N values
@@ -47,11 +49,22 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
     ``<OpticalTrain>.readout``
 
     """
+    params = {"n": n,
+              "mmin": mmin,
+              "mmax": mmax,
+              "width": width,
+              "height": height,
+              "filter_name": "V",
+              "seed": rc.__config__["!random.seed"]}
+    params.update(kwargs)
+    params["function_call"] = function_call_str(star_field, params)
+    params["object"] = "star field"
+
     if height is None:
         height = width
 
-    if rc.__config__["!random.seed"] is not None:
-        np.random.seed(rc.__config__["!random.seed"])
+    if isinstance(params["seed"], int):
+        np.random.seed(params["seed"])
 
     if not isinstance(mmin, u.Quantity) and not isinstance(mmax, u.Quantity):
         mmin, mmax = u.Quantity(mmin, u.mag), u.Quantity(mmax, u.mag)
@@ -69,6 +82,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
     src = stars(filter_name=filter_name, amplitudes=amplitudes,
                 spec_types=spec_types, x=x, y=y)
     src.meta["scaling_unit"] = mmin.unit
+    src.meta.update(params)
 
     return src
 
@@ -96,10 +110,21 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
     src : ``scopesim.Source``
 
     """
+    params = {"n": n,
+              "mmin": mmin,
+              "mmax": mmax,
+              "filter_name": filter_name,
+              "separation": separation}
+    pass
+    params["function_call"] = function_call_str(star_grid, params)
+    params["object"] = "star grid"
+
     side_len = int(np.ceil(np.sqrt(n)))
     x = separation * (np.arange(n) % side_len - (side_len - 1) / 2)
     y = separation * (np.arange(n) // side_len - (side_len - 1) / 2)
+
     src = star_field(n, mmin, mmax, side_len, filter_name=filter_name, x=x, y=y)
+    src.meta.update(params)
 
     return src
 
@@ -169,6 +194,16 @@ def stars(filter_name, amplitudes, spec_types, x, y):
         >>> stars(filter_name, amplitudes, spec_types, x=x, y=y)
 
     """
+    params = {"filter_name": filter_name,
+              "amplitudes": amplitudes,
+              "spec_types": spec_types,
+              "x": x,
+              "y": y,
+              "object": "stars"}
+    pass
+    params["function_call"] = function_call_str(star_grid, params)
+    params["object"] = "stars"
+
     if not isinstance(spec_types, (list, tuple, np.ndarray)):
         spec_types = [spec_types]
 
@@ -199,7 +234,11 @@ def stars(filter_name, amplitudes, spec_types, x, y):
     ref_dict = {spt: ii for ii, spt in enumerate(unique_types)}
     ref = np.array([ref_dict[i] for i in spec_types])
 
-    src = rc.Source(spectra=spectra, x=x, y=y, ref=ref, weight=weight)
+    tbl = Table(names=["x", "y", "ref", "weight", "spec_types"],
+                data= [ x,   y,   ref,   weight,   spec_types])
+
+    src = rc.Source(spectra=spectra, table=tbl)
+    src.meta.update(params)
 
     return src
 
@@ -213,130 +252,98 @@ def star(filter_name, amplitude, spec_type="A0V", x=0, y=0):
 star.__doc__ = stars.__doc__
 
 
-def cluster(mass=1E3, distance=50000, half_light_radius=1, **kwargs):
+@deprecated_renamed_argument('half_light_radius', 'core_radius', '0.1')
+def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
     """
+    Generate a source object for a cluster
+
+    The cluster distribution follows a gaussian profile with the
+    ``core_radius`` corresponding to the HWHM of the distribution. The
+    choice of stars follows a Kroupa IMF, with no evolved stars in the mix.
+    Ergo this is more suitable for a young cluster than an evolved custer
+
 
     Parameters
     ----------
-    mass
-    distance
-    half_light_radius
+    mass : float
+        [Msun] Mass of the cluster (not number of stars). Max = 1E5 Msun
+    distance : float
+        [pc] distance to the cluster
+    core_radius : float
+        [pc] half light radius of the cluster
+
 
     Additional parameters
     ---------------------
-    multiplicity
+    tidal_radius : float
+        [pc] Not yet implemented, for later once there is a King profile
+    multiplicity : Unknown
+        A multiplicity object from the imf.py package. Not sure what it does.
+    seed: float
+        For setting the random seed for both masses and positions
+
 
     Returns
     -------
+    src: scopesim.Source
+
+
+    Examples
+    --------
+    Create a ``Source`` object for a young open cluster with half light radius
+    of around 0.2 pc at the galactic centre and 1000 solar masses worth of stars:
+
+        >>> from scopesim_templates.basic.stars import cluster
+        >>> src = cluster(mass=1000, distance=8500, half_light_radius=0.2)
 
     """
-    params = {"multiplicity_fraction": None,
+    params = {"mass": mass,
+              "distance": distance,
+              "core_radius": core_radius,
+              "tidal_radius": None,
+              "multiplicity_object": None,
               "seed": rc.__config__["!random.seed"]}
     params.update(kwargs)
+    params["function_call"] = function_call_str(cluster, params)
+    params["object"] = "cluster"
 
+    # 1. sample masses from an IMF
     kroupa = imf.Kroupa_2001(params["multiplicity_object"])
-    masses = kroupa.generate_cluster(mass, seed=params["seed"])
-    print(masses)
+    results = kroupa.generate_cluster(mass, seed=params["seed"])
+    masses, multi_flag, secondary_masses, system_masses = results
 
+    # 2. get spec_types for masses
+    spec_types = cu.mass2spt(masses)
+    spec_types = cu.closest_pickles(spec_types)
 
+    # 3. get spectra from pyckles
+    pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
+    unique_spts = np.unique(spec_types)
+    spectra = [pickles[spt] for spt in unique_spts]
 
+    # 4. scale all spectra to V=0
+    spectra = [tcu.scale_spectrum(spec, "V", 0*u.mag) for spec in spectra]
 
-#
-# def cluster(mass=1E3, distance=50000, half_light_radius=1):
-#     """
-#     Generate a source object for a cluster
-#
-#     The cluster distribution follows a gaussian profile with the
-#     ``half_light_radius`` corresponding to the HWHM of the distribution. The
-#     choice of stars follows a Kroupa IMF, with no evolved stars in the mix. Ergo
-#     this is more suitable for a young cluster than an evolved custer
-#
-#     Parameters
-#     ----------
-#     mass : float
-#         [Msun] Mass of the cluster (not number of stars). Max = 1E5 Msun
-#     distance : float
-#         [pc] distance to the cluster
-#     half_light_radius : float
-#         [pc] half light radius of the cluster
-#
-#     Returns
-#     -------
-#     src : scopesim.Source
-#
-#     Examples
-#     --------
-#
-#     Create a ``Source`` object for a young open cluster with half light radius
-#     of around 0.2 pc at the galactic centre and 100 solar masses worth of stars:
-#
-#         >>> from scopesim_templates.basic.stars import cluster
-#         >>> src = cluster(mass=100, distance=8500, half_light_radius=0.2)
-#
-#
-#     """
-#     # IMF is a realisation of stellar masses drawn from an initial mass
-#     # function (TODO: which one?) summing to 1e4 M_sol.
-#     if mass <= 1E4:
-#         fname = find_file("IMF_1E4.dat")
-#         imf = np.loadtxt(fname)
-#         imf = imf[0:int(mass/1E4 * len(imf))]
-#     elif mass > 1E4 and mass < 1E5:
-#         fname = find_file("IMF_1E5.dat")
-#         imf = np.loadtxt(fname)
-#         imf = imf[0:int(mass/1E5 * len(imf))]
-#     else:
-#         raise ValueError("Mass too high. Must be <10^5 Msun")
-#
-#     # Assign stellar types to the masses in imf using list of average
-#     # main-sequence star masses:
-#     stel_type = [i + str(j) + "V" for i in "OBAFGKM" for j in range(10)]
-#     masses = _get_stellar_mass(stel_type)
-#     ref = utils.nearest(masses, imf)
-#     thestars = [stel_type[i] for i in ref] # was stars, redefined function name
-#
-#     # assign absolute magnitudes to stellar types in cluster
-#     unique_ref = np.unique(ref)
-#     unique_type = [stel_type[i] for i in unique_ref]
-#     unique_Mv = _get_stellar_Mv(unique_type)
-#
-#     # Mv_dict = {i : float(str(j)[:6]) for i, j in zip(unique_type, unique_Mv)}
-#     ref_dict = {i : j for i, j in zip(unique_type, np.arange(len(unique_type)))}
-#
-#     # find spectra for the stellar types in cluster
-#     lam, spectra = _scale_pickles_to_photons(unique_type)
-#
-#     # this one connects the stars to one of the unique spectra
-#     stars_spec_ref = [ref_dict[i] for i in thestars]
-#
-#     # absolute mag + distance modulus
-#     m = np.array([unique_Mv[i] for i in stars_spec_ref])
-#     m += 5 * np.log10(distance) - 5
-#
-#     # set the weighting
-#     weight = 10**(-0.4*m)
-#
-#     # draw positions of stars: cluster has Gaussian profile
-#     distance *= u.pc
-#     half_light_radius *= u.pc
-#     hwhm = (half_light_radius/distance*u.rad).to(u.arcsec).value
-#     sig = hwhm / np.sqrt(2 * np.log(2))
-#
-#     x = np.random.normal(0, sig, len(imf))
-#     y = np.random.normal(0, sig, len(imf))
-#
-#     src = Source(lam=lam, spectra=spectra, x=x, y=y, ref=stars_spec_ref,
-#                  weight=weight, units="ph/s/m2")
-#
-#     src.info["object"] = "cluster"
-#     src.info["total_mass"] = mass
-#     src.info["masses"] = imf
-#     src.info["half_light_radius"] = half_light_radius
-#     src.info["hwhm"] = hwhm
-#     src.info["distance"] = distance
-#     src.info["stel_type"] = stel_type
-#
-#     return src
-#
-#
-#
+    # 5. make ref list for spec_types from spectra
+    ref = [np.where([spt == u_spt for u_spt in unique_spts])[0][0]
+           for spt in spec_types]
+
+    # 6. make weight list from Mv + dist_mod(distance)
+    Mvs = np.array(cu.mass2Mv(masses))
+    dist_mod = 5 * np.log10(distance) - 5
+    weight = 10 ** (-0.4 * (Mvs + dist_mod))
+
+    # 7. make x,y from half_light_radius and distance
+    rad2arcsec = 206264.80624709636
+    fwhm = 2 * core_radius / distance * rad2arcsec
+    x, y = cu.gaussian_distribution(len(masses), fwhm=fwhm, seed=params["seed"])
+
+    # 8. make table with (x,y,ref,weight)
+    tbl = Table(names=["x", "y", "ref", "weight", "masses", "spec_types"],
+                data= [ x,   y,   ref,   weight,   masses,   spec_types ])
+
+    # 9. make Source with table, spectra
+    src = rc.Source(table=tbl, spectra=spectra)
+    src.meta.update(params)
+
+    return src

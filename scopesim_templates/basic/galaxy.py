@@ -33,6 +33,13 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     gal : scopesim.Source
 
     """
+    params = {"extent": extent,
+              "fluxes": fluxes,
+              "offset": offset}
+    pass
+    params["function_call"] = gu.function_call_str(spiral_two_component, params)
+    params["object"] = "two component spiral galaxy"
+
     if isinstance(extent, u.Quantity):
         if extent.unit.physical_type == "angle":
             extent = extent.to(u.deg).value
@@ -73,5 +80,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
     # ..todo: scale image plane according to fluxes
     # ..todo: shift header values according to offset
+
+    src.meta.update(params)
 
     return src

@@ -69,7 +69,9 @@ def king_distribution(n, r_core, r_tidal):
     return None
 
 
-def gaussian_distribution(n, fwhm):
+def gaussian_distribution(n, fwhm, seed=None):
+    if isinstance(seed, int):
+        np.random.seed(seed)
     x, y = np.random.normal(loc=0, scale=fwhm/2.35, size=(2, n))
     return x, y
 

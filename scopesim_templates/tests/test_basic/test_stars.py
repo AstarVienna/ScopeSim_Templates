@@ -63,4 +63,4 @@ class TestStarGrid:
 
 class TestCluster:
     def test_it_works(self):
-        cluster()
+        assert isinstance(cluster(), rc.Source)
