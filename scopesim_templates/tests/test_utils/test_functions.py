@@ -1,7 +1,7 @@
 import pytest
 
 import pyckles
-from scopesim_templates import utils as stu
+from scopesim_templates.utils import stars_utils as stu
 
 
 @pytest.fixture(scope="class")

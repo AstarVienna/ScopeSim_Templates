@@ -60,3 +60,7 @@ class TestStarGrid:
         src = star_grid(n=3, mmin=1*u.Jansky, mmax=3631*u.Jansky)
         assert src.fields[0]["weight"][2] == 3631
 
+
+class TestCluster:
+    def test_it_works(self):
+        cluster()
