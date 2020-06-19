@@ -8,7 +8,7 @@ from distutils.core import setup
 from setuptools import find_packages
 
 # Version number
-with open('scopesim/version.py') as f:
+with open('scopesim_templates/version.py') as f:
     __version__ = f.readline().split("'")[1]
 
 
