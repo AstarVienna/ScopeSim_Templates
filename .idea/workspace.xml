@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c85dd81e-4790-4abe-b345-f59070a2a0f6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scopesim_templates/version.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/stars.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/stars.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_stars.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_stars.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/utils/cluster_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/utils/cluster_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/utils/general_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/utils/general_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +32,7 @@
           <entry key="jpg" value="10" />
           <entry key="lastfailed" value="1" />
           <entry key="md" value="2" />
-          <entry key="py" value="120" />
+          <entry key="py" value="125" />
           <entry key="rst" value="1" />
           <entry key="tif" value="2" />
           <entry key="txt" value="9" />
@@ -51,7 +45,7 @@
           <entry key="Image" value="12" />
           <entry key="Markdown" value="2" />
           <entry key="PLAIN_TEXT" value="21" />
-          <entry key="Python" value="120" />
+          <entry key="Python" value="125" />
           <entry key="ReST" value="1" />
           <entry key="YAML" value="11" />
         </counts>
@@ -64,7 +58,7 @@
           <entry key="gitignore" value="86" />
           <entry key="in" value="18" />
           <entry key="md" value="919" />
-          <entry key="py" value="24247" />
+          <entry key="py" value="24526" />
           <entry key="rst" value="2150" />
           <entry key="txt" value="75" />
           <entry key="yaml" value="200" />
@@ -75,7 +69,7 @@
         <counts>
           <entry key="Markdown" value="919" />
           <entry key="PLAIN_TEXT" value="214" />
-          <entry key="Python" value="28075" />
+          <entry key="Python" value="28354" />
           <entry key="ReST" value="2150" />
           <entry key="YAML" value="243" />
         </counts>
@@ -83,55 +77,7 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/stars.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="116" column="39" lean-forward="true" selection-start-line="116" selection-start-column="39" selection-end-line="116" selection-end-column="39" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-                <marker date="1592564991470" expanded="true" signature="9997:11505" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scopesim_templates/utils/general_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scopesim_templates/defaults.yaml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_stars.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="47" column="37" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-                <marker date="1592564894807" expanded="true" signature="2469:2474" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -163,6 +109,7 @@
       <find>dist_mo</find>
       <find>distance_mo</find>
       <find>deprecated_renamed_argument</find>
+      <find>print</find>
     </findStrings>
     <replaceStrings>
       <replace>atleast_1d</replace>
@@ -178,9 +125,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/scopesim_templates/source/__init__.py" />
-        <option value="$PROJECT_DIR$/scopesim_templates/basic/misc.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/tests/test_rc.py" />
-        <option value="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_spiral.py" />
         <option value="$PROJECT_DIR$/docs/source/conf.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/basic/utils.py" />
@@ -204,7 +149,6 @@
         <option value="$PROJECT_DIR$/scopesim_templates/utils/abs_mags.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/utils/stars_utils.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/utils/__init__.py" />
-        <option value="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/tests/test_utils/test_functions.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/tests/test_utils/test_cluster_utils.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
@@ -212,8 +156,11 @@
         <option value="$PROJECT_DIR$/scopesim_templates/version.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/utils/cluster_utils.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/utils/general_utils.py" />
-        <option value="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_stars.py" />
         <option value="$PROJECT_DIR$/scopesim_templates/basic/stars.py" />
+        <option value="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_stars.py" />
+        <option value="$PROJECT_DIR$/scopesim_templates/basic/misc.py" />
+        <option value="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py" />
+        <option value="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" />
       </list>
     </option>
   </component>
@@ -419,26 +366,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input">
-    <configuration name="Doctests in stars" type="tests" factoryName="Doctests" temporary="true" nameIsGenerated="true">
-      <module name="ScopeSim_Templates" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scopesim_templates/basic" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scopesim_templates/basic/stars.py" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest for test_stars.TestCluster.test_it_works" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object">
+    <configuration name="pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="ScopeSim_Templates" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -449,7 +378,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_stars.TestCluster.test_it_works&quot;" />
+      <option name="_new_target" value="&quot;test_misc.TestEmptySky.test_empty_sky_returns_source_object&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -465,6 +394,21 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_stars.TestStarField.test_returns_source_object_with_minimal_input&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="ScopeSim_Templates" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scopesim_templates/tests/test_basic" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -499,19 +443,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python tests.pytest for test_stars.TestCluster.test_it_works" />
-      <item itemvalue="Python tests.Doctests in stars" />
       <item itemvalue="Python tests.pytest in test_stars.py" />
       <item itemvalue="Python tests.pytest for test_stars.TestStars.test_only_includes_unique_spectra" />
       <item itemvalue="Python tests.pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" />
+      <item itemvalue="Python tests.pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" />
+      <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
+        <item itemvalue="Python tests.pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" />
         <item itemvalue="Python tests.pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" />
         <item itemvalue="Python tests.pytest in test_stars.py" />
         <item itemvalue="Python tests.pytest for test_stars.TestStars.test_only_includes_unique_spectra" />
-        <item itemvalue="Python tests.pytest for test_stars.TestCluster.test_it_works" />
-        <item itemvalue="Python tests.Doctests in stars" />
       </list>
     </recent_temporary>
   </component>
@@ -529,15 +473,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="pytest_for_test_stars_TestCluster_test_it_works - 2020.06.19 at 12h 14m 20s.xml">
-      <configuration name="pytest for test_stars.TestCluster.test_it_works" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Doctests_in_stars - 2020.06.19 at 12h 14m 39s.xml">
-      <configuration name="Doctests in stars" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Doctests_in_stars - 2020.06.19 at 12h 14m 57s.xml">
-      <configuration name="Doctests in stars" configurationId="tests" />
-    </history-entry>
     <history-entry file="pytest_for_test_stars_TestCluster_test_it_works - 2020.06.19 at 12h 16m 09s.xml">
       <configuration name="pytest for test_stars.TestCluster.test_it_works" configurationId="tests" />
     </history-entry>
@@ -559,6 +494,15 @@
     <history-entry file="pytest_for_test_stars_TestStarField_test_returns_source_object_with_minimal_input - 2020.06.19 at 13h 08m 17s.xml">
       <configuration name="pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" configurationId="tests" />
     </history-entry>
+    <history-entry file="pytest_for_test_stars_TestStarGrid_test_returns_source_object_with_correct_weighting_in_jansky - 2020.06.19 at 13h 14m 00s.xml">
+      <configuration name="pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" configurationId="tests" />
+    </history-entry>
+    <history-entry file="pytest_for_test_misc_TestEmptySky_test_empty_sky_returns_source_object - 2020.06.19 at 13h 18m 29s.xml">
+      <configuration name="pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" configurationId="tests" />
+    </history-entry>
+    <history-entry file="pytest_for_test_misc_TestEmptySky_test_empty_sky_returns_source_object - 2020.06.19 at 13h 20m 13s.xml">
+      <configuration name="pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -568,13 +512,13 @@
       <window_info id="Favorites" order="1" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3299532" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.41560283" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.41560283" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.35602838" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.30638298" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.305949" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.23120567" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -587,13 +531,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-line="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/docs/source/conf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1124">
@@ -728,13 +665,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/misc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
-          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -811,13 +741,6 @@
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/galaxy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" column="29" lean-forward="true" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
         </state>
       </provider>
     </entry>
@@ -907,12 +830,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_stars.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="47" column="37" selection-start-line="47" selection-start-column="37" selection-end-line="47" selection-end-column="37" />
+        <state relative-caret-position="357">
+          <caret line="60" column="49" lean-forward="true" selection-start-line="60" selection-start-column="49" selection-end-line="60" selection-end-column="49" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <marker date="1592564894807" expanded="true" signature="2469:2474" ph="..." />
+            <marker date="1592565332624" expanded="true" signature="2429:2434" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scopesim_templates/defaults.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -926,20 +856,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scopesim_templates/defaults.yaml">
+    <entry file="file://$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="13" />
+        <state relative-caret-position="264">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/stars.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="116" column="39" lean-forward="true" selection-start-line="116" selection-start-column="39" selection-end-line="116" selection-end-column="39" />
+        <state relative-caret-position="150">
+          <caret line="55" column="31" lean-forward="true" selection-start-line="55" selection-start-column="31" selection-end-line="55" selection-end-column="31" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1592564991470" expanded="true" signature="9997:11505" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/galaxy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scopesim_templates/basic/misc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="239">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
