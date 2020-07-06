@@ -311,6 +311,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
     kroupa = imf.Kroupa_2001(params["multiplicity_object"])
     results = kroupa.generate_cluster(mass, seed=params["seed"])
     masses, multi_flag, secondary_masses, system_masses = results
+    masses[masses > 250] = 250
 
     # 2. get spec_types for masses
     spec_types = cu.mass2spt(masses)

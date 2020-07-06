@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """
-ScopeSim: A python package to simulate telescope observations
+ScopeSim_templates: Helper functions for making ScopeSim Source objects
+=======================================================================
+
+How to compile and put these on pip::
+
+    $ python setup.py sdist bdist_wheel
+    $ twine upload dist/*
+
 """
 
 from datetime import datetime
