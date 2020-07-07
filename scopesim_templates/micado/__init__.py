@@ -1,3 +1,3 @@
-from .empty_sky import empty_sky
+from .darkness import darkness
 
-all = [empty_sky]
+__all__ = [darkness]
