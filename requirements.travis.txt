@@ -10,3 +10,6 @@ synphot
 scopesim
 pyckles
 skycalc_ipy
+
+spextra
+
