@@ -14,3 +14,6 @@ skycalc_ipy
 numpydoc==0.6.0
 sphinxcontrib-apidoc
 sphinx==1.6.7
+
+spextra
+
