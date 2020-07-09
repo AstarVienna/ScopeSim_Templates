@@ -240,7 +240,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
         header["SPEC_REF"] = i
 
         med_vel = np.median(m*velocity)
-        med_sig = np.median(m*dispersion)
+        med_sig = np.median(m*dispersion) + 0.01  # To avoid some zero_division errors
         spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig) * factor
         hdu = fits.ImageHDU(data=data, header=header)
         hdulist.append(hdu)
