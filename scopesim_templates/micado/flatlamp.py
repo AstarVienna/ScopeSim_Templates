@@ -11,7 +11,7 @@ def flatlamp(
         width=16.384,
         height=16.384,
         pixel_scale=1.024,
-        amplitude=100000.0,
+        amplitude=1000.0,
         fraction=0.9,
     ):
     """
