@@ -22,3 +22,4 @@ def empty_sky():
     sky.meta.update(params)
 
     return sky
+

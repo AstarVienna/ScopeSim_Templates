@@ -7,7 +7,7 @@ Welcome to the ScopeSim Templates documentation!
 ================================================
 
 This package provides templates and helper functions for creating
-:class:`scopesim.source.source.Source` objects.
+:class:`scopesim.Source` objects.
 
 This package has been released on PyPi::
 
@@ -18,14 +18,20 @@ Available templates
 
 Currently the package only includes the following functions:
 
-* in ``basic.stars``:
-   * :func:`stars`
-   * :func:`stars_field`
-   * :func:`star_grid`
-* in ``basic.galaxy``
-   * :func:`spiral_two_component`
-* in ``basic.misc``
-* :func:`empty_sky`
+* `.basic`
+   * ``.stars``:
+      * :func:`star`
+      * :func:`stars`
+      * :func:`stars_field`
+      * :func:`star_grid`
+      * :func:`cluster`
+   * ``.galaxy``
+      * :func:`spiral_two_component`
+   * ``.misc``
+      * :func:`empty_sky`
+* `.micado`
+   * :func:`empty_sky`
+   * :func:`flat_lamp`
 
 
 We will be porting the old templates from ``SimCADO`` in the very near future
