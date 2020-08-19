@@ -1,3 +1,8 @@
-from .empty_sky import empty_sky
+from .darkness import darkness
+from .flatlamp import flatlamp
 
-all = [empty_sky]
+# Include empty_sky for backwards compatibility reasons.
+# TODO: Remove empty_sky when it is not used in MicadoWISE anymore.
+empty_sky = darkness
+
+__all__ = [darkness, flatlamp, empty_sky]
