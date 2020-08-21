@@ -1,16 +1,16 @@
-"""Test for empty_sky."""
+"""Test for darkness."""
 from astropy.table import Table
 from synphot import SourceSpectrum
-from scopesim_templates.micado import empty_sky
+from scopesim_templates.micado import darkness
 from scopesim_templates.rc import Source
 
 
-class TestEmptySky:
-    """Test for empty_sky."""
+class TestDarkness:
+    """Test for darkness."""
 
-    def test_empty_sky_returns_source_object(self):
-        """Test for empty_sky."""
-        sky = empty_sky()
+    def test_darkness_returns_source_object(self):
+        """Test for darkness."""
+        sky = darkness()
         assert isinstance(sky, Source)
         assert isinstance(sky.spectra[0], SourceSpectrum)
         assert isinstance(sky.fields[0], Table)
