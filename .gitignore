@@ -1,11 +1,10 @@
 *OLD*
 *.pytest_cache/
-.idea/
-data
 __pycache__/
 *pycache*
 *.pyc
-*.xml
+.idea/
+data
 *.tar.gz
 build/
 dist/
