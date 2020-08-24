@@ -13,6 +13,16 @@ This package has been released on PyPi::
 
    pip install scopesim_templates
 
+   
+.. toctree::
+    :maxdepth: 2
+    :caption: Contents:
+    
+    basic_module
+    contributions
+    source_object
+    reference/modules
+   
 
 From basic to advanced helper functions
 ---------------------------------------
@@ -37,15 +47,31 @@ Documentation for all the helper funcitons contained in each package can be foun
 
 
 The Basic subpackage
---------------------
+++++++++++++++++++++
+
+Subpackages can themselves contain multiple modules. 
+The ``basic`` subpackage contains three submodules : ``stars``, ``galaxy``, ``misc``
+This helps give a bit of structure to the helper functions.
+
+The ``basic`` subpackage currently looks like this:
 
 * in ``basic.stars``:
+   * :func:`star`
    * :func:`stars`
+   * :func:`cluster`
    * :func:`stars_field`
    * :func:`star_grid`
 * in ``basic.galaxy``
    * :func:`spiral_two_component`
+   * :func:`elliptical`
 * in ``basic.misc``
-* :func:`empty_sky`
+    * :func:`empty_sky`
+
+The ``basic`` subpackage is :doc:`described in more detail here <basic_module>`.
+
+
+Contact
+-------
+If you find an issue with ScopeSim Templates, please let us know via the `Github issues page <https://github.com/astronomyk/ScopeSim_templates/issues>`_ 
 
 
