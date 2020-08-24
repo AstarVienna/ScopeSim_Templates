@@ -255,7 +255,7 @@ star.__doc__ = stars.__doc__
 @deprecated_renamed_argument('half_light_radius', 'core_radius', '0.1')
 def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
     """
-    Generate a source object for a cluster
+    Generate a source object for a young cluster
 
     The cluster distribution follows a gaussian profile with the
     ``core_radius`` corresponding to the HWHM of the distribution. The

@@ -12,9 +12,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../'))
+
+#if "TRAVIS" in os.environ:
+package_path = os.path.abspath('../..')
+os.environ['PYTHONPATH'] = ':'.join((package_path,
+                                     os.environ.get('PYTHONPATH', '')))
 
 
 # -- Project information -----------------------------------------------------
@@ -46,7 +51,20 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
+    'numpydoc',
+    'sphinxcontrib.apidoc',
+    'matplotlib.sphinxext.plot_directive',
 ]
+
+# apidoc settings
+numpydoc_show_class_members = False
+apidoc_module_dir = os.path.abspath('../../scopesim_templates/')
+apidoc_output_dir = 'reference'
+apidoc_separate_modules = True
+apidoc_excluded_paths = ["tests/", "docs/"]
+
+# Matplotlib plot directive config parameters
+plot_html_show_source_link = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -135,7 +153,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ScopeSim_templates.tex', 'ScopeSim\\_templates Documentation',
+    (master_doc, 'ScopeSim_templates.tex', 'ScopeSim Templates Documentation',
      'Kieran Leschinski', 'manual'),
 ]
 
@@ -145,7 +163,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'scopesim_templates', 'ScopeSim_templates Documentation',
+    (master_doc, 'scopesim_templates', 'ScopeSim Templates Documentation',
      [author], 1)
 ]
 
@@ -156,8 +174,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ScopeSim_templates', 'ScopeSim_templates Documentation',
-     author, 'ScopeSim_templates', 'One line description of project.',
+    (master_doc, 'ScopeSim_templates', 'ScopeSim Templates Documentation',
+     author, 'ScopeSim_templates', 
+     'Helper functions for creating ScopeSim Source objects.',
      'Miscellaneous'),
 ]
 
