@@ -9,6 +9,7 @@ synphot
 
 scopesim
 pyckles
+spextra
 skycalc_ipy
 
 numpydoc

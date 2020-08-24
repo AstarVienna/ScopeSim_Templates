@@ -9,4 +9,5 @@ synphot==0.1.3
 
 scopesim
 pyckles
+spextra
 skycalc_ipy
