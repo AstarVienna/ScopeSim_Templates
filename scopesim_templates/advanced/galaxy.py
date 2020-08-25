@@ -57,6 +57,7 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
+
     if isinstance(mag, u.Quantity) is False:
         mag = mag * u.ABmag
     if isinstance(plate_scale, u.Quantity) is False:
@@ -171,8 +172,8 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
     Returns
     -------
-
     src : scopesim.Source
+
     """
 
     if isinstance(mag, u.Quantity) is False:
