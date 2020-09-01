@@ -293,7 +293,7 @@ class IMF(object):
         
     
 class IMF_broken_powerlaw(IMF):
-    """
+    r"""
     Initialize a multi-part power-law with N parts. Each part of the
     power-law is described with a probability density function:
 
