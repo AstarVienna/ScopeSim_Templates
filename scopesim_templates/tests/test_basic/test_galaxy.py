@@ -20,7 +20,7 @@ class TestElliptical:
         gal = elliptical(125, 1, "V", 10 * u.ABmag, n=1, spectrum="NGC_0584")
         assert isinstance(gal, rc.Source)
 
-        if not PLOTS:
+        if PLOTS:
             plt.subplot(121)
             wave = np.arange(0.3, 2.5, 0.001) * u.um
             plt.loglog(wave, gal.spectra[0](wave))

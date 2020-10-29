@@ -6,6 +6,7 @@ astropy
 requests
 pyyaml
 synphot
+photutils
 
 scopesim
 pyckles
