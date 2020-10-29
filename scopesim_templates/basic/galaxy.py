@@ -96,65 +96,9 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
                spectrum="NGC_0584", **kwargs):
     """
-    1 make a sersic profile ImageHDU
-    2 get spectrum from Brown
-    3 scale spectrum to amplitude, assume ABmag if no unit
-    4 make Source object
-    """
+    Create a extended :class:`.Source` object for an elliptical galaxy
 
-    params = {"n": 4,
-              "ellipticity": 0.5,
-              "angle": 30,
-              "normalization": "total",
-              "width": pixel_scale * 512,
-              "height": pixel_scale * 512,
-              "x_offset": 0,
-              "y_offset": 0,
-              "redshift": 0,
-              "half_light_radius": half_light_radius,
-              "pixel_scale": pixel_scale,
-              "filter_name": filter_name,
-              "amplitude": amplitude,
-              "spectrum_name": str(spectrum)}
-    params.update(kwargs)
-    params["function_call"] = function_call_str(elliptical, params)
-    params["object"] = "elliptical galaxy"
-
-    # 1 make a sersic profile ImageHDU
-    im = gal_utils.sersic_profile(r_eff=half_light_radius / pixel_scale,    # everything in terms of pixels
-                                  n=params["n"],
-                                  ellipticity=params["ellipticity"],
-                                  angle=params["angle"],
-                                  normalization=params["normalization"],
-                                  width=params["width"] / pixel_scale,
-                                  height=params["height"] / pixel_scale)
-
-    hw, hh = 0.5 * params["width"], 0.5 * params["height"]
-    xs = (np.array([-hw, hw]) + params["x_offset"]) / 3600.
-    ys = (np.array([-hh, hh]) + params["y_offset"]) / 3600.
-    hdr = ipu.header_from_list_of_xy(xs, ys, pixel_scale)
-    hdu = fits.ImageHDU(data=im, header=hdr)
-
-    # 2 get spectrum from Brown
-    if isinstance(spectrum, str):
-        brown_lib = pyckles.SpectralLibrary("brown", return_style="synphot")
-        spectrum = brown_lib[spectrum]
-        spectrum.z = params["redshift"]
-
-    # 3 scale the spectra and get the weights
-    if not isinstance(amplitude, u.Quantity):
-        amplitude = amplitude << u.ABmag
-    spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
-
-    # 4 make Source object
-    src = rc.Source(spectra=[spectrum], image_hdu=hdu)
-    src.meta.update(params)
-
-    return src
-
-
-    """
-    Create a extended :class:`.Source` object for a "Galaxy"
+    .. note:: This docstring is from simcado, needs to be updated
 
     Parameters
     ----------
@@ -210,13 +154,68 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
 
     Returns
     -------
-    galaxy_src : :class:`.Source`
+    galaxy_src : Source
 
 
     See Also
     --------
-    source.sersic_profile()
-    optics.get_filter_set(), source.get_SED_names()
-    spectral.TransmissionCurve, spectral.EmissionCurve
 
     """
+
+    # """
+    # 1 make a sersic profile ImageHDU
+    # 2 get spectrum from Brown
+    # 3 scale spectrum to amplitude, assume ABmag if no unit
+    # 4 make Source object
+    # """
+
+    params = {"n": 4,
+              "ellipticity": 0.5,
+              "angle": 30,
+              "normalization": "total",
+              "width": pixel_scale * 512,
+              "height": pixel_scale * 512,
+              "x_offset": 0,
+              "y_offset": 0,
+              "redshift": 0,
+              "half_light_radius": half_light_radius,
+              "pixel_scale": pixel_scale,
+              "filter_name": filter_name,
+              "amplitude": amplitude,
+              "spectrum_name": str(spectrum)}
+    params.update(kwargs)
+    params["function_call"] = function_call_str(elliptical, params)
+    params["object"] = "elliptical galaxy"
+
+    # 1 make a sersic profile ImageHDU
+    im = gal_utils.sersic_profile(r_eff=half_light_radius / pixel_scale,    # everything in terms of pixels
+                                  n=params["n"],
+                                  ellipticity=params["ellipticity"],
+                                  angle=params["angle"],
+                                  normalization=params["normalization"],
+                                  width=params["width"] / pixel_scale,
+                                  height=params["height"] / pixel_scale)
+
+    hw, hh = 0.5 * params["width"], 0.5 * params["height"]
+    xs = (np.array([-hw, hw]) + params["x_offset"]) / 3600.
+    ys = (np.array([-hh, hh]) + params["y_offset"]) / 3600.
+    hdr = ipu.header_from_list_of_xy(xs, ys, pixel_scale)
+    hdu = fits.ImageHDU(data=im, header=hdr)
+
+    # 2 get spectrum from Brown
+    if isinstance(spectrum, str):
+        brown_lib = pyckles.SpectralLibrary("brown", return_style="synphot")
+        spectrum = brown_lib[spectrum]
+        spectrum.z = params["redshift"]
+
+    # 3 scale the spectra and get the weights
+    if not isinstance(amplitude, u.Quantity):
+        amplitude = amplitude << u.ABmag
+    spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
+
+    # 4 make Source object
+    src = rc.Source(spectra=[spectrum], image_hdu=hdu)
+    src.meta.update(params)
+
+    return src
+
