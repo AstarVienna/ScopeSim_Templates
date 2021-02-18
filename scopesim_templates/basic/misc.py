@@ -65,7 +65,8 @@ def flat_field(x_size, y_size, counts,  temperature):
              #             "CTYPE2": 'DEC--TAN',
                           "SPEC_REF": 0})
 
-    hdu = fits.ImageHDU(data=img, header=header)    src = Source()
+    hdu = fits.ImageHDU(data=img, header=header)
+    src = Source()
     src.spectra = [sp]
     src.fields = [hdu]
 
