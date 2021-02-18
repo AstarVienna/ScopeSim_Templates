@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c85dd81e-4790-4abe-b345-f59070a2a0f6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/ScopeSim_Templates.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ScopeSim_Templates.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/misc.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,8 +84,10 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ScopeSim" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -186,9 +191,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
       <item itemvalue="Python tests.pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" />
       <item itemvalue="Python tests.pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" />
-      <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
       <item itemvalue="Python tests.pytest for test_validate_content.TestContentOfFields" />
       <item itemvalue="Python tests.pytest in test_validate_content.py" />
     </list>
@@ -202,6 +207,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -216,29 +222,9 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1874" height="359" key="GridCell.Tab.0.bottom" timestamp="1594295939124">
-      <screen x="0" y="0" width="1920" height="1053" />
+    <state x="743" y="282" width="424" height="479" key="FileChooserDialogImpl" timestamp="1603096216715">
+      <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1874" height="359" key="GridCell.Tab.0.bottom/0.0.1920.1053@0.0.1920.1053" timestamp="1594295939124" />
-    <state width="1874" height="359" key="GridCell.Tab.0.center" timestamp="1594295939123">
-      <screen x="0" y="0" width="1920" height="1053" />
-    </state>
-    <state width="1874" height="359" key="GridCell.Tab.0.center/0.0.1920.1053@0.0.1920.1053" timestamp="1594295939123" />
-    <state width="1874" height="359" key="GridCell.Tab.0.left" timestamp="1594295939123">
-      <screen x="0" y="0" width="1920" height="1053" />
-    </state>
-    <state width="1874" height="359" key="GridCell.Tab.0.left/0.0.1920.1053@0.0.1920.1053" timestamp="1594295939123" />
-    <state width="1874" height="359" key="GridCell.Tab.0.right" timestamp="1594295939123">
-      <screen x="0" y="0" width="1920" height="1053" />
-    </state>
-    <state width="1874" height="359" key="GridCell.Tab.0.right/0.0.1920.1053@0.0.1920.1053" timestamp="1594295939123" />
-    <state x="464" y="160" key="SettingsEditor" timestamp="1594285023946">
-      <screen x="0" y="0" width="1920" height="1053" />
-    </state>
-    <state x="464" y="160" key="SettingsEditor/0.0.1920.1053@0.0.1920.1053" timestamp="1594285023946" />
-    <state x="623" y="231" width="672" height="678" key="search.everywhere.popup" timestamp="1594296670436">
-      <screen x="0" y="0" width="1920" height="1053" />
-    </state>
-    <state x="623" y="231" width="672" height="678" key="search.everywhere.popup/0.0.1920.1053@0.0.1920.1053" timestamp="1594296670436" />
+    <state x="743" y="282" width="424" height="479" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1603096216715" />
   </component>
 </project>

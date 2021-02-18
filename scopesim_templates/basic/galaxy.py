@@ -79,11 +79,11 @@ def galaxy(sed,           # The SED of the galaxy
     x, y = np.meshgrid(np.arange(image_size),
                        np.arange(image_size))
 
-    galaxy = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
+    gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
                         r_eff=r_eff.value, amplitude=1,  n=n,
                         ellip=ellip, theta=theta)
 
-    img = galaxy.intensity
+    img = gal.intensity
 
     w, h = img.shape
     header = fits.Header({"NAXIS": 2,
@@ -102,7 +102,6 @@ def galaxy(sed,           # The SED of the galaxy
                           "SPEC_REF": 0})
 
     hdu = fits.ImageHDU(data=img, header=header)
-    hdu.writeto("deleteme.fits", overwrite=True)
     src = Source()
     src.spectra = [scaled_sp]
     src.fields = [hdu]
@@ -255,9 +254,6 @@ def galaxy3d(sed,           # The SED of the galaxy,
     src.fields = fits.HDUList(hdulist)
 
     return src
-
-
-
 
 
 #-------------------------------------------------
