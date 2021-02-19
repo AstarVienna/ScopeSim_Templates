@@ -3,6 +3,7 @@ import numpy as np
 from ..rc import Source, __config__
 from ..utils.general_utils import function_call_str
 from astropy.io import fits
+import astropy.units as u
 
 from spextra import Spextrum
 
@@ -27,50 +28,43 @@ def empty_sky():
     return sky
 
 
-def flat_field(x_size, y_size, counts,  temperature):
+def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V"):
     """
-    Creates a flat-field image to use in the simulator
+    This function creates a flat-field source to be used in ScopeSim
 
-    TODO: - Test it
-          - Use also a polynomial
+    The spectral shape is given by a Black Body Spectrum with a temperature set by the user, so it can
+    also be used in spectroscopy with enough realism.
+
+    Flats-fields usually also contain an illumination pattern. They might be implemented in ScopeSim.effects.
+    TODO: Investigate if that belongs eventually here.
+
+    Default values are just a wild guess. We need to find more realistic ones.
 
     Parameters
     ----------
-    x_size
-    y_size
-    temperature
-    counts
+    temperature: float
+        [Kelvin] Temperature of the lamp
+    amplitude: u.Quantity
+        [u.Quantity] amplitude of the lamp in u.ABmag, u.mag (vega) or u. STmag
+    filter_curve: str
+        any filter curve available for ``spextra``
+
 
     Returns
     -------
+    src: Source
 
     """
 
-    img = np.zeros(shape=(x_size, y_size)) + counts
+    sp = Spextrum.black_body_spectrum(temperature=temperature, amplitude=amplitude, filter_curve=filter_curve)
 
-    sp = Spextrum().black_body_spectrum(temperature=temperature)
-
-    header = fits.Header({"NAXIS": 2,
-                          "NAXIS1": x_size,
-                          "NAXIS2": y_size,
-             #             "CRPIX1": w // 2,
-             #             "CRPIX2": h // 2,
-             #             "CRVAL1": 0,
-             #             "CRVAL2": 0,
-             #             "CDELT1": -1 * plate_scale.to(u.deg).value,
-             #             "CDELT2": plate_scale.to(u.deg).value,
-             #             "CUNIT1": "DEG",
-             #             "CUNIT2": "DEG",
-             #             "CTYPE1": 'RA---TAN',
-             #             "CTYPE2": 'DEC--TAN',
-                          "SPEC_REF": 0})
-
-    hdu = fits.ImageHDU(data=img, header=header)
-    src = Source()
-    src.spectra = [sp]
-    src.fields = [hdu]
-
+    src = Source(lam=np.array([__config__["!spectral.wave_min"],
+                               __config__["!spectral.wave_max"]]),
+                 spectra=sp, x=[0], y=[0], ref=[0], weight=[0])
     return src
+
+
+
 
 
 

@@ -11,7 +11,7 @@ build/
 dist/
 *egg-info/
 *.xml
-.idea
+.idea/*
 
 
 # Temporary and binary files

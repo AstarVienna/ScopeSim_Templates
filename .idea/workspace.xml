@@ -3,7 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="c85dd81e-4790-4abe-b345-f59070a2a0f6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/misc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +108,7 @@
       <recent name="C:\Work\ScopeSim_Templates\scopesim_templates\core" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in test_validate_content.py">
+  <component name="RunManager" selected="Python tests.pytest for test_misc.TestFlatField">
     <configuration name="pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="ScopeSim_Templates" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -123,7 +125,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest for test_misc.TestFlatField" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="ScopeSim_Templates" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -135,11 +137,11 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_stars.TestStarField.test_returns_source_object_with_minimal_input&quot;" />
+      <option name="_new_target" value="&quot;test_misc.TestFlatField&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest for test_misc.TestFlatField.test_flatfield_returns_source_object" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="ScopeSim_Templates" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -151,7 +153,7 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky&quot;" />
+      <option name="_new_target" value="&quot;test_misc.TestFlatField.test_flatfield_returns_source_object&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -189,18 +191,18 @@
     </configuration>
     <list>
       <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
-      <item itemvalue="Python tests.pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" />
-      <item itemvalue="Python tests.pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" />
       <item itemvalue="Python tests.pytest for test_validate_content.TestContentOfFields" />
       <item itemvalue="Python tests.pytest in test_validate_content.py" />
+      <item itemvalue="Python tests.pytest for test_misc.TestFlatField.test_flatfield_returns_source_object" />
+      <item itemvalue="Python tests.pytest for test_misc.TestFlatField" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for test_misc.TestFlatField" />
+        <item itemvalue="Python tests.pytest for test_misc.TestFlatField.test_flatfield_returns_source_object" />
         <item itemvalue="Python tests.pytest in test_validate_content.py" />
         <item itemvalue="Python tests.pytest for test_validate_content.TestContentOfFields" />
         <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
-        <item itemvalue="Python tests.pytest for test_stars.TestStarGrid.test_returns_source_object_with_correct_weighting_in_jansky" />
-        <item itemvalue="Python tests.pytest for test_stars.TestStarField.test_returns_source_object_with_minimal_input" />
       </list>
     </recent_temporary>
   </component>
