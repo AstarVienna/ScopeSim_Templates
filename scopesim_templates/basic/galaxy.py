@@ -16,7 +16,7 @@ from .exgal_models import GalaxyBase
 def galaxy(sed,           # The SED of the galaxy
            z=0,             # redshift
            mag=15,           # magnitude
-           filter_name="g",        # passband
+           filter_curve="g",        # passband
            plate_scale=0.1,   # the plate scale "/pix
            r_eff=2.5,         # effective radius
            n=4,             # sersic index
@@ -39,7 +39,7 @@ def galaxy(sed,           # The SED of the galaxy
         effective radius of the galaxy in arcsec, it accepts astropy.units
     mag : float
         magnitude of the galaxy, it accepts astropy.units
-    filter_name : str
+    filter_curve : str
         name of the filter where the magnitude refer to
     plate_scale : float
         the scale in arcsec/pixel of the instrument
@@ -65,7 +65,7 @@ def galaxy(sed,           # The SED of the galaxy
         r_eff = r_eff * u.arcsec
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_name=filter_name)
+        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_curve=filter_curve)
     elif isinstance(sed, (Spextrum)):
         scaled_sp = sed
 
@@ -80,10 +80,10 @@ def galaxy(sed,           # The SED of the galaxy
                        np.arange(image_size))
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                        r_eff=r_eff.value, amplitude=1,  n=n,
-                        ellip=ellip, theta=theta)
+                     r_eff=r_eff.value/plate_scale.value,
+                     amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    img = gal.intensity
+    img = gal.intensity / np.sum(gal.intensity)
 
     w, h = img.shape
     header = fits.Header({"NAXIS": 2,
@@ -103,8 +103,9 @@ def galaxy(sed,           # The SED of the galaxy
 
     hdu = fits.ImageHDU(data=img, header=header)
     src = Source()
-    src.spectra = [scaled_sp]
-    src.fields = [hdu]
+    src.spectra = [scaled_sp,]
+    src.fields = [hdu,]
+
 
     return src
 
@@ -208,7 +209,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
                         amplitude=1, n=n,
                         ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
 
-    intensity = galaxy.intensity
+    intensity = galaxy.intensity / np.sum(galaxy.intensity)
     velocity = galaxy.velocity.value
     dispersion = galaxy.dispersion.value
     masks = galaxy.get_masks(ngrid=ngrid)

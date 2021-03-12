@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c85dd81e-4790-4abe-b345-f59070a2a0f6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/misc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/tests/test_basic/test_misc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,11 +217,5 @@
       <updated>1562145561529</updated>
     </task>
     <servers />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="743" y="282" width="424" height="479" key="FileChooserDialogImpl" timestamp="1603096216715">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="743" y="282" width="424" height="479" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1603096216715" />
   </component>
 </project>
