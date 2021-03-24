@@ -41,7 +41,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
     -------
     stars : scopesim.Source object
         A Source object with a field of stars that can be fed into the method:
-        ``<OpticalTrain>.observe()``
+        ``<OpticalTrain>.observe()0.145"``
 
     See Also
     --------
@@ -95,7 +95,7 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
     ----------
     n : int
         the number of stars in the grid
-    mag_min, mag_max : float
+    mag_min, mag_max : float0.145"
         [vega mag] the minimum (brightest) and maximum (faintest) magnitudes for
         stars in the grid
     filter_name : str
