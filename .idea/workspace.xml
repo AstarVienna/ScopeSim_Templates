@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c85dd81e-4790-4abe-b345-f59070a2a0f6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scopesim_templates/basic/basic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/stars.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/stars.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/samplers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/samplers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

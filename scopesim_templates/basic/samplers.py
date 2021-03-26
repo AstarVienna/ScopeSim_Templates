@@ -52,7 +52,7 @@ def randomvariate(pdf, n, xmin, xmax):
     return ran, ntrial
 
 
-def rvs(pdf, n, xmin, xmax, sampling=1000):
+def np_rvs(pdf, n, xmin, xmax, sampling=10000):
     """
     numpy adaptation of randomvariate
     This works in only one dimension
@@ -85,11 +85,11 @@ def rvs(pdf, n, xmin, xmax, sampling=1000):
     return ran[:n]
 
 
-def uniform_proposal(x, delta=2.0):
-    return np.random.uniform(x - delta, x + delta)
+#def uniform_proposal(x, xmin, ):
+#    return np.random.uniform(xmin, xmax)
 
 
-def _metropolis_sampler(pdf, nsamples, proposal):
+def _metropolis_sampler(pdf, nsamples, xmin, xmax):
     """
         Taken from Here
         https://stackoverflow.com/questions/51050658/how-to-generate-random-numbers-with-predefined-probability-distribution
@@ -98,10 +98,10 @@ def _metropolis_sampler(pdf, nsamples, proposal):
         p = lambda r: s1(r)
         samples = list(metropolis_sampler(p, N))
     """
-    x = 1  # start somewhere
+    x = np.random.uniform(xmin, xmax) # start somewhere
 
     for i in range(nsamples):
-        trial = proposal(x)  # random neighbour from the proposal distribution
+        trial = np.random.uniform(xmin, xmax)  # random neighbour from the proposal distribution
         acceptance = pdf(trial) / pdf(x)
 
         if np.random.uniform() < acceptance:
@@ -110,12 +110,12 @@ def _metropolis_sampler(pdf, nsamples, proposal):
         yield x
 
 
-def metropolis_sampler(pdf, nsamples, proposal=uniform_proposal):
+def metropolis_sampler(pdf, nsamples, xmin, xmax):
     """
     This is a version of a metropolis sampler.
     Depending of the characteristics of the distribution it can be slower or comparable in speed to rvs
     """
-    result = list(_metropolis_sampler(pdf=pdf, nsamples=nsamples, proposal=proposal))
+    result = list(_metropolis_sampler(pdf=pdf, nsamples=nsamples, xmin=xmin, xmax=xmax))
     return np.array(result)
 
 
