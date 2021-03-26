@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c85dd81e-4790-4abe-b345-f59070a2a0f6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/samplers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/samplers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/basic/galaxy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scopesim_templates/tests/test_source_validation/test_validate_content.py" beforeDir="false" afterPath="$PROJECT_DIR$/scopesim_templates/tests/test_source_validation/test_validate_content.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +115,7 @@
       <recent name="C:\Work\ScopeSim_Templates\scopesim_templates\core" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest for test_misc.TestFlatField">
+  <component name="RunManager" selected="Python tests.pytest in test_validate_content.py">
     <configuration name="pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="ScopeSim_Templates" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -204,9 +205,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest in test_validate_content.py" />
         <item itemvalue="Python tests.pytest for test_misc.TestFlatField" />
         <item itemvalue="Python tests.pytest for test_misc.TestFlatField.test_flatfield_returns_source_object" />
-        <item itemvalue="Python tests.pytest in test_validate_content.py" />
         <item itemvalue="Python tests.pytest for test_validate_content.TestContentOfFields" />
         <item itemvalue="Python tests.pytest for test_misc.TestEmptySky.test_empty_sky_returns_source_object" />
       </list>

@@ -1,5 +1,6 @@
 import pytest
 
+import numpy as np
 from astropy import units as u
 from astropy.table import Table
 from astropy.io.fits import ImageHDU
@@ -7,14 +8,19 @@ from synphot import SourceSpectrum
 
 from scopesim_templates.basic.stars import star
 from scopesim_templates.basic.galaxy import spiral_two_component, galaxy, galaxy3d
-
+from scopesim_templates.basic.basic import source_from_image
 
 # Add all initialied examples of sources to be tested to this list
 SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
                star(filter_name="Paranal/HAWKI.J", amplitude=10*u.Jansky),
                spiral_two_component(),
                galaxy(sed="kc96/s0"),
-               galaxy3d(sed="kc96/s0", ngrid=10)
+               galaxy3d(sed="kc96/s0", ngrid=10),
+               source_from_image(image=np.ones(shape=(100,100)),
+                                 sed="kc96/s0",
+                                 amplitude=15,
+                                 pixel_scale=0.2,
+                                 filter_curve="g")
                ]
 
 

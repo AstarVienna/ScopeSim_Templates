@@ -3,19 +3,22 @@ import numpy as np
 from astropy.io import fits
 from astropy.utils.data import download_file
 from astropy import units as u
+from astropy.utils.decorators import deprecated_renamed_argument
 
 from spextra import Spextrum
 from scopesim.source.source_templates import Source
 
 from .. import rc
 from ..utils import general_utils as gu
+from .basic import source_from_image
 
 from .exgal_models import GalaxyBase
 
 
+#@deprecated_renamed_argument('mag', 'amplitudes', '0.1')
 def galaxy(sed,           # The SED of the galaxy
            z=0,             # redshift
-           mag=15,           # magnitude
+           amplitude=15,           # magnitude
            filter_curve="g",        # passband
            plate_scale=0.1,   # the plate scale "/pix
            r_eff=2.5,         # effective radius
@@ -37,8 +40,8 @@ def galaxy(sed,           # The SED of the galaxy
         redshift of the galaxy
     r_eff : float
         effective radius of the galaxy in arcsec, it accepts astropy.units
-    mag : float
-        magnitude of the galaxy, it accepts astropy.units
+    amplitude : float
+        magnitude or flux of the galaxy, it accepts astropy.units
     filter_curve : str
         name of the filter where the magnitude refer to
     plate_scale : float
@@ -57,15 +60,15 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
-    if isinstance(mag, u.Quantity) is False:
-        mag = mag * u.ABmag
+    if isinstance(amplitude, u.Quantity) is False:
+        amplitude = amplitude * u.ABmag
     if isinstance(plate_scale, u.Quantity) is False:
         plate_scale = plate_scale * u.arcsec
     if isinstance(r_eff, u.Quantity) is False:
         r_eff = r_eff * u.arcsec
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_curve=filter_curve)
+        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
     elif isinstance(sed, (Spextrum)):
         scaled_sp = sed
 
@@ -83,37 +86,16 @@ def galaxy(sed,           # The SED of the galaxy
                      r_eff=r_eff.value/plate_scale.value,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    img = gal.intensity / np.sum(gal.intensity)
-
-    w, h = img.shape
-    header = fits.Header({"NAXIS": 2,
-                          "NAXIS1": 2*x_0 + 1,
-                          "NAXIS2": 2*y_0 + 1,
-                          "CRPIX1": w // 2,
-                          "CRPIX2": h // 2,
-                          "CRVAL1": 0,
-                          "CRVAL2": 0,
-                          "CDELT1": -1*plate_scale.to(u.deg).value,
-                          "CDELT2": plate_scale.to(u.deg).value,
-                          "CUNIT1": "DEG",
-                          "CUNIT2": "DEG",
-                          "CTYPE1": 'RA---TAN',
-                          "CTYPE2": 'DEC--TAN',
-                          "SPEC_REF": 0})
-
-    hdu = fits.ImageHDU(data=img, header=header)
-    src = Source()
-    src.spectra = [scaled_sp,]
-    src.fields = [hdu,]
-
+    src = source_from_image(image=gal.intensity, sed=sed, pixel_scale=plate_scale,
+                            amplitude=amplitude, filter_curve=filter_curve)
 
     return src
 
 
 def galaxy3d(sed,           # The SED of the galaxy,
              z=0,             # redshift
-             mag=15,           # magnitude
-             filter_name="g",        # passband
+             amplitude=15,           # magnitude
+             filter_curve="g",        # passband
              plate_scale=0.2,   # the plate scale "/pix
              r_eff=10,         # effective radius
              n=4,             # sersic index
@@ -144,8 +126,8 @@ def galaxy3d(sed,           # The SED of the galaxy,
         be re-escaled.
     z : float
         redshift of the galaxy
-    mag : float
-        magnitude of the galaxy. The spectrum will be re-escaled to this magnitude
+    amplitude : float, u.Quantity
+        magnitude or flux of the galaxy. The spectrum will be re-escaled to this magnitude
     filter_name : str
         name of the filter where the magnitude is measured
     plate_scale : float
@@ -175,8 +157,8 @@ def galaxy3d(sed,           # The SED of the galaxy,
     src : scopesim.Source
     """
 
-    if isinstance(mag, u.Quantity) is False:
-        mag = mag * u.ABmag
+    if isinstance(amplitude, u.Quantity) is False:
+        amplitude = amplitude * u.ABmag
     if isinstance(plate_scale, u.Quantity) is False:
         plate_scale = plate_scale * u.arcsec
     if isinstance(r_eff, u.Quantity) is False:
@@ -187,7 +169,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
         sigma = sigma*u.km/u.s
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_name=filter_name)
+        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
     elif isinstance(sed, Spextrum):
         scaled_sp = sed
 
