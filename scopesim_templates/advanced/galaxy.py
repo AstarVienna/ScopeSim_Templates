@@ -103,7 +103,7 @@ def galaxy(sed,           # The SED of the galaxy
                           "SPEC_REF": 0})
 
     hdu = fits.ImageHDU(data=img, header=header)
-    hdu.writeto("deleteme.fits", overwrite=True)
+    # hdu.writeto("deleteme.fits", overwrite=True)
     src = Source()
     src.spectra = [scaled_sp]
     src.fields = [hdu]
