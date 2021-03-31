@@ -1,4 +1,4 @@
-import  pytest
+import pytest
 from pytest import approx
 
 import numpy as np
@@ -8,6 +8,28 @@ import synphot as sp
 from scopesim_templates.basic.stars import *
 from scopesim_templates.rc import ter_curve_utils as tcu
 from scopesim_templates.rc import Source
+
+
+def source_eq(source_lhs: Source, source_rhs: Source):
+    """hacky way to ensure two source"""
+    eq = len(source_lhs.spectra) == len(source_rhs.spectra)
+    for spectrum_lhs, spectrum_rhs in zip(source_lhs.spectra, source_rhs.spectra):
+        eq = eq and all(spectrum_lhs.waveset == spectrum_rhs.waveset)
+    return eq
+
+
+class TestStar:
+    def test_star_stars_equivalent(self):
+        """verify that star and stars yield the same object and have compatible interfaces"""
+        src_from_star = star("Generic/Johnson.V", 0, "A0V", 0, 0)
+        src_from_stars = stars("Generic/Johnson.V", [0], ["A0V"], [0], [0])
+        src_from_star_unit = star("Generic/Johnson.V", 0*u.mag, "A0V", 0, 0)
+        src_from_stars_unit = stars("Generic/Johnson.V", [0*u.mag], ["A0V"], [0], [0])
+
+        a = source_eq(src_from_star, src_from_stars)
+        assert(source_eq(src_from_star, src_from_stars))
+        assert(source_eq(src_from_star, src_from_star_unit))
+        assert(source_eq(src_from_star, src_from_stars_unit))
 
 
 class TestStars:
