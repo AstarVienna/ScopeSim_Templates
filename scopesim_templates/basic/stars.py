@@ -141,7 +141,7 @@ def stars(filter_name, amplitudes, spec_types, x, y):
     filter_name : str
         For scaling the stars. Use either common names or Spanish-VO identifiers
     amplitudes : list of Quanitity, float
-        [mag, Jy] amplitudes for the list of stars. Acceptable astropy.units:
+        [mag, ABmag, Jy] amplitudes for the list of stars. Acceptable astropy.units:
         [u.mag, u.ABmag, u.Janksy]. If no units are given, Vega magnitudes are
         assumed
     spec_types : list of strings
@@ -200,7 +200,7 @@ def stars(filter_name, amplitudes, spec_types, x, y):
               "x": x,
               "y": y,
               "object": "stars"}
-    pass
+
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "stars"
 
@@ -208,7 +208,9 @@ def stars(filter_name, amplitudes, spec_types, x, y):
         spec_types = [spec_types]
 
     if not isinstance(amplitudes, u.Quantity):
-        amplitudes = u.Quantity(amplitudes, u.mag, copy=False)
+        amplitudes = u.Quantity(amplitudes, copy=False)
+        if amplitudes.unit == u.dimensionless_unscaled:
+            amplitudes *= u.mag
 
     if not isinstance(x, u.Quantity):
         x = u.Quantity(x, u.arcsec, copy=False)
