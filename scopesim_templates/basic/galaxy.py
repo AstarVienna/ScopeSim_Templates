@@ -81,8 +81,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         src.fields[ii].header["CUNIT2"] = "DEG"
         src.fields[ii].header["CTYPE1"] = "RA---TAN"
         src.fields[ii].header["CTYPE2"] = "DEC--TAN"
-        src.fields[ii].header["SPEC_REF"] = src.fields[ii].header["SPEC_EXT"] \
-                                            - spec_ext
+        src.fields[ii].header["SPEC_REF"] = src.fields[ii].header["SPEC_EXT"] - spec_ext
 
     # ..todo: scale image plane according to fluxes
     # ..todo: shift header values according to offset
@@ -199,7 +198,7 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
     hw, hh = 0.5 * params["width"], 0.5 * params["height"]
     xs = (np.array([-hw, hw]) + params["x_offset"]) / 3600.
     ys = (np.array([-hh, hh]) + params["y_offset"]) / 3600.
-    hdr = ipu.header_from_list_of_xy(xs, ys, pixel_scale)
+    hdr = ipu.header_from_list_of_xy(xs, ys, pixel_scale / 3600.)
     hdu = fits.ImageHDU(data=im, header=hdr)
 
     # 2 get spectrum from Brown

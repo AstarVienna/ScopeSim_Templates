@@ -34,7 +34,7 @@ def setup_package():
                             "astropy>1.1.2",
                             "matplotlib>1.5.0",
                             "requests>2.0",
-                            "pyyaml>3",
+                            "pyyaml>5",
                             "synphot>0.1",
                             "pyckles",
                             "spextra",
