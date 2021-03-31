@@ -66,7 +66,7 @@ def galaxy(sed,           # The SED of the galaxy
         r_eff = r_eff * u.arcsec
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_name=filter_name)
+        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_curve=filter_name)
     elif isinstance(sed, (Spextrum)):
         scaled_sp = sed
 
@@ -188,7 +188,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
         sigma = sigma*u.km/u.s
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_name=filter_name)
+        scaled_sp = sp.scale_to_magnitude(amplitude=mag, filter_curve=filter_name)
     elif isinstance(sed, Spextrum):
         scaled_sp = sed
 

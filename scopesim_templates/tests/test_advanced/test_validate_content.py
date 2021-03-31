@@ -14,8 +14,8 @@ from scopesim_templates.advanced.galaxy import galaxy, galaxy3d
 SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
                star(filter_name="Paranal/HAWKI.J", amplitude=10*u.Jansky),
                spiral_two_component(),
-               # galaxy(sed="kc96/s0"),
-               # galaxy3d(sed="kc96/s0", ngrid=10)
+               galaxy(sed="kc96/s0"),
+               galaxy3d(sed="kc96/s0", ngrid=10)
                ]
 
 
