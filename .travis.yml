@@ -32,6 +32,13 @@ jobs:
         - pip install -r requirements.travis.txt
         - pip install .
 
+    - name: python 3.9
+      dist: bionic
+      python:
+        - 3.9
+      install:
+        - pip install -r requirements.travis.txt
+        - pip install .
+
 script:
   - pytest
-  # - pytest --doctest-modules
