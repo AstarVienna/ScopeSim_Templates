@@ -1,9 +1,11 @@
 import numpy as np
+import synphot
 
 from astropy.io import fits
 from astropy.utils.data import download_file
 from astropy import units as u
 from astropy.utils.decorators import deprecated_renamed_argument
+from astropy.wcs import WCS
 
 from spextra import Spextrum
 from scopesim.source.source_templates import Source
@@ -12,15 +14,15 @@ from .. import rc
 from ..utils import general_utils as gu
 from .basic import source_from_image
 
-from .exgal_models import GalaxyBase
+from ..utils.exgal_models import GalaxyBase
 
 
-#@deprecated_renamed_argument('mag', 'amplitudes', '0.1')
+@deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
 def galaxy(sed,           # The SED of the galaxy
            z=0,             # redshift
            amplitude=15,           # magnitude
            filter_curve="g",        # passband
-           plate_scale=0.1,   # the plate scale "/pix
+           pixel_scale=0.1,   # the plate scale "/pix
            r_eff=2.5,         # effective radius
            n=4,             # sersic index
            ellip=0.1,         # ellipticity
@@ -44,7 +46,7 @@ def galaxy(sed,           # The SED of the galaxy
         magnitude or flux of the galaxy, it accepts astropy.units
     filter_curve : str
         name of the filter where the magnitude refer to
-    plate_scale : float
+    pixel_scale : float
         the scale in arcsec/pixel of the instrument
     n : float
         Sersic index of the galaxy
@@ -62,20 +64,20 @@ def galaxy(sed,           # The SED of the galaxy
     """
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.ABmag
-    if isinstance(plate_scale, u.Quantity) is False:
-        plate_scale = plate_scale * u.arcsec
+    if isinstance(pixel_scale, u.Quantity) is False:
+        pixel_scale = pixel_scale * u.arcsec
     if isinstance(r_eff, u.Quantity) is False:
         r_eff = r_eff * u.arcsec
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
         scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
-    elif isinstance(sed, (Spextrum)):
+    elif isinstance(sed, (Spextrum, synphot.SourceSpectrum)):
         scaled_sp = sed
 
     r_eff = r_eff.to(u.arcsec)
-    plate_scale = plate_scale.to(u.arcsec)
+    pixel_scale = pixel_scale.to(u.arcsec)
 
-    image_size = 2 * (r_eff.value * extend / plate_scale.value)  # TODO: Needs unit check
+    image_size = 2 * (r_eff.value * extend / pixel_scale.value)  # TODO: Needs unit check
     x_0 = image_size // 2
     y_0 = image_size // 2
 
@@ -83,20 +85,21 @@ def galaxy(sed,           # The SED of the galaxy
                        np.arange(image_size))
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                     r_eff=r_eff.value/plate_scale.value,
+                     r_eff=r_eff.value/pixel_scale.value,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    src = source_from_image(image=gal.intensity, sed=sed, pixel_scale=plate_scale,
+    src = source_from_image(image=gal.intensity, sed=sed, pixel_scale=pixel_scale,
                             amplitude=amplitude, filter_curve=filter_curve)
 
     return src
 
 
+@deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
 def galaxy3d(sed,           # The SED of the galaxy,
              z=0,             # redshift
              amplitude=15,           # magnitude
              filter_curve="g",        # passband
-             plate_scale=0.2,   # the plate scale "/pix
+             pixel_scale=0.1,   # the plate scale "/pix
              r_eff=10,         # effective radius
              n=4,             # sersic index
              ellip=0.1,         # ellipticity
@@ -159,8 +162,8 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.ABmag
-    if isinstance(plate_scale, u.Quantity) is False:
-        plate_scale = plate_scale * u.arcsec
+    if isinstance(pixel_scale, u.Quantity) is False:
+        pixel_scale = pixel_scale * u.arcsec
     if isinstance(r_eff, u.Quantity) is False:
         r_eff = r_eff * u.arcsec
     if isinstance(vmax, u.Quantity) is False:
@@ -174,11 +177,11 @@ def galaxy3d(sed,           # The SED of the galaxy,
         scaled_sp = sed
 
     r_eff = r_eff.to(u.arcsec)
-    plate_scale = plate_scale.to(u.arcsec)
+    pixel_scale = pixel_scale.to(u.arcsec)
     vmax = vmax.to(u.km/u.s)
     sigma = sigma.to(u.km/u.s)
 
-    image_size = 2 * (r_eff.value * extend / plate_scale.value)  # TODO: Needs unit check
+    image_size = 2 * (r_eff.value * extend / pixel_scale.value)  # TODO: Needs unit check
     print(image_size, r_eff)
     x_0 = image_size // 2
     y_0 = image_size // 2
@@ -187,7 +190,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
                        np.arange(image_size))
 
     galaxy = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                        r_eff=r_eff.value/plate_scale.value,
+                        r_eff=r_eff.value/pixel_scale.value,
                         amplitude=1, n=n,
                         ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
 
@@ -196,27 +199,28 @@ def galaxy3d(sed,           # The SED of the galaxy,
     dispersion = galaxy.dispersion.value
     masks = galaxy.get_masks(ngrid=ngrid)
     w, h = intensity.shape
-    header = fits.Header({"NAXIS": 2,
-                          "NAXIS1": 2 * x_0 + 1,
-                          "NAXIS2": 2 * y_0 + 1,
-                          "CRPIX1": w // 2,
-                          "CRPIX2": h // 2,
-                          "CRVAL1": 0,
-                          "CRVAL2": 0,
-                          "CDELT1": -1*plate_scale.to(u.deg).value,
-                          "CDELT2": plate_scale.to(u.deg).value,
-                          "CUNIT1": "DEG",
-                          "CUNIT2": "DEG",
-                          "CTYPE1": 'RA---TAN',
-                          "CTYPE2": 'DEC--TAN',
-                          "SPEC_REF": 0})
+
+    wcs_dict = dict(NAXIS=2,
+                    NAXIS1=2 * x_0 + 1,
+                    NAXIS2=2 * y_0 + 1,
+                    CRPIX1=w // 2,
+                    CRPIX2=h // 2,
+                    CRVAL1=0,
+                    CRVAL2=0,
+                    CDELT1=-1 * pixel_scale.to(u.deg).value,
+                    CDELT2=pixel_scale.to(u.deg).value,
+                    CUNIT1="DEG",
+                    CUNIT2="DEG",
+                    CTYPE1='RA---TAN',
+                    CTYPE2='DEC--TAN')
+
+    wcs = WCS(wcs_dict)
+
+    header = fits.Header(wcs.to_header())
+    header.update({"SPEC_REF": 0})
 
     src = Source()
-    src.fields = []
-    src.spectra = []
     total_flux = np.sum(intensity)
-
-    hdulist = []
 
     for i, m in enumerate(masks):
         data = m * intensity
@@ -229,12 +233,10 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
         spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig) * factor
 
-        header["SPEC_REF"] = i
+        header.update({"SPEC_REF": i})
         hdu = fits.ImageHDU(data=data, header=header)
-        hdulist.append(hdu)
-        src.spectra.append(spec)
 
-    src.fields = fits.HDUList(hdulist)
+        src = src + Source(image_hdu=hdu, spectra=spec)
 
     return src
 
