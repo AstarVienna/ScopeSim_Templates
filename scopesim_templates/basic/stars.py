@@ -130,7 +130,7 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
 
 
 @deprecated_renamed_argument('mags', 'amplitudes', '0.1')
-def stars(filter_name, amplitudes, spec_types, x, y):
+def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     """
     Creates a scopesim.Source object for a list of stars with given amplitudes
 
@@ -215,9 +215,11 @@ def stars(filter_name, amplitudes, spec_types, x, y):
     if not isinstance(y, u.Quantity):
         y = u.Quantity(y, u.arcsec, copy=False)
 
-    pickles_lib = pyckles.SpectralLibrary("pickles", return_style="synphot")
-    unique_types = np.unique(spec_types)
-    cat_spec_types = su.nearest_spec_type(unique_types, pickles_lib.table)
+    if library == "pyckles":
+        pickles_lib = pyckles.SpectralLibrary("pickles", return_style="synphot")
+        unique_types = np.unique(spec_types)
+        cat_spec_types = su.nearest_spec_type(unique_types, pickles_lib.table)
+
 
     # scale the spectra and get the weights
     if amplitudes.unit in [u.mag, u.ABmag, u.STmag]:
@@ -227,8 +229,14 @@ def stars(filter_name, amplitudes, spec_types, x, y):
         zero = 1 * amplitudes.unit
         weight = amplitudes.value
 
-    spectra = [tcu.scale_spectrum(pickles_lib[spt], filter_name, zero)
-               for spt in zip(cat_spec_types)]
+    if library == "pyckles":
+        spectra = [tcu.scale_spectrum(pickles_lib[spt], filter_name, zero)
+                   for spt in zip(cat_spec_types)]
+    else:
+        from spextra import Spextrum
+        spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(amp, filter_curve=filter_name)
+                   for spec, amp in zip(spec_types, amplitudes)]
+
 
     # get the references to the unique stellar types
     ref_dict = {spt: ii for ii, spt in enumerate(unique_types)}
