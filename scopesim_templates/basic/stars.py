@@ -273,7 +273,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
         A multiplicity object from the imf.py package. Not sure what it does.
     seed: float
         For setting the random seed for both masses and positions
-
+# from .basic.misc import empty_sky, flat_field
 
     Returns
     -------
