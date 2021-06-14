@@ -1,5 +1,6 @@
 import pytest
 
+import numpy as np
 from astropy import units as u
 from astropy.table import Table
 from astropy.io.fits import ImageHDU
@@ -7,12 +8,21 @@ from synphot import SourceSpectrum
 
 from scopesim_templates.basic.stars import star
 from scopesim_templates.basic.galaxy import spiral_two_component
+from scopesim_templates.advanced.galaxy import spiral_two_component, galaxy, galaxy3d
+from scopesim_templates.basic.basic import source_from_image
 
-
+# Add all initialied examples of sources to be tested to this list
 # Add all initialied examples of sources to be tested to this list
 SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
                star(filter_name="Paranal/HAWKI.J", amplitude=10*u.Jansky),
-               spiral_two_component()
+               spiral_two_component(),
+               galaxy(sed="kc96/s0"),
+               galaxy3d(sed="kc96/s0", ngrid=10),
+               source_from_image(image=np.ones(shape=(100,100)),
+                                 sed="kc96/s0",
+                                 amplitude=15,
+                                 pixel_scale=0.2,
+                                 filter_curve="g")
                ]
 
 
@@ -74,14 +84,3 @@ class TestConnectionBetweenFieldsAndSpectra:
             if isinstance(field, ImageHDU):
                 ref = field.header["SPEC_REF"]
                 assert isinstance(src.spectra[ref], SourceSpectrum)
-
-
-# @pytest.mark.parametrize("src", SOURCE_LIST[:1])
-# class TestImage:
-#     def test_make_image(self, src):
-#         import matplotlib.pyplot as plt
-#         im = src.image(1.1*u.um, 1.3*u.um).data
-#         plt.imshow(im)
-#         plt.show()
-
-

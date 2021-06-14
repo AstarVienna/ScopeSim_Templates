@@ -12,7 +12,7 @@ from scopesim.source.source_templates import Source
 
 from .. import rc
 from ..utils import general_utils as gu
-from .basic import source_from_image
+from ..basic.basic import source_from_image
 
 from ..utils.exgal_models import GalaxyBase
 
