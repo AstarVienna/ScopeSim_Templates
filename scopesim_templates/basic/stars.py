@@ -147,6 +147,13 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
         the spectral type(s) of the stars, e.g. "A0V", "G5III"
     x, y : arrays of float
         [arcsec] x and y coordinates of the stars on the focal plane
+
+    library: str
+        Library where the spectroscopic types are taken. By default are taken from the pickles library using
+        the `pyckles` package. Other libraries available are kurucz, bosz/lr, bosz/mr, bosz/hr, etc for MIR coverage
+        and different spectral resolutions. Please see the `spextra` package for more information
+
+
     Returns
     -------
     src : ``scopesim.Source``
