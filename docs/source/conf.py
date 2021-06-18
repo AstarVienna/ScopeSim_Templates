@@ -43,18 +43,53 @@ release = ''
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+#extensions = [
+#    'sphinx.ext.autodoc',
+#    'sphinx.ext.doctest',
+#    'sphinx.ext.intersphinx',
+#    'sphinx.ext.todo',
+#    'sphinx.ext.coverage',
+#    'sphinx.ext.mathjax',
+#    'sphinx.ext.viewcode',
+#]
+
+
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
+    'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
+    'sphinx.ext.inheritance_diagram',
     'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
+    'sphinx.ext.extlinks',
+#    'sphinx.ext.linkcode',
+    'jupyter_sphinx',
+    'sphinx.ext.doctest',
     'numpydoc',
-    'sphinxcontrib.apidoc',
-    'matplotlib.sphinxext.plot_directive',
 ]
+
+
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'astropy': ('http://docs.astropy.org/en/stable/', None),
+    'synphot': ('https://synphot.readthedocs.io/en/latest/', None),
+    'spextra': ('https://spextra.readthedocs.io', None),
+    'scopesim': ('https://scopesim.readthedocs.io', None),
+    'pyckles': ('https://pyckles.readthedocs.io', None),
+    }
+
+extlinks = {'python': ('https://docs.python.org/3/%s', None),
+            'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+            'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+            'astropy': ('http://docs.astropy.org/en/stable/', None),
+            'synphot': ('https://synphot.readthedocs.io/en/latest/', None),
+            'spextra': ('https://spextra.readthedocs.io', None),
+            'scopesim': ('https://scopesim.readthedocs.io', None),
+            'pyckles': ('https://pyckles.readthedocs.io', None),
+            }
+
+
 
 # apidoc settings
 numpydoc_show_class_members = False

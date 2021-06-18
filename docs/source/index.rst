@@ -7,7 +7,7 @@ Welcome to the ScopeSim Templates documentation!
 ================================================
 
 This package provides templates and helper functions for creating
-:class:`scopesim.source.source.Source` objects.
+:class:`scopesim.source.source.Source` objects that can be used to run the simulations.
 
 This package has been released on PyPi::
 
