@@ -1,4 +1,5 @@
 import numpy as np
+import synphot
 
 from astropy.io import fits
 
@@ -85,6 +86,71 @@ def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve, cut=0,
     image = fits.getdata(filename, ext=ext, **kwargs)
     image[image < cut] = 0
     src = source_from_image(image=image, sed=sed, pixel_scale=pixel_scale, amplitude=amplitude, filter_curve=filter_curve)
+
+    return src
+
+
+def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None, amplitude=None, filter_curve=None):
+    """
+    An source from cube that might work with the current implementation of field_of_view objects.
+    It basically divides the cube in monocromatic slices (images). The associated spectra are just delta functions
+
+    """
+    if filename is not None:
+        header = fits.getheader(filename, ext=ext)
+        data = fits.getdata(filename, ext=ext)
+    elif hdu is not None:
+        header = hdu[ext].header
+        data = hdu[ext].data
+    else:
+        raise ValueError("Please define a datacube")
+
+    try:
+        bunit = u.Unit(header["BUNIT"])
+    except KeyError as e:
+        raise("No BUNIT defined", e)
+
+    if pixel_scale is not None:  # assuming lineal
+        try:
+            pixel_scale = pixel_scale.to(u.deg).value
+        except AttributeError:
+            pixel_scale = pixel_scale / 3600
+
+    wcs = WCS(header)
+
+    celwcs = wcs.celestial
+#    celwcs.wcs.cd = np.array([[-1*pixel_scale, 0], [0, pixel_scale]])  # needs more thought
+
+    celhdr = celwcs.to_header()
+
+    specwcs = wcs.spectral
+
+    zpix = np.arange(specwcs.spectral.array_shape[0])
+    waves = specwcs.pixel_to_world(zpix)   # keeping wavelengths in native coordinates
+    zero_spec = np.zeros(shape=zpix.shape) * bunit
+
+    hdus = []
+    specs = []
+
+    src = Source()
+    for i in zpix:
+        imgdata = data[i]
+        flux = np.sum(imgdata)
+        imgdata = imgdata / flux
+
+        celhdr.update({"SPEC_REF": i})
+        hdus.append(fits.ImageHDU(data=imgdata, header=celhdr))
+
+        zero_spec[i] = flux * bunit
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=waves, lookup_table=zero_spec)
+        specs.append(sp)
+        zero_spec[i] = 0
+
+        src = src + Source(image_hdu=fits.ImageHDU(data=imgdata, header=celhdr),
+                           spectra=sp)
+
+
+#    src = Source(image_hdu=hdul, spectra=specs)
 
     return src
 
