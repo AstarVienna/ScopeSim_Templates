@@ -1,13 +1,22 @@
-.. ScopeSim_templates documentation master file, created by
-   sphinx-quickstart on Mon Nov 11 12:47:33 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. image:: _static/logos/logo_long_scopesim_templates_t.png
+    :width: 600 px
+    :alt: Welcome to the AnisoCADO Documentation!
+    :align: center
 
-Welcome to the ScopeSim Templates documentation!
-================================================
+|
 
-This package provides templates and helper functions for creating
-:class:`scopesim.source.source.Source` objects that can be used to run the simulations.
+|logo| Another tool from the `A* Vienna software team <https://astarvienna.github.io/>`_
+
+.. |logo| image:: https://raw.githubusercontent.com/AstarVienna/astarvienna.github.io/main/logos/star_small_t.png
+   :height: 30px
+   :align: middle
+
+
+**A library of templates and helper functions for creating
+:class:`scopesim.source.source.Source` objects that can be used to run the simulations.**
+
+Installation
+------------
 
 This package has been released on PyPi::
 
