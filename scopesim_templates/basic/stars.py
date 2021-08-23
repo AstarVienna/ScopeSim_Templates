@@ -4,6 +4,7 @@ from astropy import units as u
 from astropy.utils.decorators import deprecated_renamed_argument
 
 import pyckles
+from spextra import Spextrum
 
 from ..utils import stars_utils as su
 from ..utils import cluster_utils as cu
@@ -130,18 +131,16 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
 
 
 @deprecated_renamed_argument('mags', 'amplitudes', '0.1')
-def stars(filter_name, amplitudes, spec_types, x, y):
+def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     """
     Creates a scopesim.Source object for a list of stars with given amplitudes
-
     .. note:: If amplitudes have no units, vega magnitudes are assumed
-
     Parameters
     ----------
     filter_name : str
         For scaling the stars. Use either common names or Spanish-VO identifiers
     amplitudes : list of Quanitity, float
-        [mag, ABmag, Jy] amplitudes for the list of stars. Acceptable astropy.units:
+        [mag, Jy] amplitudes for the list of stars. Acceptable astropy.units:
         [u.mag, u.ABmag, u.Janksy]. If no units are given, Vega magnitudes are
         assumed
     spec_types : list of strings
@@ -149,16 +148,18 @@ def stars(filter_name, amplitudes, spec_types, x, y):
     x, y : arrays of float
         [arcsec] x and y coordinates of the stars on the focal plane
 
+    library: str
+        Library where the spectroscopic types are taken. By default are taken from the pickles library using
+        the `pyckles` package. Other libraries available are kurucz, bosz/lr, bosz/mr, bosz/hr, etc for MIR coverage
+        and different spectral resolutions. Please see the `spextra` package for more information
+
+
     Returns
     -------
     src : ``scopesim.Source``
-
-
     Examples
     --------
-
     Create a ``Source`` object for a random group of stars::
-
         >>> import numpy as np
         >>> import astropy.units as u
         >>> from scopesim_templates.basic.stars import stars
@@ -171,28 +172,20 @@ def stars(filter_name, amplitudes, spec_types, x, y):
         >>> x, y = np.random.random(size=(2, n))
         >>>
         >>> src = stars("Ks", mags, spec_types, x, y)
-
     **All positions are in arcsec.**
-
     The final positions table is kept in the ``<Source>.fields`` attribute::
-
         >>> src.fields[0]
-
     Each star in this table has an associated spectrum kept in the
     ``<Source>.spectra`` attribute. These stars are connected to the spectra in
     the list by the "ref" column in the ``.fields`` table::
-
         >>> src.spectra
-
     The stars can be scaled in units of u.mag, u.ABmag or u.Jansky. Any filter
     listed on the spanish VO filter profile service can be used for the scaling
     (``http://svo2.cab.inta-csic.es/theory/fps/``). SVO filter names need to be
     in the following format ``observatory/instrument.filter``::
-
         >>> amplitudes = np.linspace(1, 3631, n) * u.Jansky
         >>> filter_name = "Paranal/HAWKI.Ks"
         >>> stars(filter_name, amplitudes, spec_types, x=x, y=y)
-
     """
     params = {"filter_name": filter_name,
               "amplitudes": amplitudes,
@@ -200,7 +193,7 @@ def stars(filter_name, amplitudes, spec_types, x, y):
               "x": x,
               "y": y,
               "object": "stars"}
-
+    pass
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "stars"
 
@@ -208,18 +201,18 @@ def stars(filter_name, amplitudes, spec_types, x, y):
         spec_types = [spec_types]
 
     if not isinstance(amplitudes, u.Quantity):
-        amplitudes = u.Quantity(amplitudes, copy=False)
-        if amplitudes.unit == u.dimensionless_unscaled:
-            amplitudes *= u.mag
+        amplitudes = u.Quantity(amplitudes, u.mag, copy=False)
 
     if not isinstance(x, u.Quantity):
         x = u.Quantity(x, u.arcsec, copy=False)
     if not isinstance(y, u.Quantity):
         y = u.Quantity(y, u.arcsec, copy=False)
 
-    pickles_lib = pyckles.SpectralLibrary("pickles", return_style="synphot")
-    unique_types = np.unique(spec_types)
-    cat_spec_types = su.nearest_spec_type(unique_types, pickles_lib.table)
+    if library == "pyckles":
+        pickles_lib = pyckles.SpectralLibrary("pickles", return_style="synphot")
+        unique_types = np.unique(spec_types)
+        cat_spec_types = su.nearest_spec_type(unique_types, pickles_lib.table)
+
 
     # scale the spectra and get the weights
     if amplitudes.unit in [u.mag, u.ABmag, u.STmag]:
@@ -229,8 +222,13 @@ def stars(filter_name, amplitudes, spec_types, x, y):
         zero = 1 * amplitudes.unit
         weight = amplitudes.value
 
-    spectra = [tcu.scale_spectrum(pickles_lib[spt], filter_name, zero)
-               for spt in zip(cat_spec_types)]
+    if library == "pyckles":
+        spectra = [tcu.scale_spectrum(pickles_lib[spt], filter_name, zero)
+                   for spt in zip(cat_spec_types)]
+    else:
+        spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(amp, filter_curve=filter_name)
+                   for spec, amp in zip(spec_types, amplitudes)]
+
 
     # get the references to the unique stellar types
     ref_dict = {spt: ii for ii, spt in enumerate(unique_types)}
@@ -245,8 +243,13 @@ def stars(filter_name, amplitudes, spec_types, x, y):
     return src
 
 
-def star(filter_name, amplitude, spec_type="A0V", x=0, y=0):
-    src = stars(filter_name, [amplitude], [spec_type], [x], [y])
+def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
+    if isinstance(amplitude, u.Quantity) is False:
+        amplitude = amplitude * u.ABmag
+
+    src = stars(filter_name, [amplitude.value] * amplitude.unit,
+                [spec_type], [x], [y], library=library)
+
     return src
 
 
@@ -282,7 +285,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
         A multiplicity object from the imf.py package. Not sure what it does.
     seed: float
         For setting the random seed for both masses and positions
-
+# from .basic.misc import empty_sky, flat_field
 
     Returns
     -------
