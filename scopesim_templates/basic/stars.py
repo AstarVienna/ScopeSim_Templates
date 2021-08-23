@@ -245,7 +245,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
 
 def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
     if isinstance(amplitude, u.Quantity) is False:
-        amplitude = amplitude * u.ABmag
+        amplitude = amplitude * u.mag
 
     src = stars(filter_name, [amplitude.value] * amplitude.unit,
                 [spec_type], [x], [y], library=library)
