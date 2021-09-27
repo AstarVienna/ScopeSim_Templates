@@ -8,7 +8,7 @@
     "dateModified": "2021-06-10",
     "downloadUrl": "https://pypi.org/project/ScopeSim-Templates/",
     "issueTracker": "https://github.com/AstarVienna/ScopeSim_Templates/issues",
-    "name": "Kieran Leschinski",
+    "name": "ScopeSim Templates",
     "version": "0.2.2",
     "description": "Templates and helper functions for creating on-sky Source description objects for the ScopeSim instrument data simulation engine.",
     "applicationCategory": "Astronomy",
