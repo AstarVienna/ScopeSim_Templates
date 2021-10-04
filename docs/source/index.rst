@@ -26,7 +26,7 @@ This package has been released on PyPi::
 .. toctree::
     :maxdepth: 2
     :caption: Contents:
-    
+    Fab_spect
     basic_module
     contributions
     source_object
