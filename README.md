@@ -1,5 +1,7 @@
 # ScopeSim Templates
 
+[![test_scopesim_templates](https://github.com/AstarVienna/ScopeSim_Templates/actions/workflows/tests.yml/badge.svg)](https://github.com/AstarVienna/ScopeSim_Templates/actions/workflows/tests.yml)
+
 [![Build Status](http://github-actions.40ants.com/AstarVienna/ScopeSim_Templates/matrix.svg)](https://github.com/AstarVienna/ScopeSim_Templates)
 
 [![Documentation Status](https://readthedocs.org/projects/scopesim-templates/badge/?version=latest)](https://scopesim-templates.readthedocs.io/en/latest/?badge=latest)
