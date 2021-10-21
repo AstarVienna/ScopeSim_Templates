@@ -14,4 +14,4 @@ im_plane_utils = scopesim.optics.image_plane_utils
 
 PKG_DIR = pth.abspath(pth.dirname(__file__))
 with open(pth.join(PKG_DIR, "defaults.yaml")) as fname:
-    __config__ = SystemDict(yaml.load(fname))
+    __config__ = SystemDict(yaml.full_load(fname))

@@ -1,6 +1,6 @@
 pytest
 
-numpy
+numpy>=1.17
 scipy
 matplotlib
 astropy
