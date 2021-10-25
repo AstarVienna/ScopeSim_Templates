@@ -208,11 +208,10 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     if not isinstance(y, u.Quantity):
         y = u.Quantity(y, u.arcsec, copy=False)
 
+    unique_types = np.unique(spec_types)
     if library == "pyckles":
         pickles_lib = pyckles.SpectralLibrary("pickles", return_style="synphot")
-        unique_types = np.unique(spec_types)
         cat_spec_types = su.nearest_spec_type(unique_types, pickles_lib.table)
-
 
     # scale the spectra and get the weights
     if amplitudes.unit in [u.mag, u.ABmag, u.STmag]:
