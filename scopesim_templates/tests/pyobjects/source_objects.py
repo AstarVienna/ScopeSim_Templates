@@ -4,6 +4,28 @@ from astropy.io import fits
 import astropy.units as u
 
 
+def _basic_imagehdu(n=11):
+    hdr_dict = {"CRPIX1": n / 2,
+                "CRPIX2": n / 2,
+                "CRVAL1": 0,
+                "CRVAL2": 0,
+                "CDELT1": 0.1 / 3600,
+                "CDELT2": 0.1 / 3600,
+                "CUNIT1":"DEG",
+                "CUNIT2":"DEG",
+                "CTYPE1": 'RA---TAN',
+                "CTYPE2": 'DEC--TAN'}
+
+    im = np.zeros((n,n))
+    for x,y in zip([0, 0, -1, -1, 5], [0, -1, 0, -1, 5]):
+        im[0] = 1
+
+    hdu = fits.ImageHDU(data=im)
+    hdu.header.update(hdr_dict)
+
+    return hdu
+
+
 def _make_dummy_cube(scale, wave_unit, ref_wave, wave_step, wave_type, bunit):
 
     if isinstance(scale, u.Quantity) is False:
