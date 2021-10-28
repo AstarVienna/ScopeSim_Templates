@@ -2,8 +2,8 @@ from os import path as pth
 import sys
 import yaml
 
-if pth.exists("C:/Work/ScopeSim/"):
-    sys.path.append("C:/Work/ScopeSim/")
+if pth.exists("F:/Work/ScopeSim/"):
+    sys.path.append("F:/Work/ScopeSim/")
 
 import scopesim
 
