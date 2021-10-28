@@ -1,21 +1,81 @@
+import warnings
 import numpy as np
 import synphot
 
 from astropy.io import fits
-
 from astropy import units as u
 from astropy.wcs import WCS
 
+from synphot import SourceSpectrum, Empirical1D
+
 from spextra import Spextrum
-from scopesim.source.source_templates import Source
+from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
 
 
-def source_from_image(image, sed, pixel_scale, amplitude, filter_curve):
+def source_from_imagehdu(imagehdu, filter_name=None, pixel_unit_amplitude=None,
+                         waverange=None, inst_pkg_path=None):
+    """
+    Creates a scopesim.Source object directly from an fits.ImageHDU
+
+    Parameters
+    ----------
+    imagehdu : fits.ImageHDU
+    filter_name : str
+        If
+    pixel_unit_amplitude, optional
+        A Quantity that corresponds to a pixel value of 1
+        If not given, header keyword BUNIT is used
+    waverange : array-like, Quantity, optional
+        [wave_min, wave_max]
+    inst_pkg_path : str, optional
+        Add the
+
+
+    Returns
+    -------
+
+    """
+
+    units = None
+    amplitude = 1
+    if image_hdu.header.get("BUNIT") is not None:
+        units = image_hdu.header.get("BUNIT")
+    if pixel_unit_amplitude is not None:
+        if isinstance(pixel_unit_amplitude, u.Quantity):
+            units = pixel_unit_amplitude.unit
+            amplitude = pixel_unit_amplitude.value
+        else:
+            amplitude = pixel_unit_amplitude
+    if units is None:
+        raise ValueError("Units must be supplied with either the BUNIT keyword"
+                         "or as an astropy.Quantity with pixel_unit_amplitude")
+
+    unit_flux = [amplitude, amplitude] * u.Unit(units)
+
+    if filter_name is not None and isinstance(filter_name, str):
+        filter_curve = tu.get_filter(filter_name)
+        waves = filter_curve.waverange
+    elif waverange is not None and isinstance(waverange, (list, np.ndarray,
+                                                          Quantity)):
+        waves = su.quantify(waverange, u.um)
+
+    spec = SourceSpectrum(points=waves, lookup_table=unit_flux)
+    tu.scale_spectrum(spec, filter_name=filter_name, amplitude=pixel_unit_amplitude)
+
+    if image_hdu.header.get("SPEC_REF") is None:
+        image_hdu.header["SPEC_REF"] = 0
+
+    src = Source(image_hdu=image_hdu, spectra=specs)
+
+    return src
+
+
+def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
     """
     creates a source from an image (numpy 2D array)
     Parameters
     ----------
-    image : np.ndarray
+    arr : np.ndarray
       a 2D numpy array
     sed : basestring
        any sed available in the spextra library or a Spextrum object
@@ -36,7 +96,7 @@ def source_from_image(image, sed, pixel_scale, amplitude, filter_curve):
     else:
         sp = sed
 
-    w, h = image.shape
+    w, h = arr.shape
     x_0 = w // 2
     y_0 = h // 2
 
@@ -59,11 +119,21 @@ def source_from_image(image, sed, pixel_scale, amplitude, filter_curve):
     header = fits.Header(wcs.to_header())
     header.update({"SPEC_REF": 0})
 
-    data = image / np.sum(image)
+    data = arr / np.sum(arr)
     hdu = fits.ImageHDU(data=data, header=header)
     src = Source(image_hdu=hdu, spectra=sp)
 
     return src
+
+
+def source_from_image(**kwargs):
+    warnings.warn("source_from_image has been replaced by source_from_array."
+                  "This is to avoid confusion with source_from_imagehdu",
+                  PendingDeprecationWarning)
+    return source_from_array(**kwargs)
+
+
+source_from_image.__doc__ = source_from_array.__doc__
 
 
 def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve, cut=0, ext=1, **kwargs):
