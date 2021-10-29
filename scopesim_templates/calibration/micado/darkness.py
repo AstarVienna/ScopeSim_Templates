@@ -1,4 +1,4 @@
 """Empty sky template, used for dark measurements."""
-from ..basic.misc import empty_sky as darkness
+from scopesim_templates.calibration import empty_sky as darkness
 
 __all__ = [darkness]

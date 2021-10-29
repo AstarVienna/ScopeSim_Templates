@@ -1,11 +1,9 @@
-import pytest
 from pytest import approx
 
-import numpy as np
-from astropy import units as u
 import synphot as sp
+from scopesim_templates import cluster
 
-from scopesim_templates.basic.stars import *
+from scopesim_templates.stellar import *
 from scopesim_templates.rc import ter_curve_utils as tcu
 from scopesim_templates.rc import Source
 

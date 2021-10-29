@@ -6,10 +6,9 @@ from astropy.table import Table
 from astropy.io.fits import ImageHDU
 from synphot import SourceSpectrum
 
-from scopesim_templates.basic.stars import star
-from scopesim_templates.basic.galaxy import spiral_two_component
-from scopesim_templates.advanced.galaxy import spiral_two_component, galaxy, galaxy3d
-from scopesim_templates.basic.basic import source_from_image
+from scopesim_templates.stellar import star
+from scopesim_templates.extragalactic import galaxy, galaxy3d, spiral_two_component
+from scopesim_templates.misc.misc import source_from_image
 
 # Add all initialied examples of sources to be tested to this list
 # Add all initialied examples of sources to be tested to this list

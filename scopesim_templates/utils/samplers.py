@@ -1,6 +1,4 @@
 # a collection of samplers for generating distributions
-
-
 import numpy as np
 
 

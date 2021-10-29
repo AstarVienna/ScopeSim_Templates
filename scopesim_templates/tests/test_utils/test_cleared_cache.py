@@ -1,6 +1,5 @@
-from scopesim_templates.basic.stars import cluster
+from scopesim_templates import cluster
 from scopesim import Source
-from scopesim.effects.ter_curves_utils import download_svo_filter
 
 
 def actually_works():

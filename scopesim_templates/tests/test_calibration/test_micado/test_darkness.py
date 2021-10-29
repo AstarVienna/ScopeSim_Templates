@@ -1,7 +1,7 @@
 """Test for darkness."""
 from astropy.table import Table
 from synphot import SourceSpectrum
-from scopesim_templates.micado import darkness
+from scopesim_templates.calibration.micado import darkness
 from scopesim_templates.rc import Source
 
 

@@ -1,7 +1,7 @@
 from pytest import approx
 import numpy as np
 from astropy.table import Table
-import scopesim_templates.utils.cluster_utils as cu
+import scopesim_templates.stellar.cluster_utils as cu
 
 from matplotlib import pyplot as plt
 PLOTS = False
@@ -64,6 +64,6 @@ class TestGaussianDistribution:
             plt.hist(x, bins=40)
             plt.show()
 
-        assert np.std(x) == approx(1, rel=0.01)
+        assert np.std(x) == approx(1, rel=0.02)
 
 
