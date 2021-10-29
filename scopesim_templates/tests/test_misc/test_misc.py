@@ -1,3 +1,5 @@
+from os.path import exists
+import pytest
 from pytest import raises
 from astropy import units as u
 from astropy.io import fits
@@ -5,6 +7,8 @@ from astropy.io import fits
 from scopesim_templates.misc import misc
 from scopesim_templates.tests.pyobjects import source_objects as so
 from scopesim_templates.rc import Source
+
+METIS_FILTER_PATH = r"F:/Work/irdb/METIS/filters/TC_filter_H2O-ice.dat"
 
 
 class TestSourceFromImageHDU:
@@ -36,11 +40,13 @@ class TestSourceFromImageHDU:
 
         assert isinstance(src, Source)
 
+    @pytest.mark.skipif(not exists(METIS_FILTER_PATH),
+                        reason="Test only works on Kieran's local machine")
     def test_is_happy_with_metis_filter_and_bunit(self):
         hdu = so._basic_imagehdu()
-        filter_name = r"F:\Work\irdb\METIS\filters\TC_filter_H2O-ice.dat"
         hdu.header["BUNIT"] = "Jy"
-        src = misc.source_from_imagehdu(image_hdu=hdu, filter_name=filter_name)
+        src = misc.source_from_imagehdu(image_hdu=hdu,
+                                        filter_name=METIS_FILTER_PATH)
 
         assert isinstance(src, Source)
 
