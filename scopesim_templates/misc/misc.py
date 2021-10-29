@@ -1,21 +1,103 @@
+import warnings
 import numpy as np
 import synphot
 
 from astropy.io import fits
-
 from astropy import units as u
 from astropy.wcs import WCS
+from astropy.utils.decorators import deprecated_renamed_argument
+
+from synphot import SourceSpectrum, Empirical1D
 
 from spextra import Spextrum
-from scopesim.source.source_templates import Source
+from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
 
 
-def source_from_image(image, sed, pixel_scale, amplitude, filter_curve):
+def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
+                         inst_pkg_path=None):
+    """
+    Creates a scopesim.Source object directly from an fits.ImageHDU
+
+    Parameters
+    ----------
+    image_hdu : fits.ImageHDU
+    filter_name : str
+        Either a standard filter name or a filter from an instrument package
+    pixel_unit_amplitude, optional
+        A Quantity that corresponds to a pixel value of 1 in the image
+        If not given, header keyword BUNIT is used
+    inst_pkg_path : str, optional
+        Not yet implemented
+
+    Returns
+    -------
+    src : scopesim.Source
+
+    Examples
+    --------
+    Using a generic filter curve from the Spanish VO::
+
+        >>> image_hdu = fits.ImageHDU(data=np.ones((11, 11)))
+        >>> # add WCS info to the header here
+        >>> filter_name = "Generic/Johnson_UBVRIJHKL.N"
+        >>> src = misc.source_from_imagehdu(image_hdu=hdu,
+                                            filter_name=filter_name,
+                                            pixel_unit_amplitude=20*u.Jy)
+
+    Using the METIS H2O-ice filter from the METIS ScopeSim package::
+
+        >>> import scopesim
+        >>> filter_name = scopesim.rc.__search_path__[0] + \
+                          "/METIS/filters/TC_filter_H2O-ice.dat"
+        >>> src = misc.source_from_imagehdu(image_hdu=hdu,
+                                            filter_name=filter_name,
+                                            pixel_unit_amplitude=20*u.Jy)
+
+    """
+    # if isinstance(inst_pkg_path, str):
+    #     import scopesim
+    #     scopesim.rc.__search_path__.append(inst_pkg_path)
+
+    if filter_name is None and waverange is None:
+        raise ValueError("Wavelength information must be given with either a "
+                         "filter_name or a waverange")
+
+    units = image_hdu.header.get("BUNIT")
+    amp = 1.
+
+    if isinstance(pixel_unit_amplitude, u.Quantity):
+        amp = pixel_unit_amplitude.value
+        units = pixel_unit_amplitude.unit
+    elif isinstance(pixel_unit_amplitude, (list, np.ndarray)):
+        amp = pixel_unit_amplitude
+
+    if units is None:
+        raise ValueError("Units must be supplied with either the BUNIT keyword"
+                         "or as an astropy.Quantity with pixel_unit_amplitude")
+
+    amp_unit = amp * u.Unit(units)
+
+    if filter_name is not None and isinstance(filter_name, str):
+        filter_curve = tu.get_filter(filter_name)
+        waves = filter_curve.waverange
+
+    spec = SourceSpectrum(Empirical1D, points=waves, lookup_table=[1, 1])
+    tu.scale_spectrum(spec, filter_name=filter_name, amplitude=amp_unit)
+
+    if image_hdu.header.get("SPEC_REF") is None:
+        image_hdu.header["SPEC_REF"] = 0
+
+    src = Source(image_hdu=image_hdu, spectra=spec)
+
+    return src
+
+
+def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
     """
     creates a source from an image (numpy 2D array)
     Parameters
     ----------
-    image : np.ndarray
+    arr : np.ndarray
       a 2D numpy array
     sed : basestring
        any sed available in the spextra library or a Spextrum object
@@ -36,7 +118,7 @@ def source_from_image(image, sed, pixel_scale, amplitude, filter_curve):
     else:
         sp = sed
 
-    w, h = image.shape
+    w, h = arr.shape
     x_0 = w // 2
     y_0 = h // 2
 
@@ -59,11 +141,23 @@ def source_from_image(image, sed, pixel_scale, amplitude, filter_curve):
     header = fits.Header(wcs.to_header())
     header.update({"SPEC_REF": 0})
 
-    data = image / np.sum(image)
+    data = arr / np.sum(arr)
     hdu = fits.ImageHDU(data=data, header=header)
     src = Source(image_hdu=hdu, spectra=sp)
 
     return src
+
+
+@deprecated_renamed_argument(old_name="image", new_name="arr", since="0.3.0",
+                             arg_in_kwargs=True)
+def source_from_image(**kwargs):
+    warnings.warn("source_from_image has been replaced by source_from_array."
+                  "This is to avoid confusion with source_from_imagehdu",
+                  PendingDeprecationWarning)
+    return source_from_array(**kwargs)
+
+
+source_from_image.__doc__ = source_from_array.__doc__
 
 
 def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve, cut=0, ext=1, **kwargs):
