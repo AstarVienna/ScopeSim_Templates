@@ -5,6 +5,7 @@ import synphot
 from astropy.io import fits
 from astropy import units as u
 from astropy.wcs import WCS
+from astropy.utils.decorators import deprecated_renamed_argument
 
 from synphot import SourceSpectrum, Empirical1D
 
@@ -147,6 +148,8 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
     return src
 
 
+@deprecated_renamed_argument(old_name="image", new_name="arr", since="0.3.0",
+                             arg_in_kwargs=True)
 def source_from_image(**kwargs):
     warnings.warn("source_from_image has been replaced by source_from_array."
                   "This is to avoid confusion with source_from_imagehdu",
