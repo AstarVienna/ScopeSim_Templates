@@ -92,6 +92,50 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     return src
 
 
+def source_from_imagehdu_with_flux(filename=None, hdu=None, ext=1, pixel_scale=None, flux=None, bunit=None):
+    """
+    Source from an image where pixel values have units of flux density expressed by bunit.
+    It is possible to change the flux and pixel scale to simulate e.g. more distant objects.
+
+    NOTE: This creates a source with a flat spectrum. It is responsibility of the user to use it correctly with
+    the proper filter and instrument configuration.
+    """
+
+    if filename is not None:
+        header = fits.getheader(filename, ext=ext)
+        data = fits.getdata(filename, ext=ext)
+    elif hdu is not None:
+        header = hdu[ext].header
+        data = hdu[ext].data
+    else:
+        raise ValueError("Please define a filename or a ImageHDU")
+
+    if pixel_scale is not None:
+        pixel_scale = pixel_scale / 3600
+        header.update({"CDELT1": pixel_scale})
+        header.update({"CDELT2": pixel_scale})
+
+    if bunit is not None:
+        unit = u.Unit(bunit)
+    else:
+        unit = u.unit(header["BUNIT"])
+
+    if flux is not None and isinstance(flux, u.Quantity) is False:
+        total_flux = flux * unit
+    elif flux is not None and isinstance(flux, u.Quantity) is True:
+        total_flux = flux
+    else:
+        total_flux = np.sum(data) * unit
+
+    data = data / np.sum(data)
+
+    image_hdu = fits.ImageHDU(data=data, header=header)
+
+    src = Source(mage_hdu=image_hdu, flux=total_flux)
+
+    return src
+
+
 def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
     """
     creates a source from an image (numpy 2D array)
@@ -247,6 +291,14 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None, amplit
 #    src = Source(image_hdu=hdul, spectra=specs)
 
     return src
+
+
+
+
+
+
+
+
 
 
 def source_from_cube():
