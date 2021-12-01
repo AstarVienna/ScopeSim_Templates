@@ -103,55 +103,58 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1, pixel_s
     Parameters
     ----------
     image_hdu : fits.ImageHDU
+        ImageHDU instance or
     filename : str
         a fits filename
     ext : int
         extension where the data and header is located in the file
-    pixel_unit_amplitude, optional
-        A Quantity that corresponds to a pixel value of 1 in the image
-        If not given, header keyword BUNIT is used
-
+    pixel_scale : float, optional
+        The pixel scale in arcsec if not in the headers or a different one is needed
+    flux : float, u.Quantity, optional
+        The total flux of the image if the user wants to specify a different one than in the image
+    bunit : u.Quantity
+        The units of flux if BUNIT is not in the headers or a different one is needed.
 
     Returns
     -------
     src : scopesim.Source
 
     """
-
-    if filename is not None:
-        header = fits.getheader(filename, ext=ext)
-        data = fits.getdata(filename, ext=ext)
-    elif image_hdu is not None:
+    if image_hdu is not None:
         header = image_hdu.header
         data = image_hdu.data
+    elif filename is not None:
+        header = fits.getheader(filename, ext=ext)
+        data = fits.getdata(filename, ext=ext)
     else:
-        raise ValueError("Please define a filename or a ImageHDU")
+        raise ValueError("Please provide a filename or an ImageHDU")
+
+    header.update(dict(CRVAL1=0, CRVAL2=0))  # we need this because ScopeSim doesn't understand sky coordinates
 
     if pixel_scale is not None:
         pixel_scale = pixel_scale / 3600
-        header.update({"CDELT1": pixel_scale})
-        header.update({"CDELT2": pixel_scale})
+        header.update(dict(CDELT1=pixel_scale, CDELT2=pixel_scale))
 
     if bunit is not None:
         unit = u.Unit(bunit).to_string()
-        header.update({"BUNIT": unit})
-
-    unit = u.Unit(header["BUNIT"])
+        header.update(dict(BUNIT=unit))
 
     if isinstance(flux, u.Quantity) is True:
         unit = flux.unit.to_string()
-        header.update({"BUNIT", unit})
+        header.update(dict(BUNIT=unit))
         flux = flux.value
     elif flux is not None:
         flux = flux
     else:
         flux = np.sum(data)
 
+    unit = u.Unit(header["BUNIT"])
     total_flux = flux * unit
     data = data / np.sum(data)
     image_hdu = fits.ImageHDU(data=data, header=header)
+    src = Source(image_hdu=image_hdu, flux=total_flux)
 
-    return Source(image_hdu=image_hdu, flux=total_flux)
+    return src
 
 
 def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
