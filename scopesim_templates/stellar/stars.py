@@ -132,7 +132,9 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
 def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     """
     Creates a scopesim.Source object for a list of stars with given amplitudes
+    
     .. note:: If amplitudes have no units, vega magnitudes are assumed
+    
     Parameters
     ----------
     filter_name : str
