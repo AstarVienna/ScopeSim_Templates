@@ -94,6 +94,8 @@ def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
     rad2arcsec = 206264.80624709636
     fwhm = 2 * core_radius / distance * rad2arcsec
     x, y = cu.gaussian_distribution(len(masses), fwhm=fwhm, seed=params["seed"])
+    x = x << u.arcsec
+    y = y << u.arcsec
 
     # 8. make table with (x,y,ref,weight)
     tbl = Table(names=["x", "y", "ref", "weight", "masses", "spec_types"],
