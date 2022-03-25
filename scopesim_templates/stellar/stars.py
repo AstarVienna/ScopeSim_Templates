@@ -227,6 +227,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     else:
         spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(amp, filter_curve=filter_name)
                    for spec, amp in zip(spec_types, amplitudes)]
+        weight = np.ones(shape=amplitudes.shape)
 
 
     # get the references to the unique stellar types
