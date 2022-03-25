@@ -1,3 +1,7 @@
+.. _Source Object:
+
+
+
 Source object interface
 =======================
 
@@ -14,7 +18,7 @@ data:
 
 * A spectral description
 
-  Basically a spectrum with wavelength and flux information
+  A spectrum with wavelength and flux information
 
 For example we could use two FITS images to describe the spatial flux
 distribution of the young and old components of a spiral galaxy, and two spectra
@@ -53,6 +57,10 @@ Code Example::
 
 Astropy Table
 +++++++++++++
+
+`astropy.table.Table` objects are a handy way to organize the information of the objects.
+Each column can contain the spatial information and the reference to the spectra used in the table.
+
 
 
 FITS ImageHDU

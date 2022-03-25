@@ -5,3 +5,4 @@ scopesim_templates
    :maxdepth: 4
 
    scopesim_templates
+

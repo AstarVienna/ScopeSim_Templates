@@ -15,7 +15,10 @@
 A library of templates and helper functions for creating
 :class:`scopesim.source.source.Source` objects that can be used to run `ScopeSim` simulations.
 
-:class:`scopesim.source.source.Source` objects contain a description of the spatial and spectral information of the source.
+In short :class:`scopesim.source.source.Source` objects contain a description of the spatial and
+spectral information of the source. For more information see :ref:`here <Source Object>`.
+
+
 
 Installation
 ------------
@@ -27,12 +30,12 @@ This package has been released on PyPi::
 .. toctree::
     :maxdepth: 2
     :caption: Contents:
-    Fab_spect
-    basic_module
     contributions
     source_object
-    reference/modules
+    reference
    
+
+
 
 From basic to advanced helper functions
 ---------------------------------------
