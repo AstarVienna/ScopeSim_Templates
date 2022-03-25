@@ -193,7 +193,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
               "x": x,
               "y": y,
               "object": "stars"}
-    pass
+
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "stars"
 
