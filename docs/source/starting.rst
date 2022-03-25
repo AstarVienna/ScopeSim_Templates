@@ -42,7 +42,7 @@ user
 
     wave = np.arange(1000, 35000, 10 )
     bb = synphot.models.BlackBody1D(temperature=5000)
-    sp = synphot.SourceSpectrum(Empirical1D, points=wave, lookup_table=bb(wave))
+    sp = synphot.SourceSpectrum(synphot.Empirical1D, points=wave, lookup_table=bb(wave))
 
     src = Source(image_hdu=hdu, spectra=sp)
 
