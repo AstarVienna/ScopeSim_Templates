@@ -7,6 +7,7 @@ from astropy.io import fits
 from astropy.utils import deprecated_renamed_argument
 from astropy.utils.data import download_file
 from astropy.wcs import WCS
+from astropy.coordinates import SkyCoord
 
 from spextra import Spextrum
 
@@ -15,8 +16,34 @@ from ..rc import im_plane_utils as ipu
 from ..rc import ter_curve_utils as tcu
 from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
-from ..misc.misc import source_from_image
+from ..misc.misc import source_from_array
 from ..utils import general_utils as gu
+
+
+def make_img_wcs_header(ra, dec, pixel_scale, image_size):
+    """
+    Create a WCS header for an image
+    TODO: Move elsewhere
+    """
+    if isinstance(ra, str):  # just assume is in the classical formats
+        ra_unit = u.hourangle
+    else:
+        ra_unit = u.deg
+
+    coords = SkyCoord(ra, dec, unit=(ra_unit, u.deg))
+
+    wcs = WCS(naxis=2)
+    wcs.wcs.ctype = ["RA--TAN", "DEC-TAN"]
+    wcs.wcs.cunit = [u.deg, u.deg]
+    wcs.wcs.crpix = [image_size // 2, image_size // 2]
+    wcs.wcs.cdelt = np.array([-pixel_scale / 3600,
+                              pixel_scale / 3600])
+    wcs.wcs.crval = [coords.ra.value,
+                     coords.dec.value]
+
+    wcs.wcs.cunit = [u.deg, u.deg]
+
+    return wcs.to_header()
 
 
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
@@ -29,7 +56,9 @@ def galaxy(sed,           # The SED of the galaxy
            n=4,             # sersic index
            ellip=0.1,         # ellipticity
            theta=0,         # position angle
-           extend=2):        # extend in units of r_eff
+           extend=3,     # extend in units of r_eff
+           ra=10,
+           dec=-10):
 
     """
     Creates a source object of a galaxy described by its Sersic index and other
@@ -56,6 +85,11 @@ def galaxy(sed,           # The SED of the galaxy
         position angle of the galaxy
     extend : float
         Size of the image in units of r_eff
+    ra : float, str
+        RA of the source, default 10
+    dec : float, str
+        DEC of the source, default -10
+
     Returns
     -------
     src : scopesim.Source
@@ -86,8 +120,8 @@ def galaxy(sed,           # The SED of the galaxy
                      r_eff=r_eff.value/pixel_scale.value,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    src = source_from_image(image=gal.intensity, sed=sed, pixel_scale=pixel_scale,
-                            amplitude=amplitude, filter_curve=filter_curve)
+    src = source_from_array(image=gal.intensity, sed=sed, pixel_scale=pixel_scale,
+                            amplitude=amplitude, filter_curve=filter_curve, ra=ra, dec=dec)
 
     return src
 

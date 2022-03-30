@@ -24,7 +24,7 @@ For example we could use two FITS images to describe the spatial flux
 distribution of the young and old components of a spiral galaxy, and two spectra
 from a starburst and an elliptical galaxy for the spectral description.
 
-Internally this information is stored in the following attributes:
+Internally this infor mation is stored in the following attributes:
 
 * ``<Source>.fields`` - the spatial information [Table or ImageHDU from astropy]
 * ``<Source>.spectra`` - the spectral information [SourceSpectrum from synphot]
