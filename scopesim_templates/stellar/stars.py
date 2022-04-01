@@ -7,12 +7,12 @@ import pyckles
 from spextra import Spextrum
 
 from scopesim_templates.stellar import stars_utils as su
-from scopesim_templates.utils.general_utils import function_call_str
+from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
 from scopesim_templates import rc
 from scopesim_templates.rc import ter_curve_utils as tcu
 
 
-def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
+def star_field(n, mmin, mmax, width, height=None, filter_name="V", ra=RA0, dec=DEC0, **kwargs):
     """
     Creates a super basic field of stars with random positions and brightnesses
 
@@ -54,7 +54,9 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
               "width": width,
               "height": height,
               "filter_name": "V",
-              "seed": rc.__config__["!random.seed"]}
+              "seed": rc.__config__["!random.seed"],
+              "ra": ra,
+              "dec": dec}
     params.update(kwargs)
     params["function_call"] = function_call_str(star_field, params)
     params["object"] = "star field"
@@ -79,14 +81,14 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
     spec_types = ["A0V"] * n
 
     src = stars(filter_name=filter_name, amplitudes=amplitudes,
-                spec_types=spec_types, x=x, y=y)
+                spec_types=spec_types, x=x, y=y, ra=ra, dec=dec)
     src.meta["scaling_unit"] = mmin.unit
     src.meta.update(params)
 
     return src
 
 
-def star_grid(n, mmin, mmax, filter_name="V", separation=1):
+def star_grid(n, mmin, mmax, filter_name="V", separation=1, ra=RA0, dec=DEC0):
     """
     Creates a square grid of A0V stars at equal magnitude intervals
 
@@ -113,7 +115,9 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
               "mmin": mmin,
               "mmax": mmax,
               "filter_name": filter_name,
-              "separation": separation}
+              "separation": separation,
+              "ra": ra,
+              "dec": dec}
     pass
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "star grid"
@@ -122,14 +126,14 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
     x = separation * (np.arange(n) % side_len - (side_len - 1) / 2)
     y = separation * (np.arange(n) // side_len - (side_len - 1) / 2)
 
-    src = star_field(n, mmin, mmax, side_len, filter_name=filter_name, x=x, y=y)
+    src = star_field(n, mmin, mmax, side_len, filter_name=filter_name, x=x, y=y, ra=ra, dec=dec)
     src.meta.update(params)
 
     return src
 
 
 @deprecated_renamed_argument('mags', 'amplitudes', '0.1')
-def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
+def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, dec=DEC0):
     """
     Creates a scopesim.Source object for a list of stars with given amplitudes
     
@@ -192,7 +196,9 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
               "spec_types": spec_types,
               "x": x,
               "y": y,
-              "object": "stars"}
+              "object": "stars",
+              "ra": ra,
+              "dec": dec}
     pass
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "stars"
@@ -254,5 +260,6 @@ def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
 
 
 star.__doc__ = stars.__doc__
+
 
 

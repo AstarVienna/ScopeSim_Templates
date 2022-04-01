@@ -6,11 +6,11 @@ from astropy.utils import deprecated_renamed_argument
 from scopesim_templates import rc
 from scopesim_templates.rc import ter_curve_utils as tcu
 from scopesim_templates.stellar import imf, cluster_utils as cu
-from scopesim_templates.utils.general_utils import function_call_str
+from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
 
 
 @deprecated_renamed_argument('half_light_radius', 'core_radius', '0.1')
-def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
+def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0, **kwargs):
     """
     Generate a source object for a young cluster
 
@@ -28,7 +28,10 @@ def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
         [pc] distance to the cluster
     core_radius : float
         [pc] half light radius of the cluster
-
+    ra : float, str
+        RA of the source
+    dec : float, str
+        DEC of the source
 
     Additional parameters
     ---------------------
@@ -58,7 +61,9 @@ def cluster(mass=1E3, distance=50000, core_radius=1, **kwargs):
               "core_radius": core_radius,
               "tidal_radius": None,
               "multiplicity_object": None,
-              "seed": rc.__config__["!random.seed"]}
+              "seed": rc.__config__["!random.seed"],
+              "ra": ra,
+              "dec": dec}
     params.update(kwargs)
     params["function_call"] = function_call_str(cluster, params)
     params["object"] = "cluster"

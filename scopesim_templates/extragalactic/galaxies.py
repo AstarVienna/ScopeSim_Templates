@@ -6,8 +6,6 @@ from astropy import units as u
 from astropy.io import fits
 from astropy.utils import deprecated_renamed_argument
 from astropy.utils.data import download_file
-from astropy.wcs import WCS
-from astropy.coordinates import SkyCoord
 
 from spextra import Spextrum
 
@@ -18,32 +16,6 @@ from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
 from ..misc.misc import source_from_array
 from ..utils import general_utils as gu
-
-
-def make_img_wcs_header(ra, dec, pixel_scale, image_size):
-    """
-    Create a WCS header for an image
-    TODO: Move elsewhere
-    """
-    if isinstance(ra, str):  # just assume is in the classical formats
-        ra_unit = u.hourangle
-    else:
-        ra_unit = u.deg
-
-    coords = SkyCoord(ra, dec, unit=(ra_unit, u.deg))
-
-    wcs = WCS(naxis=2)
-    wcs.wcs.ctype = ["RA--TAN", "DEC-TAN"]
-    wcs.wcs.cunit = [u.deg, u.deg]
-    wcs.wcs.crpix = [image_size // 2, image_size // 2]
-    wcs.wcs.cdelt = np.array([-pixel_scale / 3600,
-                              pixel_scale / 3600])
-    wcs.wcs.crval = [coords.ra.value,
-                     coords.dec.value]
-
-    wcs.wcs.cunit = [u.deg, u.deg]
-
-    return wcs.to_header()
 
 
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')

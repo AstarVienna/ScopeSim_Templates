@@ -11,6 +11,7 @@ from synphot import SourceSpectrum, Empirical1D
 
 from spextra import Spextrum
 from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
+from ..utils import general_utils as gu
 
 
 def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
@@ -157,7 +158,7 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1, pixel_s
     return src
 
 
-def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
+def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve, ra=gu.RA0, dec=gu.DEC0):
     """
     creates a source from an image (numpy 2D array)
     Parameters
@@ -183,27 +184,7 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve):
     else:
         sp = sed
 
-    w, h = arr.shape
-    x_0 = w // 2
-    y_0 = h // 2
-
-    wcs_dict = dict(NAXIS=2,
-                    NAXIS1=w+1,
-                    NAXIS2=h+1,
-                    CRPIX1=x_0,
-                    CRPIX2=y_0,
-                    CRVAL1=0,
-                    CRVAL2=0,
-                    CDELT1=-1 * pixel_scale.to(u.deg).value,
-                    CDELT2=pixel_scale.to(u.deg).value,
-                    CUNIT1="DEG",
-                    CUNIT2="DEG",
-                    CTYPE1='RA---TAN',
-                    CTYPE2='DEC--TAN')
-
-    wcs = WCS(wcs_dict)
-
-    header = fits.Header(wcs.to_header())
+    header = gu.make_img_wcs_header(ra=ra, dec=dec, pixel_scale=pixel_scale, image_size=arr.shape)
     header.update({"SPEC_REF": 0})
 
     data = arr / np.sum(arr)
@@ -228,6 +209,9 @@ source_from_image.__doc__ = source_from_array.__doc__
 def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve, cut=0, ext=1, **kwargs):
     """
     Creates a source from a fits image
+
+    TODO: Pass the header (or the WCS) to the source object
+
     Parameters
     ----------
     filename
@@ -242,11 +226,25 @@ def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve, cut=0,
     Returns
     -------
     """
-    image = fits.getdata(filename, ext=ext, **kwargs)
-    image[image < cut] = 0
-    src = source_from_image(image=image, sed=sed, pixel_scale=pixel_scale, amplitude=amplitude, filter_curve=filter_curve)
+    hdu = fits.open(filename, **kwargs)
+    data = hdu[ext].data
+#    header = hdu[ext].header
+#    wcs = WCS(header)
+#    if wcs.has_celestial:
+#        ra, dec = wcs.wcs.crval
+
+    data[data < cut] = 0
+    src = source_from_array(image=data, sed=sed, pixel_scale=pixel_scale,
+                            amplitude=amplitude, filter_curve=filter_curve)
 
     return src
+
+
+def source_from_cube():
+    """
+    wrapper for Source(cube=cube) to facilitate things
+    """
+    return NotImplementedError
 
 
 def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None, amplitude=None, filter_curve=None):
