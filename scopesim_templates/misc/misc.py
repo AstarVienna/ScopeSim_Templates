@@ -14,6 +14,32 @@ from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
 from ..utils import general_utils as gu
 
 
+def homogeneous_source(sed, amplitude=15, filter_curve="V", extend=60, ra=gu.RA0, dec=gu.DEC0):
+    """
+    Creates a homogeneous source with an arbitrary spectrum
+
+    sed : synphot or spextra sed
+    amplitude : magnitude or flux of the spectrum in the filter_curve
+    filter_curve : any filter curve
+    """
+    if isinstance(amplitude, u.Quantity) is False:
+        amplitude = amplitude * u.ABmag
+    if isinstance(sed, str):
+        sp = Spextrum(sed)
+        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+    elif isinstance(sed, (Spextrum, SourceSpectrum)):
+        sp = Spextrum(modelclass=sed)
+        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+
+    data = np.ones(shape=(extend, extend))
+    header = gu.make_img_wcs_header(ra=ra, dec=ra, pixel_scale=1, image_size=data.shape)
+    hdu = fits.ImageHDU(header=header, data=data)
+
+    src = Source(spectra=scaled_sp, image_hdu=hdu)
+
+    return src
+
+
 def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
                          inst_pkg_path=None):
     """
