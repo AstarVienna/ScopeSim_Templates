@@ -1,9 +1,12 @@
 import numpy as np
 from astropy import units as u
 from astropy.io import fits
+
+from spextra import Spextrum
+
 from scopesim_templates.rc import Source, __config__
 from scopesim_templates.utils.general_utils import function_call_str, make_img_wcs_header
-from spextra import Spextrum
+from ..misc.misc import uniform_source
 
 
 def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V", extend=60):
@@ -35,17 +38,10 @@ def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V", extend=6
     """
 
     sp = Spextrum.black_body_spectrum(temperature=temperature, amplitude=amplitude, filter_curve=filter_curve)
-
-    if isinstance(amplitude, u.Quantity) is False:
-        amplitude = amplitude * u.ABmag
-
-    data = np.ones(shape=(extend, extend))
-    header = make_img_wcs_header(ra=0, dec=0, pixel_scale=1, image_size=data.shape)
-    hdu = fits.ImageHDU(header=header, data=data)
-
-    src = Source(spectra=sp, image_hdu=hdu)
+    src = uniform_source(sed=sp, amplitude=amplitude, filter_curve=filter_curve, extend=extend)
 
     return src
+
 
 def empty_sky():
     """

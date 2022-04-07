@@ -6,6 +6,7 @@ from astropy.io import fits
 from astropy import units as u
 from astropy.wcs import WCS
 from astropy.utils.decorators import deprecated_renamed_argument
+from astropy.table import Table
 
 from synphot import SourceSpectrum, Empirical1D
 
@@ -14,25 +15,51 @@ from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
 from ..utils import general_utils as gu
 
 
-def homogeneous_source(sed, amplitude=15, filter_curve="V", extend=60, ra=gu.RA0, dec=gu.DEC0):
-    """
-    Creates a homogeneous source with an arbitrary spectrum
+def point_source(sed, amplitude=None, filter_curve="V", x=0, y=0, ra=gu.RA0, dec=gu.DEC0):
 
-    sed : synphot or spextra sed
-    amplitude : magnitude or flux of the spectrum in the filter_curve
-    filter_curve : any filter curve
-    """
-    if isinstance(amplitude, u.Quantity) is False:
+    if (isinstance(amplitude, u.Quantity)) is False and amplitude is not None:
         amplitude = amplitude * u.ABmag
     if isinstance(sed, str):
         sp = Spextrum(sed)
         scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
     elif isinstance(sed, (Spextrum, SourceSpectrum)):
         sp = Spextrum(modelclass=sed)
+        if amplitude is None:
+            scaled_sp = sp
+        else:
+            scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+
+    src = Source(spectra=scaled_sp, x=[x], y=[y], ref=[0], weight=[1])
+    return src
+
+
+def uniform_source(sed, amplitude=None, filter_curve="V", extend=60, ra=gu.RA0, dec=gu.DEC0):
+    """
+    Creates a extended uniform source with an arbitrary spectrum
+
+    sed : synphot or spextra sed
+    amplitude : magnitude or flux (PER ARCSEC^2) of the spectrum in the specified filter_curve
+    filter_curve : any filter curve
+    extend : int
+        extension of the field in arcsec, will always produce an square field
+    ra : RA
+    dec : DEC
+    """
+    if (isinstance(amplitude, u.Quantity)) is False and amplitude is not None:
+        amplitude = amplitude * u.ABmag
+    if isinstance(sed, str):
+        sp = Spextrum(sed)
         scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+    elif isinstance(sed, (Spextrum, SourceSpectrum)):
+        sp = Spextrum(modelclass=sed)
+        if amplitude is None:
+            scaled_sp = sp
+        else:
+            scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
 
     data = np.ones(shape=(extend, extend))
-    header = gu.make_img_wcs_header(ra=ra, dec=ra, pixel_scale=1, image_size=data.shape)
+
+    header = gu.make_img_wcs_header(ra=ra, dec=dec, pixel_scale=1, image_size=data.shape)
     hdu = fits.ImageHDU(header=header, data=data)
 
     src = Source(spectra=scaled_sp, image_hdu=hdu)
@@ -40,7 +67,7 @@ def homogeneous_source(sed, amplitude=15, filter_curve="V", extend=60, ra=gu.RA0
     return src
 
 
-def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
+def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None, waverange=None,
                          inst_pkg_path=None):
     """
     Creates a scopesim.Source object directly from an fits.ImageHDU
@@ -50,6 +77,8 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     image_hdu : fits.ImageHDU
     filter_name : str
         Either a standard filter name or a filter from an instrument package
+    waverange: tuple
+        wave_min and wave_max of the spectral range
     pixel_unit_amplitude, optional
         A Quantity that corresponds to a pixel value of 1 in the image
         If not given, header keyword BUNIT is used

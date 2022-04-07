@@ -151,6 +151,9 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
         the spectral type(s) of the stars, e.g. "A0V", "G5III"
     x, y : arrays of float
         [arcsec] x and y coordinates of the stars on the focal plane
+    ra, dec : float
+        coordinates of the center of the field
+
 
     library: str
         Library where the spectroscopic types are taken. By default are taken from the pickles library using
