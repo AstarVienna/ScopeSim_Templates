@@ -6,6 +6,7 @@ from astropy import units as u
 from astropy.io import fits
 from astropy.utils import deprecated_renamed_argument
 from astropy.utils.data import download_file
+from astropy.wcs import WCS
 
 from spextra import Spextrum
 
@@ -66,6 +67,10 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
+    params = locals()
+    params["object"] = "galaxy"
+    params["function_call"] = gu.function_call_str(galaxy, params)
+
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.ABmag
     if isinstance(pixel_scale, u.Quantity) is False:
@@ -95,6 +100,7 @@ def galaxy(sed,           # The SED of the galaxy
     src = source_from_array(image=gal.intensity, sed=sed, pixel_scale=pixel_scale,
                             amplitude=amplitude, filter_curve=filter_curve, ra=ra, dec=dec)
 
+    src.meta.update(params)
     return src
 
 
@@ -155,6 +161,9 @@ def galaxy3d(sed,           # The SED of the galaxy,
     -------
     src : scopesim.Source
     """
+    params = locals()
+    params["object"] = "galaxy3D"
+    params["function_call"] = gu.function_call_str(galaxy3d, params)
 
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.ABmag
@@ -185,15 +194,15 @@ def galaxy3d(sed,           # The SED of the galaxy,
     x, y = np.meshgrid(np.arange(image_size),
                        np.arange(image_size))
 
-    galaxy = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
+    gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
                         r_eff=r_eff.value/pixel_scale.value,
                         amplitude=1, n=n,
                         ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
 
-    intensity = galaxy.intensity / np.sum(galaxy.intensity)
-    velocity = galaxy.velocity.value
-    dispersion = galaxy.dispersion.value
-    masks = galaxy.get_masks(ngrid=ngrid)
+    intensity = gal.intensity / np.sum(galaxy.intensity)
+    velocity = gal.velocity.value
+    dispersion = gal.dispersion.value
+    masks = gal.get_masks(ngrid=ngrid)
     w, h = intensity.shape
 
     wcs_dict = dict(NAXIS=2,
@@ -234,6 +243,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
         src = src + Source(image_hdu=hdu, spectra=spec)
 
+    src.meta.update(params)
     return src
 
 
