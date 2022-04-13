@@ -59,7 +59,7 @@ def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V", extend=6
 
     sp = Spextrum.black_body_spectrum(temperature=temperature, amplitude=amplitude, filter_curve=filter_curve)
     src = uniform_source(sed=sp, amplitude=amplitude, filter_curve=filter_curve, extend=extend)
-    src.meta.updata(params)
+    src.meta.update(params)
 
     return src
 
