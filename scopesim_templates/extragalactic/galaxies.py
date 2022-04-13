@@ -319,7 +319,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
 
 @deprecated_renamed_argument('magnitude', 'amplitude', '0.1')
-def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
+@deprecated_renamed_argument('half_light_radius', 'r_eff', '0.1')
+def elliptical(r_eff, pixel_scale, filter_name, amplitude,
                spectrum="NGC_0584", **kwargs):
     """
     Create a extended :class:`.Source` object for an elliptical galaxy
@@ -328,33 +329,19 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
 
     Parameters
     ----------
-    half_light_radius : float
+    r_eff : float
         [arcsec]
 
     pixel_scale : float
         [arcsec]
-
-    amplitude : float
-        [mag, mag/arcsec2]
-
-    n : float, optional
-        Power law index. Default = 4
-        - n=1 for exponential (spiral),
-        - n=4 for de Vaucouleurs (elliptical)
 
     filter_name : str, TransmissionCurve, optional
         Default is "Ks". Values can be either:
         - the name of a SimCADO filter : see optics.get_filter_set()
         - or a TransmissionCurve containing a user-defined filter
 
-    normalization : str, optional
-        ["half-light", "centre", "total"] Where the profile equals unity
-        If normalization equals:
-        - "half-light" : the pixels at the half-light radius have a surface
-                         brightness of ``magnitude`` [mag/arcsec2]
-        - "centre" : the maximum pixels have a surface brightness of
-                     ``magnitude`` [mag/arcsec2]
-        - "total" : the whole image has a brightness of ``magnitude`` [mag]
+    amplitude : float
+        [mag, mag/arcsec2]
 
     spectrum : str, optional
         The spectrum to be associated with the galaxy. Values can either be:
@@ -364,6 +351,11 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
 
     Optional Parameters (passed to ``sersic_profile``)
     --------------------------------------------------
+    n : float, optional
+        Default = 4. Sersic index
+        - n=1 for exponential (spiral),
+        - n=4 for de Vaucouleurs (elliptical)
+
     ellipticity : float
         Default = 0.5
 
@@ -376,6 +368,15 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
     x_offset, y_offset : float
         [arcsec] The distance between the centre of the profile and the centre
         of the image. Default: (dx,dy) = (0,0)
+
+    normalization : str, optional
+        ["half-light", "centre", "total"] Where the profile equals unity
+        If normalization equals:
+        - "half-light" : the pixels at the half-light radius have a surface
+                         brightness of ``magnitude`` [mag/arcsec2]
+        - "centre" : the maximum pixels have a surface brightness of
+                     ``magnitude`` [mag/arcsec2]
+        - "total" : the whole image has a brightness of ``magnitude`` [mag]
 
 
     Returns
@@ -404,7 +405,7 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
               "x_offset": 0,
               "y_offset": 0,
               "redshift": 0,
-              "half_light_radius": half_light_radius,
+              "r_eff": r_eff,
               "pixel_scale": pixel_scale,
               "filter_name": filter_name,
               "amplitude": amplitude,
@@ -414,7 +415,7 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
     params["object"] = "elliptical galaxy"
 
     # 1 make a sersic profile ImageHDU
-    im = gal_utils.sersic_profile(r_eff=half_light_radius / pixel_scale,    # everything in terms of pixels
+    im = gal_utils.sersic_profile(r_eff=r_eff / pixel_scale,    # everything in terms of pixels
                                   n=params["n"],
                                   ellipticity=params["ellipticity"],
                                   angle=params["angle"],
