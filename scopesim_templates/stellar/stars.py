@@ -233,6 +233,10 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     ref_dict = {spt: ii for ii, spt in enumerate(unique_types)}
     ref = np.array([ref_dict[i] for i in spec_types])
 
+    if len(ref) == 1:
+        ref = ref[0] * np.ones(len(x))
+        spec_types *= len(x)
+
     tbl = Table(names=["x", "y", "ref", "weight", "spec_types"],
                 data= [ x,   y,   ref,   weight,   spec_types])
 
