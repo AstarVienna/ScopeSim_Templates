@@ -1,11 +1,32 @@
 import numpy as np
 from astropy import units as u
-from scopesim_templates.rc import Source, __config__
-from scopesim_templates.utils.general_utils import function_call_str
+from astropy.io import fits
+
 from spextra import Spextrum
 
+from scopesim_templates.rc import Source, __config__
+from scopesim_templates.utils.general_utils import function_call_str, make_img_wcs_header
+from ..misc.misc import uniform_source
 
-def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V"):
+
+def lamp(waves, fwhm, fluxes):
+    """
+    simple lamp function
+    """
+    params = locals()
+    params["object"] = "lamp"
+    params["function_call"] = function_call_str(lamp, params)
+
+    w_min, w_max = np.min(waves), np.max(waves)
+    sp = Spextrum.flat_spectrum(amplitude=40, waves=[w_min, w_max]) # A very faint spextrum to add sources
+    sp = sp.add_emi_lines(center=waves, fwhm=fwhm, flux=fluxes)
+    src = uniform_source(sed=sp)
+    src.meta.update(params)
+
+    return src
+
+
+def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V", extend=60):
     """
     This function creates a flat-field source to be used in ScopeSim
 
@@ -32,12 +53,14 @@ def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V"):
     src: Source
 
     """
+    params = locals()
+    params["object"] = "flat_field"
+    params["function_call"] = function_call_str(flat_field, params)
 
     sp = Spextrum.black_body_spectrum(temperature=temperature, amplitude=amplitude, filter_curve=filter_curve)
+    src = uniform_source(sed=sp, amplitude=amplitude, filter_curve=filter_curve, extend=extend)
+    src.meta.update(params)
 
-    src = Source(lam=np.array([__config__["!spectral.wave_min"],
-                               __config__["!spectral.wave_max"]]),
-                 spectra=sp, x=[0], y=[0], ref=[0], weight=[0])
     return src
 
 

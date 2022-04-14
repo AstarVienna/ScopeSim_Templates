@@ -7,12 +7,12 @@ import pyckles
 from spextra import Spextrum
 
 from scopesim_templates.stellar import stars_utils as su
-from scopesim_templates.utils.general_utils import function_call_str
+from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
 from scopesim_templates import rc
 from scopesim_templates.rc import ter_curve_utils as tcu
 
 
-def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
+def star_field(n, mmin, mmax, width, height=None, filter_name="V", ra=RA0, dec=DEC0, **kwargs):
     """
     Creates a super basic field of stars with random positions and brightnesses
 
@@ -54,7 +54,9 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
               "width": width,
               "height": height,
               "filter_name": "V",
-              "seed": rc.__config__["!random.seed"]}
+              "seed": rc.__config__["!random.seed"],
+              "ra": ra,
+              "dec": dec}
     params.update(kwargs)
     params["function_call"] = function_call_str(star_field, params)
     params["object"] = "star field"
@@ -79,14 +81,14 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", **kwargs):
     spec_types = ["A0V"] * n
 
     src = stars(filter_name=filter_name, amplitudes=amplitudes,
-                spec_types=spec_types, x=x, y=y)
+                spec_types=spec_types, x=x, y=y, ra=ra, dec=dec)
     src.meta["scaling_unit"] = mmin.unit
     src.meta.update(params)
 
     return src
 
 
-def star_grid(n, mmin, mmax, filter_name="V", separation=1):
+def star_grid(n, mmin, mmax, filter_name="V", separation=1, ra=RA0, dec=DEC0):
     """
     Creates a square grid of A0V stars at equal magnitude intervals
 
@@ -113,7 +115,9 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
               "mmin": mmin,
               "mmax": mmax,
               "filter_name": filter_name,
-              "separation": separation}
+              "separation": separation,
+              "ra": ra,
+              "dec": dec}
     pass
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "star grid"
@@ -122,14 +126,14 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1):
     x = separation * (np.arange(n) % side_len - (side_len - 1) / 2)
     y = separation * (np.arange(n) // side_len - (side_len - 1) / 2)
 
-    src = star_field(n, mmin, mmax, side_len, filter_name=filter_name, x=x, y=y)
+    src = star_field(n, mmin, mmax, side_len, filter_name=filter_name, x=x, y=y, ra=ra, dec=dec)
     src.meta.update(params)
 
     return src
 
 
 @deprecated_renamed_argument('mags', 'amplitudes', '0.1')
-def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
+def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, dec=DEC0):
     """
     Creates a scopesim.Source object for a list of stars with given amplitudes
     
@@ -147,7 +151,8 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
         the spectral type(s) of the stars, e.g. "A0V", "G5III"
     x, y : arrays of float
         [arcsec] x and y coordinates of the stars on the focal plane
-
+    ra, dec : float
+        coordinates of the center of the field
     library: str
         Library where the spectroscopic types are taken. By default are taken from the pickles library using
         the `pyckles` package. Other libraries available are kurucz, bosz/lr, bosz/mr, bosz/hr, etc for MIR coverage
@@ -157,9 +162,11 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     Returns
     -------
     src : ``scopesim.Source``
+
     Examples
     --------
     Create a ``Source`` object for a random group of stars::
+
         >>> import numpy as np
         >>> import astropy.units as u
         >>> from scopesim_templates.basic.stars import stars
@@ -172,26 +179,37 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
         >>> x, y = np.random.random(size=(2, n))
         >>>
         >>> src = stars("Ks", mags, spec_types, x, y)
-    **All positions are in arcsec.**
+
+    .. note: All positions are in arcsec.
+
     The final positions table is kept in the ``<Source>.fields`` attribute::
+
         >>> src.fields[0]
+
     Each star in this table has an associated spectrum kept in the
     ``<Source>.spectra`` attribute. These stars are connected to the spectra in
     the list by the "ref" column in the ``.fields`` table::
+
         >>> src.spectra
+
     The stars can be scaled in units of u.mag, u.ABmag or u.Jansky. Any filter
     listed on the spanish VO filter profile service can be used for the scaling
     (``http://svo2.cab.inta-csic.es/theory/fps/``). SVO filter names need to be
     in the following format ``observatory/instrument.filter``::
+
         >>> amplitudes = np.linspace(1, 3631, n) * u.Jansky
         >>> filter_name = "Paranal/HAWKI.Ks"
         >>> stars(filter_name, amplitudes, spec_types, x=x, y=y)
+
     """
     params = {"filter_name": filter_name,
               "amplitudes": amplitudes,
               "spec_types": spec_types,
               "x": x,
               "y": y,
+              "object": "stars",
+              "ra": ra,
+              "dec": dec,
               "object": "stars"}
 
     params["function_call"] = function_call_str(star_grid, params)
@@ -227,6 +245,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles"):
     else:
         spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(amp, filter_curve=filter_name)
                    for spec, amp in zip(spec_types, amplitudes)]
+        weight = np.ones(shape=amplitudes.shape)
 
 
     # get the references to the unique stellar types
@@ -257,5 +276,3 @@ def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
 
 
 star.__doc__ = stars.__doc__
-
-
