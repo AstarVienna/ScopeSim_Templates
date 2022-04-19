@@ -11,7 +11,6 @@ from scopesim_templates.extragalactic import galaxy, galaxy3d, spiral_two_compon
 from scopesim_templates.misc.misc import source_from_image
 
 # Add all initialied examples of sources to be tested to this list
-# Add all initialied examples of sources to be tested to this list
 SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
                star(filter_name="Paranal/HAWKI.J", amplitude=10*u.Jansky),
                spiral_two_component(),

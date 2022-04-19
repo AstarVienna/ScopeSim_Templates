@@ -83,10 +83,10 @@ def galaxy(sed,           # The SED of the galaxy
     elif isinstance(sed, (Spextrum, synphot.SourceSpectrum)):
         scaled_sp = sed
 
-    r_eff = r_eff.to(u.arcsec)
-    pixel_scale = pixel_scale.to(u.arcsec)
+    r_eff = r_eff.to(u.arcsec).value
+    pixel_scale = pixel_scale.to(u.arcsec).value
 
-    image_size = 2 * (r_eff.value * extend / pixel_scale.value)  # TODO: Needs unit check
+    image_size = 2 * (r_eff * extend / pixel_scale)  # TODO: Needs unit check
     x_0 = image_size // 2
     y_0 = image_size // 2
 
@@ -94,7 +94,7 @@ def galaxy(sed,           # The SED of the galaxy
                        np.arange(image_size))
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                     r_eff=r_eff.value/pixel_scale.value,
+                     r_eff=r_eff/pixel_scale,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
     src = source_from_array(arr=gal.intensity, sed=sed, pixel_scale=pixel_scale,
@@ -199,7 +199,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
                      amplitude=1, n=n,
                      ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
 
-    intensity = gal.intensity / np.sum(galaxy.intensity)
+    intensity = gal.intensity / np.sum(gal.intensity)
     velocity = gal.velocity.value
     dispersion = gal.dispersion.value
     masks = gal.get_masks(ngrid=ngrid)
