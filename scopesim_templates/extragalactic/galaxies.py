@@ -6,6 +6,7 @@ from astropy import units as u
 from astropy.io import fits
 from astropy.utils import deprecated_renamed_argument
 from astropy.utils.data import download_file
+from astropy.wcs import WCS
 
 from spextra import Spextrum
 
@@ -66,6 +67,10 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
+    params = locals()
+    params["object"] = "galaxy"
+    params["function_call"] = gu.function_call_str(galaxy, params)
+
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.ABmag
     if isinstance(pixel_scale, u.Quantity) is False:
@@ -78,10 +83,10 @@ def galaxy(sed,           # The SED of the galaxy
     elif isinstance(sed, (Spextrum, synphot.SourceSpectrum)):
         scaled_sp = sed
 
-    r_eff = r_eff.to(u.arcsec)
-    pixel_scale = pixel_scale.to(u.arcsec)
+    r_eff = r_eff.to(u.arcsec).value
+    pixel_scale = pixel_scale.to(u.arcsec).value
 
-    image_size = 2 * (r_eff.value * extend / pixel_scale.value)  # TODO: Needs unit check
+    image_size = 2 * (r_eff * extend / pixel_scale)  # TODO: Needs unit check
     x_0 = image_size // 2
     y_0 = image_size // 2
 
@@ -89,12 +94,13 @@ def galaxy(sed,           # The SED of the galaxy
                        np.arange(image_size))
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                     r_eff=r_eff.value/pixel_scale.value,
+                     r_eff=r_eff/pixel_scale,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    src = source_from_array(image=gal.intensity, sed=sed, pixel_scale=pixel_scale,
+    src = source_from_array(arr=gal.intensity, sed=sed, pixel_scale=pixel_scale,
                             amplitude=amplitude, filter_curve=filter_curve, ra=ra, dec=dec)
 
+    src.meta.update(params)
     return src
 
 
@@ -155,6 +161,9 @@ def galaxy3d(sed,           # The SED of the galaxy,
     -------
     src : scopesim.Source
     """
+    params = locals()
+    params["object"] = "galaxy3D"
+    params["function_call"] = gu.function_call_str(galaxy3d, params)
 
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.ABmag
@@ -185,15 +194,15 @@ def galaxy3d(sed,           # The SED of the galaxy,
     x, y = np.meshgrid(np.arange(image_size),
                        np.arange(image_size))
 
-    galaxy = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                        r_eff=r_eff.value/pixel_scale.value,
-                        amplitude=1, n=n,
-                        ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
+    gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
+                     r_eff=r_eff.value/pixel_scale.value,
+                     amplitude=1, n=n,
+                     ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
 
-    intensity = galaxy.intensity / np.sum(galaxy.intensity)
-    velocity = galaxy.velocity.value
-    dispersion = galaxy.dispersion.value
-    masks = galaxy.get_masks(ngrid=ngrid)
+    intensity = gal.intensity / np.sum(gal.intensity)
+    velocity = gal.velocity.value
+    dispersion = gal.dispersion.value
+    masks = gal.get_masks(ngrid=ngrid)
     w, h = intensity.shape
 
     wcs_dict = dict(NAXIS=2,
@@ -234,6 +243,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
         src = src + Source(image_hdu=hdu, spectra=spec)
 
+    src.meta.update(params)
     return src
 
 
@@ -309,7 +319,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
 
 @deprecated_renamed_argument('magnitude', 'amplitude', '0.1')
-def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
+@deprecated_renamed_argument('half_light_radius', 'r_eff', '0.1')
+def elliptical(r_eff, pixel_scale, filter_name, amplitude,
                spectrum="NGC_0584", **kwargs):
     """
     Create a extended :class:`.Source` object for an elliptical galaxy
@@ -318,33 +329,19 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
 
     Parameters
     ----------
-    half_light_radius : float
+    r_eff : float
         [arcsec]
 
     pixel_scale : float
         [arcsec]
-
-    amplitude : float
-        [mag, mag/arcsec2]
-
-    n : float, optional
-        Power law index. Default = 4
-        - n=1 for exponential (spiral),
-        - n=4 for de Vaucouleurs (elliptical)
 
     filter_name : str, TransmissionCurve, optional
         Default is "Ks". Values can be either:
         - the name of a SimCADO filter : see optics.get_filter_set()
         - or a TransmissionCurve containing a user-defined filter
 
-    normalization : str, optional
-        ["half-light", "centre", "total"] Where the profile equals unity
-        If normalization equals:
-        - "half-light" : the pixels at the half-light radius have a surface
-                         brightness of ``magnitude`` [mag/arcsec2]
-        - "centre" : the maximum pixels have a surface brightness of
-                     ``magnitude`` [mag/arcsec2]
-        - "total" : the whole image has a brightness of ``magnitude`` [mag]
+    amplitude : float
+        [mag, mag/arcsec2]
 
     spectrum : str, optional
         The spectrum to be associated with the galaxy. Values can either be:
@@ -354,6 +351,11 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
 
     Optional Parameters (passed to ``sersic_profile``)
     --------------------------------------------------
+    n : float, optional
+        Default = 4. Sersic index
+        - n=1 for exponential (spiral),
+        - n=4 for de Vaucouleurs (elliptical)
+
     ellipticity : float
         Default = 0.5
 
@@ -366,6 +368,15 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
     x_offset, y_offset : float
         [arcsec] The distance between the centre of the profile and the centre
         of the image. Default: (dx,dy) = (0,0)
+
+    normalization : str, optional
+        ["total", "half-light", "centre"] Where the profile equals unity
+        If normalization equals:
+        - "total" : [Default] whole image has brightness of ``amplitude`` [mag]
+        - "half-light" : the pixels at the half-light radius have a surface
+                         brightness of ``magnitude`` [mag/arcsec2]
+        - "centre" : the maximum pixels have a surface brightness of
+                     ``magnitude`` [mag/arcsec2]
 
 
     Returns
@@ -394,17 +405,18 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
               "x_offset": 0,
               "y_offset": 0,
               "redshift": 0,
-              "half_light_radius": half_light_radius,
+              "r_eff": r_eff,
               "pixel_scale": pixel_scale,
               "filter_name": filter_name,
               "amplitude": amplitude,
-              "spectrum_name": str(spectrum)}
+              "spectrum_name": str(spectrum),
+              "rescale_spectrum": True}
     params.update(kwargs)
     params["function_call"] = gu.function_call_str(elliptical, params)
     params["object"] = "elliptical galaxy"
 
     # 1 make a sersic profile ImageHDU
-    im = gal_utils.sersic_profile(r_eff=half_light_radius / pixel_scale,    # everything in terms of pixels
+    im = gal_utils.sersic_profile(r_eff=r_eff / pixel_scale,    # everything in terms of pixels
                                   n=params["n"],
                                   ellipticity=params["ellipticity"],
                                   angle=params["angle"],
@@ -425,9 +437,10 @@ def elliptical(half_light_radius, pixel_scale, filter_name, amplitude,
         spectrum.z = params["redshift"]
 
     # 3 scale the spectra and get the weights
-    if not isinstance(amplitude, u.Quantity):
-        amplitude = amplitude << u.ABmag
-    spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
+    if params["rescale_spectrum"]:
+        if not isinstance(amplitude, u.Quantity):
+            amplitude = amplitude << u.ABmag
+        spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
 
     # 4 make Source object
     src = Source(spectra=[spectrum], image_hdu=hdu)

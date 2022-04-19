@@ -1,5 +1,6 @@
 from os.path import exists
 import pytest
+import synphot
 from pytest import raises
 from astropy import units as u
 from astropy.io import fits
@@ -51,6 +52,30 @@ class TestSourceFromImageHDU:
         assert isinstance(src, Source)
 
 
+class TestPointSource:
+    def test_initialize_from_spextra(self):
+        src = misc.point_source("pickles/a0v", amplitude=16)
+
+        assert isinstance(src, Source)
+
+    def test_initialize_from_synphot(self):
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000, 10000], lookup_table=[1, 1])
+        src = misc.point_source(sed=sp)
+        assert isinstance(src, Source)
+
+
+class TestUniformSource:
+    def test_initialize_from_spextra(self):
+        src = misc.uniform_source("pickles/a0v", amplitude=16)
+
+        assert isinstance(src, Source)
+
+    def test_initialize_from_synphot(self):
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000, 10000], lookup_table=[1, 1])
+        src = misc.uniform_source(sed=sp)
+        assert isinstance(src, Source)
+
+
 def test_poorman_cube_source_is_working():
     cube = so._make_dummy_cube(scale=0.2, wave_unit=u.AA, ref_wave=5000,
                             wave_step=1, wave_type="WAVE", bunit="erg / (s cm2 Angstrom)")
@@ -59,3 +84,4 @@ def test_poorman_cube_source_is_working():
     cube_source = misc.poorman_cube_source(hdu=hdul, ext=0)
 
     assert isinstance(cube_source, Source)
+

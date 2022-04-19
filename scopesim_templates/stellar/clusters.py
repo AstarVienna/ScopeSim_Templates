@@ -8,6 +8,8 @@ from scopesim_templates.rc import ter_curve_utils as tcu
 from scopesim_templates.stellar import imf, cluster_utils as cu
 from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
 
+from spextra import Spextrum
+
 
 @deprecated_renamed_argument('half_light_radius', 'core_radius', '0.1')
 def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0, **kwargs):
@@ -84,7 +86,8 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0, **kwargs)
     spectra = [pickles[spt] for spt in unique_spts]
 
     # 4. scale all spectra to V=0
-    spectra = [tcu.scale_spectrum(spec, "V", 0*u.mag) for spec in spectra]
+ #   spectra = [tcu.scale_spectrum(spec, "V", 0*u.mag) for spec in spectra]
+    spectra = [Spextrum(modelclass=spec).scale_to_magnitude(filter_curve="V", amplitude=0*u.mag) for spec in spectra]
 
     # 5. make ref list for spec_types from spectra
     ref = [np.where([spt == u_spt for u_spt in unique_spts])[0][0]

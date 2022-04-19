@@ -12,7 +12,7 @@ def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
     Parameters
     ----------
     r_eff : float
-        [pixel] Effective (half-light) radius
+        [pixel] Effective radius
 
     n : float
         Power law index.

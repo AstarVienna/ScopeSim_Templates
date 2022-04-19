@@ -63,6 +63,9 @@ def make_img_wcs_header(ra, dec, pixel_scale, image_size):
     else:
         ra_unit = u.deg
 
+    if isinstance(pixel_scale, u.Quantity):
+        pixel_scale = pixel_scale.to(u.arcsec).value
+
     coords = SkyCoord(ra, dec, unit=(ra_unit, u.deg))
     x, y = image_size
 

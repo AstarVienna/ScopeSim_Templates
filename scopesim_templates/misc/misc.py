@@ -6,6 +6,7 @@ from astropy.io import fits
 from astropy import units as u
 from astropy.wcs import WCS
 from astropy.utils.decorators import deprecated_renamed_argument
+from astropy.table import Table
 
 from synphot import SourceSpectrum, Empirical1D
 
@@ -14,7 +15,90 @@ from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
 from ..utils import general_utils as gu
 
 
-def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
+def point_source(sed, amplitude=None, filter_curve="V", x=0, y=0, ra=gu.RA0, dec=gu.DEC0):
+    """
+    Creates a point source with an arbitrary spectrum. This is similar to `scopesim_templates.stellar.star
+    but probably more appropriate for other kind of sources
+
+    sed : str or synphot.Source_Spectrum
+        str will try to download a sed from the speXtra database
+        alternatively an user manipulated `synphot.Source_Spectrum` or compatible object can be provided
+    amplitude : float
+        flux or magnitude of the object. The SED will be scaled to that value
+        if left to `None` (default) no scaling will be performed
+    filter_curve : str
+        any astronomical filter in the speXtra or the spanish VO database
+    x : float
+        X-coordinate on the plane in arcsec
+    y : float
+        Y-coordinate on the plane in arcsec
+    ra, dec : float
+        ra, dec coordinates of the center of the field
+    """
+    params = locals()
+    params["object"] = "point_source"
+    params["function_call"] = gu.function_call_str(point_source, params)
+
+    if (isinstance(amplitude, u.Quantity)) is False and amplitude is not None:
+        amplitude = amplitude * u.ABmag
+    if isinstance(sed, str):
+        sp = Spextrum(sed)
+        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+    elif isinstance(sed, (Spextrum, SourceSpectrum)):
+        sp = Spextrum(modelclass=sed)
+        if amplitude is None:
+            scaled_sp = sp
+        else:
+            scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+
+    src = Source(spectra=scaled_sp, x=[x], y=[y], ref=[0], weight=[1])
+
+    src.meta.update(params)
+    return src
+
+
+def uniform_source(sed, amplitude=None, filter_curve="V", extend=60, ra=gu.RA0, dec=gu.DEC0):
+    """
+    Creates an extended uniform source with an arbitrary spectrum.
+    This function reates an image with extend^2 pixels with size of 1 arcsec^2 so provided amplitudes
+    are in flux or magnitudes per arcsec^2
+
+    sed : synphot or spextra sed
+    amplitude : magnitude or flux (PER ARCSEC^2) of the spectrum in the specified filter_curve
+    filter_curve : any filter curve
+    extend : int
+        extension of the field in arcsec, will always produce a square field
+    ra : RA
+    dec : DEC
+    """
+    params = locals()
+    params["object"] = "uniform_source"
+    params["function_call"] = gu.function_call_str(uniform_source, params)
+
+    if (isinstance(amplitude, u.Quantity)) is False and amplitude is not None:
+        amplitude = amplitude * u.ABmag
+    if isinstance(sed, str):
+        sp = Spextrum(sed)
+        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+    elif isinstance(sed, (Spextrum, SourceSpectrum)):
+        sp = Spextrum(modelclass=sed)
+        if amplitude is None:
+            scaled_sp = sp
+        else:
+            scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+
+    data = np.ones(shape=(extend, extend))
+
+    header = gu.make_img_wcs_header(ra=ra, dec=dec, pixel_scale=1, image_size=data.shape)
+    hdu = fits.ImageHDU(header=header, data=data)
+
+    src = Source(spectra=scaled_sp, image_hdu=hdu)
+
+    src.meta.update(params)
+    return src
+
+
+def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None, waverange=None,
                          inst_pkg_path=None):
     """
     Creates a scopesim.Source object directly from an fits.ImageHDU
@@ -24,6 +108,8 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     image_hdu : fits.ImageHDU
     filter_name : str
         Either a standard filter name or a filter from an instrument package
+    waverange: tuple
+        wave_min and wave_max of the spectral range
     pixel_unit_amplitude, optional
         A Quantity that corresponds to a pixel value of 1 in the image
         If not given, header keyword BUNIT is used
@@ -54,10 +140,15 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
                                             filter_name=filter_name,
                                             pixel_unit_amplitude=20*u.Jy)
 
+    TODO: Check if the image_hdu has WCS
     """
     # if isinstance(inst_pkg_path, str):
     #     import scopesim
     #     scopesim.rc.__search_path__.append(inst_pkg_path)
+
+    params = locals()
+    params["object"] = "source_from_imagehdu"
+    params["function_call"] = gu.function_call_str(source_from_imagehdu, params)
 
     if filter_name is None and waverange is None:
         raise ValueError("Wavelength information must be given with either a "
@@ -89,6 +180,7 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
         image_hdu.header["SPEC_REF"] = 0
 
     src = Source(image_hdu=image_hdu, spectra=spec)
+    src.meta.update(params)
 
     return src
 
@@ -121,6 +213,10 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1, pixel_s
     src : scopesim.Source
 
     """
+    params = locals()
+    params["object"] = "source_from_imagehdu_with_flux"
+    params["function_call"] = gu.function_call_str(source_from_imagehdu_with_flux, params)
+
     if image_hdu is not None:
         header = image_hdu.header
         data = image_hdu.data
@@ -154,6 +250,7 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1, pixel_s
     data = data / np.sum(data)
     image_hdu = fits.ImageHDU(data=data, header=header)
     src = Source(image_hdu=image_hdu, flux=total_flux)
+    src.meta.update(params)
 
     return src
 
@@ -176,6 +273,10 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve, ra=gu.RA0,
     Returns
     -------
     """
+    params = locals()
+    params["object"] = "source_from_array"
+    params["function_call"] = gu.function_call_str(source_from_array, params)
+
     if isinstance(pixel_scale, u.Quantity) is False:
         pixel_scale = pixel_scale * u.arcsec
 
@@ -190,7 +291,7 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve, ra=gu.RA0,
     data = arr / np.sum(arr)
     hdu = fits.ImageHDU(data=data, header=header)
     src = Source(image_hdu=hdu, spectra=sp)
-
+    src.meta.update(params)
     return src
 
 
