@@ -97,7 +97,7 @@ def galaxy(sed,           # The SED of the galaxy
                      r_eff=r_eff.value/pixel_scale.value,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    src = source_from_array(image=gal.intensity, sed=sed, pixel_scale=pixel_scale,
+    src = source_from_array(arr=gal.intensity, sed=sed, pixel_scale=pixel_scale,
                             amplitude=amplitude, filter_curve=filter_curve, ra=ra, dec=dec)
 
     src.meta.update(params)
