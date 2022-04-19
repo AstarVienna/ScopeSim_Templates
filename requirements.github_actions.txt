@@ -13,4 +13,4 @@ photutils
 pyckles
 spextra
 skycalc_ipy
-scopesim
+git+https://github.com/AstarVienna/ScopeSim.git@dev_master
