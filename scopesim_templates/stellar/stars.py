@@ -253,7 +253,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
     ref = np.array([ref_dict[i] for i in spec_types])
 
     if len(ref) == 1:
-        ref = ref[0] * np.ones(len(x))
+        ref = ref[0] * np.ones(len(x), dtype=int)
         spec_types *= len(x)
 
     tbl = Table(names=["x", "y", "ref", "weight", "spec_types"],
