@@ -153,8 +153,6 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
         [arcsec] x and y coordinates of the stars on the focal plane
     ra, dec : float
         coordinates of the center of the field
-
-
     library: str
         Library where the spectroscopic types are taken. By default are taken from the pickles library using
         the `pyckles` package. Other libraries available are kurucz, bosz/lr, bosz/mr, bosz/hr, etc for MIR coverage
@@ -164,9 +162,11 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
     Returns
     -------
     src : ``scopesim.Source``
+
     Examples
     --------
     Create a ``Source`` object for a random group of stars::
+
         >>> import numpy as np
         >>> import astropy.units as u
         >>> from scopesim_templates.basic.stars import stars
@@ -179,20 +179,28 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
         >>> x, y = np.random.random(size=(2, n))
         >>>
         >>> src = stars("Ks", mags, spec_types, x, y)
-    **All positions are in arcsec.**
+
+    .. note: All positions are in arcsec.
+
     The final positions table is kept in the ``<Source>.fields`` attribute::
+
         >>> src.fields[0]
+
     Each star in this table has an associated spectrum kept in the
     ``<Source>.spectra`` attribute. These stars are connected to the spectra in
     the list by the "ref" column in the ``.fields`` table::
+
         >>> src.spectra
+
     The stars can be scaled in units of u.mag, u.ABmag or u.Jansky. Any filter
     listed on the spanish VO filter profile service can be used for the scaling
     (``http://svo2.cab.inta-csic.es/theory/fps/``). SVO filter names need to be
     in the following format ``observatory/instrument.filter``::
+
         >>> amplitudes = np.linspace(1, 3631, n) * u.Jansky
         >>> filter_name = "Paranal/HAWKI.Ks"
         >>> stars(filter_name, amplitudes, spec_types, x=x, y=y)
+
     """
     params = {"filter_name": filter_name,
               "amplitudes": amplitudes,
@@ -201,8 +209,9 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
               "y": y,
               "object": "stars",
               "ra": ra,
-              "dec": dec}
-    pass
+              "dec": dec,
+              "object": "stars"}
+
     params["function_call"] = function_call_str(star_grid, params)
     params["object"] = "stars"
 
@@ -243,6 +252,10 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
     ref_dict = {spt: ii for ii, spt in enumerate(unique_types)}
     ref = np.array([ref_dict[i] for i in spec_types])
 
+    if len(ref) == 1:
+        ref = ref[0] * np.ones(len(x), dtype=int)
+        spec_types *= len(x)
+
     tbl = Table(names=["x", "y", "ref", "weight", "spec_types"],
                 data= [ x,   y,   ref,   weight,   spec_types])
 
@@ -263,6 +276,3 @@ def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
 
 
 star.__doc__ = stars.__doc__
-
-
-

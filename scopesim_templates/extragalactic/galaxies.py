@@ -195,9 +195,9 @@ def galaxy3d(sed,           # The SED of the galaxy,
                        np.arange(image_size))
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                        r_eff=r_eff.value/pixel_scale.value,
-                        amplitude=1, n=n,
-                        ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
+                     r_eff=r_eff.value/pixel_scale.value,
+                     amplitude=1, n=n,
+                     ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
 
     intensity = gal.intensity / np.sum(galaxy.intensity)
     velocity = gal.velocity.value
@@ -370,13 +370,13 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
         of the image. Default: (dx,dy) = (0,0)
 
     normalization : str, optional
-        ["half-light", "centre", "total"] Where the profile equals unity
+        ["total", "half-light", "centre"] Where the profile equals unity
         If normalization equals:
+        - "total" : [Default] whole image has brightness of ``amplitude`` [mag]
         - "half-light" : the pixels at the half-light radius have a surface
                          brightness of ``magnitude`` [mag/arcsec2]
         - "centre" : the maximum pixels have a surface brightness of
                      ``magnitude`` [mag/arcsec2]
-        - "total" : the whole image has a brightness of ``magnitude`` [mag]
 
 
     Returns
@@ -409,7 +409,8 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
               "pixel_scale": pixel_scale,
               "filter_name": filter_name,
               "amplitude": amplitude,
-              "spectrum_name": str(spectrum)}
+              "spectrum_name": str(spectrum),
+              "rescale_spectrum": True}
     params.update(kwargs)
     params["function_call"] = gu.function_call_str(elliptical, params)
     params["object"] = "elliptical galaxy"
@@ -436,9 +437,10 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
         spectrum.z = params["redshift"]
 
     # 3 scale the spectra and get the weights
-    if not isinstance(amplitude, u.Quantity):
-        amplitude = amplitude << u.ABmag
-    spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
+    if params["rescale_spectrum"]:
+        if not isinstance(amplitude, u.Quantity):
+            amplitude = amplitude << u.ABmag
+        spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
 
     # 4 make Source object
     src = Source(spectra=[spectrum], image_hdu=hdu)
