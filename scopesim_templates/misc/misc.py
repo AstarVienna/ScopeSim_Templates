@@ -341,11 +341,24 @@ def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve, cut=0,
     return src
 
 
-def source_from_cube():
+def source_from_cube(cube, ext=1):
     """
-    wrapper for Source(cube=cube) to facilitate things
+    just a simple wrapper for Source(cube=cube) for completeness
+
+    In the future more checks will be performed to translate most cubes into a suitable format
+
+    TODO: Set the cube to a different flux level and different pixel scales. Redshift the cube
+
+    Parameters
+    ----------
+
+    cube : Filename, ImageHDU or HDUList containing the cube
+    ext : extension where the data is located
+
     """
-    return NotImplementedError
+    src = Source(cube=cube, ext=ext)
+
+    return src
 
 
 def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None, amplitude=None, filter_curve=None):
@@ -411,28 +424,6 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None, amplit
 #    src = Source(image_hdu=hdul, spectra=specs)
 
     return src
-
-
-
-
-
-
-
-
-
-
-def source_from_cube():
-    """
-    just placeholder for the necessary function. Possible ways to implement it
-    - a list of images of one pixel each associated with a different spextrum. Likely expensive to simulate
-    - a list of monocromatic images (slices) with scaled counts according to the each pixel spectrum. Each image is associated
-    to a very short spectrum.  Likely expensive to simulate but probably gives less problems finding out the boundaries
-    - using some dimensionality reduction find the spaxels with similar SED leading to fewer images to simulate.
-    Probably difficult to generalize and implement.
-    Returns
-    -------
-    """
-    pass
 
 
 def source_from_moments():
