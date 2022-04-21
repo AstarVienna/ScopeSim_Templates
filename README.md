@@ -51,9 +51,10 @@ Currently, the package covers the most typical sources used in astronomy:
   - ``uniform_source``: Creates a uniform source with any SED from ``speXtra`` 
   - ``source_from_file``: Load the source from a fits file. Depending on the characteristics other 
                functions may be more suitable
-  - ``source_from_imagehdu``:
-  - ``source_from_imagehdu_with_flux``:
-  - ``source_from_array``
+  - ``source_from_imagehdu``: creates a source from an ``ImageHDU`` with an arbitrary flux and scale
+  - ``source_from_imagehdu_with_flux``: creates a source from an ``ImageHDU`` where the flux/pixel is known 
+  - ``source_from_array``: General function to create a source from a 2D ``numpy`` array
+  - ``source_from_cube``: Wrapper to create a source from a 3D datacube
   
 - ``calibration``
   - ``lamp``: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
