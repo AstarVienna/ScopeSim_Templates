@@ -1,5 +1,13 @@
 # TODO 
 
+## Wish-List of function
+
+### 
+
+- Add support for the Vela galaxy simulation data
+- Add support for ArtPop stellar cluster generator package 
+
+
 
 ## Reorganization and funtions missing (marked in bf)
 
