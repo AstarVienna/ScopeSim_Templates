@@ -10,6 +10,27 @@
 This package contains helper functions to create ``Source`` objects for the 
 [ScopeSim Simulator](https://github.com/AstarVienna/ScopeSim)
 
+
+## Installation
+
+The best way to install the software is to use ``pip``
+
+```bash
+    pip install scopesim_templates
+```
+
+
+To install the development version you can clone the repository
+
+```bash
+    git clone https://github.com/AstarVienna/ScopeSim_Templates
+    cd ScopeSim_Templates
+    pip install -e .
+```
+    
+
+## ``Source`` templates included
+
 Currently, the package covers the most typical sources used in astronomy:
 
 - ``stellar``
