@@ -20,8 +20,8 @@ def lamp(waves, fwhm, fluxes):
     """
     simple lamp function
     """
-    warnings.warn("make sure to turn off the appropriate ScopeSim effects during the simulation")
     params = locals()
+    warnings.warn("make sure to turn off the appropriate ScopeSim effects during the simulation")
     params["object"] = "lamp"
     params["function_call"] = function_call_str(lamp, params)
 
@@ -61,8 +61,8 @@ def flat_field(temperature=5000, amplitude=0*u.ABmag, filter_curve="V", extend=6
     src: Source
 
     """
-    warnings.warn("make sure to turn off the appropriate ScopeSim effects during the simulation")
     params = locals()
+    warnings.warn("make sure to turn off the appropriate ScopeSim effects during the simulation")
     params["object"] = "flat_field"
     params["function_call"] = function_call_str(flat_field, params)
 
