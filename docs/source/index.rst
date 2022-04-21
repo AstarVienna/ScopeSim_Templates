@@ -70,6 +70,7 @@ Documentation for all the helper functions contained in each package can be foun
 
 * ``misc``
    * :func:`point_source`: similar to :func:`star` but using any SED from the ``speXtra`` database
+   * :func:`uniform_source`: Creates a uniform source with any SED from ``speXtra``
    * :func:`source_from_image_hdu`: creates a source from an ``ImageHDU`` with an arbitrary flux and scale
    * :func:`source_from_imagehdu_with_flux`: creates a source from an ``ImageHDU`` where the flux/pixel is known
    * :func:`source_from_file`: Load the source from a fits file. Depending on the characteristics other
@@ -79,9 +80,8 @@ Documentation for all the helper functions contained in each package can be foun
 
 * ``calibration``
    * :func:`empty_sky`: To simulate a sky without no other sources
-   * :func:`uniform_source`: Creates a uniform source with any SED from ``speXtra``
    * :func:`lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
-   * :func:`lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
+   * :func:`flat_field`: Simulates a flat field
 
 
 
