@@ -10,6 +10,8 @@ from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
 
 from spextra import Spextrum
 
+__all__ = ["cluster"]
+
 
 @deprecated_renamed_argument('half_light_radius', 'core_radius', '0.1')
 def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0, **kwargs):

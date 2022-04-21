@@ -9,6 +9,11 @@ from scopesim_templates.utils.general_utils import function_call_str, make_img_w
 from ..misc.misc import uniform_source
 
 
+__all__ = ["lamp",
+           "flat_field",
+           "empty_sky"]
+
+
 def lamp(waves, fwhm, fluxes):
     """
     simple lamp function

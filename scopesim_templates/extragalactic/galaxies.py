@@ -19,6 +19,12 @@ from ..misc.misc import source_from_array
 from ..utils import general_utils as gu
 
 
+__all__ = ["galaxy",
+           "galaxy3d",
+           "spiral_two_component",
+           "elliptical"]
+
+
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
 def galaxy(sed,           # The SED of the galaxy
            z=0,             # redshift

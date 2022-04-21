@@ -12,6 +12,13 @@ from scopesim_templates import rc
 from scopesim_templates.rc import ter_curve_utils as tcu
 
 
+__all__ = ["star",
+           "stars",
+           "star_field",
+           "star_grid",
+           ]
+
+
 def star_field(n, mmin, mmax, width, height=None, filter_name="V", ra=RA0, dec=DEC0, **kwargs):
     """
     Creates a super basic field of stars with random positions and brightnesses

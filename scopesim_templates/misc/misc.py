@@ -15,6 +15,16 @@ from ..rc import Source, ter_curve_utils as tu, scopesim_utils as su
 from ..utils import general_utils as gu
 
 
+__all__ = ["point_source",
+           "uniform_source",
+           "source_from_array",
+           "source_from_file",
+           "source_from_imagehdu",
+           "source_from_imagehdu_with_flux",
+           "source_from_cube",
+           ]
+
+
 def point_source(sed, amplitude=None, filter_curve="V", x=0, y=0, ra=gu.RA0, dec=gu.DEC0):
     """
     Creates a point source with an arbitrary spectrum. This is similar to `scopesim_templates.stellar.star
