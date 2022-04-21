@@ -56,27 +56,38 @@ Available subpackages
 Documentation for all the helper functions contained in each package can be found in the API documentation for each package.
 
 * ``stellar``:
-   * :func:`star`
-   * :func:`stars`
-   * :func:`cluster`
-   * :func:`stars_field`
-   * :func:`star_grid`
+   * :func:`star`: Places a single star on the field
+   * :func:`stars`: Places a list of stars on the field
+   * :func:`cluster`:  Creates an age=0 cluster with a user selected mass
+   * :func:`stars_field`: Creates field of stars with random positions
+   * :func:`star_grid`: Creates a field of stars with regular positions
 
 * ``extragalactic``
-   * :func:`spiral_two_component`
-   * :func:`elliptical`
+   * :func:`galaxy`: A simple sersic model with a user selected SED from the ``speXtra`` database
+   * :func:`galaxy3D`:  A more complex model that includes a velocity field and velocity dispersion field
+   * :func:`spiral_two_component`:  Simple two component model with an outer spiral young SED and an old SED bulge
+   * :func:`elliptical`: Another sersic model using the Brown SEDs
+
 * ``misc``
-    * :func:`empty_sky`
-    * :func:`point_source`
-    * :func:`source_from_image_hdu`
-    * :func:`source_from_imagehdu_with_flux`
+   * :func:`point_source`: similar to :func:`star` but using any SED from the ``speXtra`` database
+   * :func:`source_from_image_hdu`: creates a source from an ``ImageHDU`` with an arbitrary flux and scale
+   * :func:`source_from_imagehdu_with_flux`: creates a source from an ``ImageHDU`` where the flux/pixel is known
+   * :func:`source_from_file`: Load the source from a fits file. Depending on the characteristics other
+               functions may be more suitable
+   * :func:`source_from_array`: General function to create a source from a 2D ``numpy`` array
+   * :func:`source_from_cube`:  Wrapper to create a source from a 3D datacube
 
-
+* ``calibration``
+   * :func:`empty_sky`: To simulate a sky without no other sources
+   * :func:`uniform_source`: Creates a uniform source with any SED from ``speXtra``
+   * :func:`lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
+   * :func:`lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
 
 
 
 Contact
 -------
-If you find an issue with ScopeSim Templates, please let us know via the `Github issues page <https://github.com/AstarVienna/ScopeSim_Templates/issues>`_
+If you find an issue with ScopeSim Templates, please let us know via the
+`Github issues page <https://github.com/AstarVienna/ScopeSim_Templates/issues>`_
 
 
