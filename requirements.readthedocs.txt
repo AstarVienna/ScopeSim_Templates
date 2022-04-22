@@ -8,7 +8,7 @@ pyyaml
 synphot
 photutils
 
-scopesim
+git+https://github.com/AstarVienna/ScopeSim.git@dev_master
 pyckles
 spextra
 skycalc_ipy
