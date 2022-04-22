@@ -14,6 +14,9 @@
 #
 import os
 import sys
+
+import sphinx_rtd_theme
+
 sys.path.insert(0, os.path.abspath('../'))
 
 #if "TRAVIS" in os.environ:
@@ -25,11 +28,11 @@ os.environ['PYTHONPATH'] = ':'.join((package_path,
 # -- Project information -----------------------------------------------------
 
 project = 'ScopeSim_templates'
-copyright = '2019, Kieran Leschinski'
-author = 'Kieran Leschinski'
+copyright = '2021, A* Vienna'
+author = 'A* Vienna'
 
 # The short X.Y version
-version = ''
+version = '0.4'
 # The full version, including alpha/beta/rc tags
 release = ''
 
@@ -65,19 +68,22 @@ extensions = [
     'jupyter_sphinx',
     'sphinx.ext.doctest',
     'numpydoc',
-]
+    ]
 
+# -- Options for intersphinx extension ---------------------------------------
 
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
-    'astropy': ('http://docs.astropy.org/en/stable/', None),
-    'synphot': ('https://synphot.readthedocs.io/en/latest/', None),
-    'spextra': ('https://spextra.readthedocs.io', None),
-    'scopesim': ('https://scopesim.readthedocs.io', None),
-    'pyckles': ('https://pyckles.readthedocs.io', None),
-    }
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'python': ('http://docs.python.org/', None),
+                       'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+                       'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
+                       'matplotlib': ('http://matplotlib.org/', None),
+                       'astropy': ('http://docs.astropy.org/en/stable/', None),
+                       'synphot': ('https://synphot.readthedocs.io/en/latest/', None),
+                       'spextra': ('https://spextra.readthedocs.io', None),
+                       'scopesim': ('https://scopesim.readthedocs.io/en/latest/', None),
+                       'pyckles': ('https://pyckles.readthedocs.io/en/latest/', None),
+                       'anisocado': ('https://anisocado.readthedocs.io/en/latest/', None),
+                       }
 
 extlinks = {'python': ('https://docs.python.org/3/%s', None),
             'numpy': ('https://docs.scipy.org/doc/numpy/', None),
@@ -89,10 +95,13 @@ extlinks = {'python': ('https://docs.python.org/3/%s', None),
             'pyckles': ('https://pyckles.readthedocs.io', None),
             }
 
-
-
 # apidoc settings
 numpydoc_show_class_members = False
+autosummary_generate = True
+autoclass_content = "class"
+autodoc_default_flags = ["members", "inherited-members"]
+autodoc_docstring_signature = False
+
 apidoc_module_dir = os.path.abspath('../../scopesim_templates/')
 apidoc_output_dir = 'reference'
 apidoc_separate_modules = True
@@ -109,6 +118,7 @@ templates_path = ['_templates']
 #
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
+source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
@@ -125,8 +135,20 @@ language = None
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# The reST default role (used for this markup: `text`) to use for all
+# documents.
+
+default_role = 'obj'
+
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = None
+
+pygments_style = 'default' #'sphinx'
+
+# -- Options for HTML output ---------------------------------------------------
+
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -236,19 +258,7 @@ epub_exclude_files = ['search.html']
 
 # -- Extension configuration -------------------------------------------------
 
-# -- Options for intersphinx extension ---------------------------------------
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'python': ('http://docs.python.org/', None),
-                       'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-                       'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
-                       'matplotlib': ('http://matplotlib.org/', None),
-                       'astropy': ('http://docs.astropy.org/en/stable/', None),
-                       'synphot': ('https://synphot.readthedocs.io/en/latest/', None),
-                       'scopesim': ('https://scopesim.readthedocs.io/en/latest/', None),
-                       'pyckles': ('https://pyckles.readthedocs.io/en/latest/', None),
-                       'anisocado': ('https://anisocado.readthedocs.io/en/latest/', None),
-                       }
 
 # -- Options for todo extension ----------------------------------------------
 

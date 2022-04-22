@@ -1,6 +1,6 @@
 .. image:: _static/logos/logo_long_scopesim_templates_t.png
     :width: 600 px
-    :alt: Welcome to the AnisoCADO Documentation!
+    :alt: Welcome to the ScopeSim_Templates Documentation!
     :align: center
 
 |
@@ -26,15 +26,6 @@ Installation
 This package has been released on PyPi::
 
    pip install scopesim_templates
-
-.. toctree::
-    :maxdepth: 2
-    :caption: Contents:
-    contributions
-    source_object
-    reference
-   
-
 
 
 From basic to advanced helper functions
@@ -78,7 +69,7 @@ Documentation for all the helper functions contained in each package can be foun
    * :func:`source_from_array`: General function to create a source from a 2D ``numpy`` array
    * :func:`source_from_cube`:  Wrapper to create a source from a 3D datacube
 
-* ``calibration``
+* ``calibration``:
    * :func:`empty_sky`: To simulate a sky without no other sources
    * :func:`lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
    * :func:`flat_field`: Simulates a flat field
@@ -91,3 +82,23 @@ If you find an issue with ScopeSim Templates, please let us know via the
 `Github issues page <https://github.com/AstarVienna/ScopeSim_Templates/issues>`_
 
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
+
+   starting
+   source_object
+   stellar_module
+   modules
+   contributions
+
+
+:doc:`reference`
+================
+
+More...
+=======
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:

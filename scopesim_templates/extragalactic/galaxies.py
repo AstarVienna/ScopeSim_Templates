@@ -40,9 +40,10 @@ def galaxy(sed,           # The SED of the galaxy
            dec=-10):
 
     """
-    Creates a source object of a galaxy described by its Sersic index and other
-    parameters.
-    This function is ideal for imaging
+    Creates a source object of a galaxy described by its Sersic index and other  parameters.
+
+    This function is ideal for imaging or simple spectroscopy
+
     Parameters
     ----------
     sed : str or Spextrum
@@ -126,26 +127,27 @@ def galaxy3d(sed,           # The SED of the galaxy,
              ngrid=10):       # griding parameter
 
     """
-    Creates a source object of a galaxy described by its Sersic index and other
-    parameters. It also generates a velocity field (set by vmax) and
-    a velocity dispersion map (set by sigma).
-    The maps are binned according to the ngrid parameter, higher ngrid will create
-    finer binned fields but it may increase the computation time.
-    The ngrid parameter does not specify the number of bins. A ngrid=10 will create
-    around 40 independent regions whilst a ngrid of 100 will create around 2300 regions
+    Creates a simplified 3D map of a galaxy with flux, rotation velocity and velocity dispersion
+
+    The maps are binned according to the `ngrid` parameter, higher `ngrid` will create
+    finer binned fields, but it may increase the computation time.
+
+    The `ngrid` parameter does not specify the number of bins. A ngrid=10 will create
+    around 40 independent regions whilst a `ngrid` of 100 will create around 2300 regions
+
     This function is ideal for spectroscopy
+
     Parameters
     ----------
     sed : str or Spextrum
-        SED of the galaxy, it can be a string or a Spextrum object, in the later case it won't
-        be re-escaled.
+        SED of the galaxy, it can be a string or a Spextrum object
     z : float
         redshift of the galaxy
     amplitude : float, u.Quantity
         magnitude or flux of the galaxy. The spectrum will be re-escaled to this magnitude
-    filter_name : str
+    filter_curve : str
         name of the filter where the magnitude is measured
-    plate_scale : float
+    pixel_scale : float
         the scale of the image in arcsec/pixel
     r_eff : float
         effective radius of the galaxy in arcsec. It accepts astropy.units
@@ -163,6 +165,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
         Size of the image in units of r_eff
     ngrid : int
         gridding parameter for creating of the galaxy
+
     Returns
     -------
     src : scopesim.Source
@@ -256,9 +259,11 @@ def galaxy3d(sed,           # The SED of the galaxy,
 def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     """
     Creates a spiral galaxy using NGC1232L as the template
+
     Two components are included
         - the newer population (spiral arms), and
         - the older popultaion (bulge)
+
     Parameters
     ----------
     extent : float
@@ -267,6 +272,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         [mag | ABmag | jansky | FLAM | FNU | PHOTLAM | PHOTNU]
     offset : tuple of floats
         [arcsec]
+
     Returns
     -------
     gal : scopesim.Source
