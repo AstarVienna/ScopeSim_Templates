@@ -18,7 +18,7 @@ from setuptools import find_packages
 with open('scopesim_templates/version.py') as f:
     __version__ = f.readline().split("'")[1]
 
-with open("README.md", "r", encoding='utf-8') as fh:
+with open("README.rst", "r", encoding='utf-8') as fh:
     long_description = fh.read()
 
 
