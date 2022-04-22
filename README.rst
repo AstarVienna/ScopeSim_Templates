@@ -1,6 +1,10 @@
 ScopeSim Templates
 ==================
 
+This packages contain a number of templates to generate ``Source`` objects to be
+used in simulations with the `ScopeSim Simulator <https://scopesim.readthedocs.io/en/latest/>`_
+
+The Documentation can be found here: https://scopesim_templates.readthedocs.io/en/latest
 
 Installation
 ------------
@@ -15,9 +19,30 @@ To install the development version you can clone the repository
 
 .. code-block:: bash
 
-   git clone https://github.com/AstarVienna/ScopeSim_Templates
+   git clone https://github.com/AstarVienna/ScopeSim_Templates/
    cd ScopeSim_Templates
    pip install -e .
+
+Requirements
+------------
+
+- numpy
+- astropy
+- `synphot <https://synphot.readthedocs.io/en/latest/index.html>`_
+- `ScopeSim <https://scopesim.readthedocs.io/en/latest/>`_
+- `speXtra <https://spextra.readthedocs.io/en/latest/>`_
+- `pyckles <https://pyckles.readthedocs.io/en/latest/>`_
+
+The ``Source`` object
+----------------------
+
+The above functions are created to easy the creation of standard sources but the power of the ``Source`` object
+doesn't end there and can be used to create endless sources possibilities.
+
+In a nutshell a ``Source`` object contains a spacial and spectral description of the sources. The spectral description
+are in the form of ``synphot`` spectra and the spacial description can be an ``astropy`` table referencing the spectra
+or a fits image.  ``Source`` can also accept datacubes. The ``speXtra`` package contains an extensive library of
+spectral templates that can be used with the sources. Please check the relevant documentation.
 
 
 ``Source`` templates included
@@ -55,13 +80,3 @@ Currently, the package covers the most typical sources used in astronomy:
 Please see the documentation how to use each particular source and contact us 
 (raise an issue or submit a pull request) if more specialized sources are needed.
 
-The ``Source`` object
-----------------------
-
-The above functions are created to easy the creation of standard sources but the power of the ``Source`` object
-doesn't end there and can be used to create endless sources possibilities. 
-
-In a nutshell a ``Source`` object contains a spacial and spectral description of the sources. The spectral description 
-are in the form of ``synphot`` spectra and the spacial description can be an ``astropy`` table referencing the spectra
-or a fits image.  ``Source`` can also accept datacubes. The ``speXtra`` package contains an extensive library of 
-spectral templates that can be used with the sources. Please check the relevant documentation. 
