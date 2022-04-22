@@ -8,7 +8,7 @@ from synphot import SourceSpectrum
 
 from scopesim_templates.stellar import star
 from scopesim_templates.extragalactic import galaxy, galaxy3d, spiral_two_component
-from scopesim_templates.misc.misc import source_from_image
+from scopesim_templates.misc.misc import source_from_array
 
 # Add all initialied examples of sources to be tested to this list
 SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
@@ -16,7 +16,7 @@ SOURCE_LIST = [star(filter_name="Ks", amplitude=10*u.mag),
                spiral_two_component(),
                galaxy(sed="kc96/s0"),
                galaxy3d(sed="kc96/s0", ngrid=10),
-               source_from_image(image=np.ones(shape=(100,100)),
+               source_from_array(arr=np.ones(shape=(100, 100)),
                                  sed="kc96/s0",
                                  amplitude=15,
                                  pixel_scale=0.2,
