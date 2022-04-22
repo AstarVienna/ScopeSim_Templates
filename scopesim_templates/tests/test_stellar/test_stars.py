@@ -1,7 +1,8 @@
 from pytest import approx
+import numpy as np
 
+import astropy.units as u
 import synphot as sp
-from scopesim_templates import cluster
 
 from scopesim_templates.stellar import *
 from scopesim_templates.rc import ter_curve_utils as tcu
@@ -83,4 +84,4 @@ class TestStarGrid:
 
 class TestCluster:
     def test_it_works(self):
-        assert isinstance(cluster(), rc.Source)
+        assert isinstance(cluster(), Source)

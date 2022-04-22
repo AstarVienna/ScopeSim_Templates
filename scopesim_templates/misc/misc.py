@@ -27,9 +27,10 @@ __all__ = ["point_source",
 
 def point_source(sed, amplitude=None, filter_curve="V", x=0, y=0, ra=gu.RA0, dec=gu.DEC0):
     """
-    Creates a point source with an arbitrary spectrum. This is similar to `scopesim_templates.stellar.star
-    but probably more appropriate for other kind of sources
+    Creates a point source with an arbitrary spectrum. This is similar to ``scopesim_templates.stellar.star``
 
+    Parameters
+    ----------
     sed : str or synphot.Source_Spectrum
         str will try to download a sed from the speXtra database
         alternatively an user manipulated `synphot.Source_Spectrum` or compatible object can be provided
@@ -42,8 +43,14 @@ def point_source(sed, amplitude=None, filter_curve="V", x=0, y=0, ra=gu.RA0, dec
         X-coordinate on the plane in arcsec
     y : float
         Y-coordinate on the plane in arcsec
-    ra, dec : float
-        ra, dec coordinates of the center of the field
+    ra : float, str
+        RA coordinates of the center of the field (not used)
+    dec : float, str
+        DEC coordinates of the center of the field  (not used)
+
+    Return
+    ------
+    src : ``scopesim.Source``
     """
     params = locals()
     params["object"] = "point_source"
@@ -73,13 +80,24 @@ def uniform_source(sed, amplitude=None, filter_curve="V", extend=60, ra=gu.RA0, 
     This function reates an image with extend^2 pixels with size of 1 arcsec^2 so provided amplitudes
     are in flux or magnitudes per arcsec^2
 
+    Parameters
+    ----------
     sed : synphot or spextra sed
-    amplitude : magnitude or flux (PER ARCSEC^2) of the spectrum in the specified filter_curve
-    filter_curve : any filter curve
+    amplitude : float
+        magnitude or flux (PER ARCSEC^2) of the spectrum in the specified filter_curve
+    filter_curve : str
+        any filter curve
     extend : int
         extension of the field in arcsec, will always produce a square field
-    ra : RA
-    dec : DEC
+    ra : float
+        RA of the field center (not used)
+    dec : float
+        DEC of field center (not used)
+
+    Return
+    ------
+
+    src : ``scopesim.Source``
     """
     params = locals()
     params["object"] = "uniform_source"
@@ -268,6 +286,7 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1, pixel_s
 def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve, ra=gu.RA0, dec=gu.DEC0):
     """
     creates a source from an image (numpy 2D array)
+
     Parameters
     ----------
     arr : np.ndarray
@@ -280,8 +299,10 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve, ra=gu.RA0,
        magnitude of the spectra in a filter_curve
     filter_curve : basestring
         a filter in the speXtra database or the SVO
+
     Returns
     -------
+    src : ``scopesim.Source``
     """
     params = locals()
     params["object"] = "source_from_array"

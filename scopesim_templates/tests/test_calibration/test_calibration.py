@@ -1,4 +1,4 @@
-import scopesim_templates.calibration
+from scopesim_templates import calibration
 from astropy.table import Table
 from scopesim import Source
 from synphot import SourceSpectrum
@@ -6,7 +6,7 @@ from synphot import SourceSpectrum
 
 class TestEmptySky:
     def test_empty_sky_returns_source_object(self):
-        sky = scopesim_templates.calibration.calibration.empty_sky()
+        sky = calibration.calibration.empty_sky()
         assert isinstance(sky, Source)
         assert isinstance(sky.spectra[0], SourceSpectrum)
         assert isinstance(sky.fields[0], Table)

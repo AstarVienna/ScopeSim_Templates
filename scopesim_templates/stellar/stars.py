@@ -35,6 +35,11 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", ra=RA0, dec=D
         [arcsec] width of region to put stars in. if height=None, height=width
     filter_name : str
         For scaling the stars. Use either common names or Spanish-VO identifiers
+    ra : float or str
+        RA of the center of the field (not used at the moment)
+    dec : float or str
+        DEC of the center of the field (not used at the moment)
+
 
 
     Additional parameters
@@ -48,11 +53,6 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V", ra=RA0, dec=D
     stars : scopesim.Source object
         A Source object with a field of stars that can be fed into the method:
         ``<OpticalTrain>.observe()``
-
-    See Also
-    --------
-    ``<OpticalTrain>.observe``
-    ``<OpticalTrain>.readout``
 
     """
     params = {"n": n,
@@ -103,15 +103,20 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1, ra=RA0, dec=DEC0):
     ----------
     n : int
         the number of stars in the grid
-    mag_min, mag_max : float
-        [vega mag] the minimum (brightest) and maximum (faintest) magnitudes for
-        stars in the grid
+    mmin : float
+        [vega mag] the minimum (brightest) magntude of stars in the grid
+    mmax : float
+        [vega mag] maximum (faintest) magnitudes for stars in the grid
     filter_name : str
         any filter that is in the SimCADO package directory.
         See ``scopesim.optics.get_filter_set()``
     separation : float, optional
         [arcsec] an average speration between the stars in the grid can be
         specified. Default is 1 arcsec
+    ra : float or str
+        RA of the center of the field (not used at the moment)
+    dec : float or str
+        DEC of the center of the field (not used at the moment)
 
     Returns
     -------

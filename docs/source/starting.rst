@@ -12,7 +12,7 @@ Spectral description is provided as ``synphot.SourceSpectrum`` and compatible ob
 For example, the creation of ``scopesim.source.Source`` objects might require quite a bit of interaction from the
 user
 
-.. jupyter-execute::
+.. code-block:: python
 
 
     import numpy as np
@@ -48,3 +48,4 @@ user
 
     plt.imshow(src.fields[0].data)
     src.spectra[0].plot()
+
