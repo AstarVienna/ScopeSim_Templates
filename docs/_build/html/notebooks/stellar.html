@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Stellar Module &mdash; ScopeSim_templates  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Source object interface" href="../source_object.html" />
+    <link rel="prev" title="Getting Started" href="starting.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ScopeSim_templates
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="starting.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Stellar Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Stellar-cluster">Stellar cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Star-Grid-and-Field">Star Grid and Field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Stars">Stars</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../source_object.html">Source object interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">ScopeSim_Templates Package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ScopeSim_templates</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Stellar Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notebooks/stellar.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="Stellar-Module">
+<h1>Stellar Module<a class="headerlink" href="#Stellar-Module" title="Permalink to this headline">¶</a></h1>
+<p>This module include general functions to work with stars</p>
+<section id="Stellar-cluster">
+<h2>Stellar cluster<a class="headerlink" href="#Stellar-cluster" title="Permalink to this headline">¶</a></h2>
+<p>In the following example we generate a young star cluster with a core radius <code class="docutils literal notranslate"><span class="pre">r_c=1</span> <span class="pre">pc</span></code>, <code class="docutils literal notranslate"><span class="pre">M=1000</span> <span class="pre">Msun</span></code> and located in the LMC (<code class="docutils literal notranslate"><span class="pre">d=50kpc</span></code>)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scopesim_templates.stellar</span> <span class="kn">import</span> <span class="n">cluster</span>
+
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mf">1E3</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">core_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Lets have a look inside the object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">src</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div><i>Table length=2434</i>
+<table id="table140432350899696" class="table-striped table-bordered table-condensed">
+<thead><tr><th>x</th><th>y</th><th>ref</th><th>weight</th><th>masses</th><th>spec_types</th></tr></thead>
+<thead><tr><th>arcsec</th><th>arcsec</th><th></th><th></th><th>solMass</th><th></th></tr></thead>
+<thead><tr><th>float64</th><th>float64</th><th>int64</th><th>float64</th><th>float64</th><th>str3</th></tr></thead>
+<tr><td>0.7047941071430335</td><td>-0.34193400839906835</td><td>32</td><td>2.702228328228619e-19</td><td>0.023450818028910993</td><td>M6V</td></tr>
+<tr><td>3.017163801660643</td><td>-1.531947677274888</td><td>27</td><td>5.985543114133627e-12</td><td>0.5030213194041789</td><td>M1V</td></tr>
+<tr><td>5.545342770168751</td><td>-0.5059378004225308</td><td>24</td><td>4.961396135881094e-11</td><td>0.6887993545486397</td><td>K5V</td></tr>
+<tr><td>0.04337484405135695</td><td>0.47394950595035895</td><td>31</td><td>9.301655464729025e-14</td><td>0.16592467519086804</td><td>M5V</td></tr>
+<tr><td>-0.1695198026107141</td><td>2.689008599028229</td><td>27</td><td>5.728214836974918e-12</td><td>0.4981528843145076</td><td>M1V</td></tr>
+<tr><td>2.903227971744357</td><td>-0.42880293404815345</td><td>32</td><td>7.235335661968081e-19</td><td>0.030385458123976427</td><td>M6V</td></tr>
+<tr><td>2.9147725521817955</td><td>1.4290979035892837</td><td>31</td><td>2.5344525453154387e-14</td><td>0.12048133658240405</td><td>M5V</td></tr>
+<tr><td>2.1879322601012166</td><td>1.7393082707150282</td><td>29</td><td>1.1280665937633994e-12</td><td>0.33768446357534043</td><td>M3V</td></tr>
+<tr><td>-0.5711617098260228</td><td>-5.393018142881724</td><td>21</td><td>1.6102797118853998e-10</td><td>0.8167460590486888</td><td>K2V</td></tr>
+<tr><td>-0.11710185806601776</td><td>-5.100956140168292</td><td>32</td><td>1.5282472923135797e-14</td><td>0.11036638034546091</td><td>M6V</td></tr>
+<tr><td>-2.146176289199411</td><td>4.292793390010554</td><td>29</td><td>6.746584693259497e-13</td><td>0.284529520314177</td><td>M3V</td></tr>
+<tr><td>-6.516561394056243</td><td>-0.8923876990270431</td><td>28</td><td>2.141385549412798e-12</td><td>0.4021587190742773</td><td>M2V</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+<tr><td>-4.679661612983974</td><td>2.5527643902258825</td><td>32</td><td>8.043671952122561e-16</td><td>0.0800771445221511</td><td>M6V</td></tr>
+<tr><td>-1.6708993605568665</td><td>2.038654094696279</td><td>31</td><td>3.598973661189041e-14</td><td>0.13306765925503572</td><td>M5V</td></tr>
+<tr><td>1.4678772515789662</td><td>-0.17251949373959752</td><td>24</td><td>5.335448880937463e-11</td><td>0.6961978840502374</td><td>K5V</td></tr>
+<tr><td>-2.9862656254225963</td><td>0.5421006937620638</td><td>31</td><td>2.702271491358672e-14</td><td>0.12278256100621125</td><td>M5V</td></tr>
+<tr><td>3.157740384424968</td><td>3.0596228361838076</td><td>15</td><td>9.931528833544933e-10</td><td>1.1792543689064683</td><td>F8V</td></tr>
+<tr><td>2.358628131504372</td><td>-1.557299020469622</td><td>32</td><td>6.093043334547767e-20</td><td>0.012963210764621674</td><td>M6V</td></tr>
+<tr><td>1.4521739653435157</td><td>-0.851382522869428</td><td>32</td><td>2.1990614865733614e-14</td><td>0.117485467623293</td><td>M6V</td></tr>
+<tr><td>-0.4565704589836154</td><td>0.18085670454520986</td><td>29</td><td>5.555250603467652e-13</td><td>0.26443896759352503</td><td>M3V</td></tr>
+<tr><td>-4.2880207051930626</td><td>4.243801810096584</td><td>27</td><td>4.805552069892325e-12</td><td>0.48208630286109483</td><td>M1V</td></tr>
+<tr><td>-1.0717398664268987</td><td>3.7082294509014195</td><td>32</td><td>1.471179396509044e-15</td><td>0.08623356844839875</td><td>M6V</td></tr>
+<tr><td>2.1224836756915306</td><td>1.1488760649099696</td><td>32</td><td>4.0087183177773387e-17</td><td>0.05865254767345462</td><td>M6V</td></tr>
+<tr><td>-4.886571147953505</td><td>1.7463696161882218</td><td>29</td><td>9.928282883555495e-13</td><td>0.3244795598952535</td><td>M3V</td></tr>
+</table></div></div>
+</div>
+<p>Here we can see the spatial information is in the form of an <code class="docutils literal notranslate"><span class="pre">astropy.Table</span></code>.</p>
+<p>The columns <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> show the position of each star in <code class="docutils literal notranslate"><span class="pre">arcsec</span></code> relative to the centre of the field of view.</p>
+<p>The column <code class="docutils literal notranslate"><span class="pre">ref</span></code> connects each star in this table to a spectrum in the following list:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">src</span><span class="o">.</span><span class="n">spectra</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;synphot.spectrum.SourceSpectrum object at 0x7fb8e6488b80&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8e6488760&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f47945e0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4794790&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f463edf0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f465df10&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f463e910&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f466afd0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f477ff70&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f463ed00&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46f8d90&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4706a90&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4706af0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f466a910&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4717e20&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f465db50&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4706610&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4724e20&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4730fd0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f47065b0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f47068b0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46c2ca0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4730df0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8fe602d00&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f47248b0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8e60c55e0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f47300a0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46c2eb0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46dea60&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f4730580&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46dc2e0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46b0d30&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46dc040&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46a3fd0&gt;,
+ &lt;synphot.spectrum.SourceSpectrum object at 0x7fb8f46deac0&gt;]
+</pre></div></div>
+</div>
+<p>When ScopeSim ingests this Source object, it will look primarily at these three columns.</p>
+<p>Now for a graphical representation of the cluster as it will be seen by ScopeSim:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">src</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X [arcsec]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y [arcsec]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Text(0, 0.5, &#39;Y [arcsec]&#39;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_stellar_8_1.png" src="../_images/notebooks_stellar_8_1.png" />
+</div>
+</div>
+</section>
+<section id="Star-Grid-and-Field">
+<h2>Star Grid and Field<a class="headerlink" href="#Star-Grid-and-Field" title="Permalink to this headline">¶</a></h2>
+<p>These are two functions that are good to test simulations quickly</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scopesim_templates.stellar</span> <span class="kn">import</span> <span class="n">star_field</span><span class="p">,</span> <span class="n">star_grid</span>
+
+<span class="n">field</span> <span class="o">=</span> <span class="n">star_field</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">mmin</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">mmax</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">filter_name</span><span class="o">=</span><span class="s2">&quot;Ks&quot;</span><span class="p">)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">star_grid</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">mmin</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">mmax</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">separation</span><span class="o">=</span><span class="mi">1</span> <span class="p">,</span> <span class="n">filter_name</span><span class="o">=</span><span class="s2">&quot;Ks&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+
+<span class="n">size</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">field</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+
+<span class="n">size</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;A0V&#39;]
+[&#39;A0V&#39;]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.collections.PathCollection at 0x7fb8e090f460&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_stellar_10_2.png" src="../_images/notebooks_stellar_10_2.png" />
+</div>
+</div>
+<p>In both cases we generated 400 sources between magnitudes 15 (<code class="docutils literal notranslate"><span class="pre">mmin</span></code>) and 25 (<code class="docutils literal notranslate"><span class="pre">mmax</span></code>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">star_field</span></code> places the stars at random, whereas <code class="docutils literal notranslate"><span class="pre">star_grid</span></code> place them in a regular partern controled by <code class="docutils literal notranslate"><span class="pre">separation</span></code> distance.</p>
+<p>The size of the simbols illustrate the magnitudes of the stars</p>
+</section>
+<section id="Stars">
+<h2>Stars<a class="headerlink" href="#Stars" title="Permalink to this headline">¶</a></h2>
+<p>The core of the <code class="docutils literal notranslate"><span class="pre">stellar</span></code> module is however the <code class="docutils literal notranslate"><span class="pre">star</span></code> function which can create any field according to the user needs</p>
+<p>In this case we generate a stellar field following a 2D gaussian distribution with a star of every type in the pickles stellar library</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scopesim_templates.stellar</span> <span class="kn">import</span> <span class="n">stars</span>
+<span class="kn">from</span> <span class="nn">spextra.database</span> <span class="kn">import</span> <span class="n">SpecLibrary</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lib</span> <span class="o">=</span> <span class="n">SpecLibrary</span><span class="p">(</span><span class="s2">&quot;pickles&quot;</span><span class="p">)</span>
+
+<span class="n">spectypes</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">template_names</span>
+<span class="n">nstars</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spectypes</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nstars</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">nstars</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span>
+<span class="n">mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">nstars</span><span class="p">)</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">stars</span><span class="p">(</span><span class="n">filter_name</span><span class="o">=</span><span class="s2">&quot;J&quot;</span><span class="p">,</span> <span class="n">amplitudes</span><span class="o">=</span><span class="n">mags</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">spec_types</span><span class="o">=</span><span class="n">spectypes</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s2">&quot;pickles&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">src</span><span class="o">.</span><span class="n">fields</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;Table length=131&gt;
+          x                   y           ref   weight spec_types
+        arcsec              arcsec
+       float64             float64       int64 float64    str6
+ ------------------- ------------------- ----- ------- ----------
+   2.007451224861396  0.1681071655341375   105     1.0        o5v
+   8.593728449012035  1.0022428226715767   106     1.0      o8iii
+  15.794690993340524   1.048888607243668   107     1.0        o9v
+ 0.12354371714603121  2.9528383261426407    13     1.0        b0i
+ -0.4828399272073905 -1.8187067436493747    14     1.0        b0v
+   8.269207260479128 -3.4031373210003206    15     1.0     b12iii
+   8.302089462394221  -9.269016047589648    16     1.0        b1i
+   6.231844521598118  -6.148941889604722    17     1.0        b1v
+ -1.6268286899162279   18.51644268014349    18     1.0       b2ii
+ -0.3335389243832958 0.45403662143450824    19     1.0       b2iv
+  -6.112911809076027   8.548989247553019    20     1.0        b3i
+ -18.560993941068592 -2.7797644404218276    21     1.0      b3iii
+                 ...                 ...   ...     ...        ...
+  14.288097551509324   5.393734390407308    94     1.0      m3iii
+ -3.4645252882727835  -7.660729789710751    95     1.0        m3v
+  11.695467015092449 -0.9015068233794685    96     1.0      m4iii
+ -3.8953999312417196  -3.202120466135513    97     1.0        m4v
+  21.966363419323997 -13.237923825721369    98     1.0      m5iii
+ -1.0680582531325613 -11.609390621966567    99     1.0        m5v
+  12.865638982994145   3.020365939546597   100     1.0      m6iii
+    6.38962463871831  -6.146996576751654   101     1.0        m6v
+ -16.111343878523737  11.306217143666768   102     1.0      m7iii
+  -4.618571067109303  10.398491786225657   103     1.0      m8iii
+ -0.4056773956303084  19.390809913922574   104     1.0      m9iii
+  13.552636359858983  -8.507559747977913    86     1.0     m10iii]
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../source_object.html" class="btn btn-neutral float-right" title="Source object interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="starting.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, A* Vienna
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
