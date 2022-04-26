@@ -10,7 +10,7 @@ pyyaml>5
 synphot
 photutils
 
+git+https://github.com/AstarVienna/ScopeSim.git@dev_master
 pyckles
 spextra
 skycalc_ipy
-git+https://github.com/AstarVienna/ScopeSim.git@dev_master
