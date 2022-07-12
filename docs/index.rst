@@ -5,12 +5,10 @@
       th { display:none; }
     </style>
 
-
 .. image:: _static/logos/logo_long_scopesim_templates_t.png
     :width: 600 px
     :alt: Welcome to the ScopeSim_Templates Documentation!
     :align: center
-
 
 |logo| Another tool from the `A* Vienna software team <https://astarvienna.github.io/>`_
 
@@ -25,7 +23,10 @@ A library of templates and helper functions for creating
 In short :class:`scopesim.source.source.Source` objects contain a description of the spatial and
 spectral information of the source. For more information see :ref:`here <Source Object>`.
 
+.. warning:: July 2022: The downloadable content server was retired and the data migrated to a new server.
 
+   ScopeSim_templates v0.4.2 and above have been redirected to a new server URL.
+   For older verions, please either upgrade to the latest version (``pip install --upgrade scopesim_templates``), or follow these `instructions to update the server URL <https://astarvienna.github.io/server_upgrade_instructions.html>`_ in the config file.
 
 Installation
 ------------
