@@ -11,10 +11,10 @@ import yaml
 
 import pyckles
 
-from ....stellar import stars
-from ....extragalactic import elliptical
-from ....rc import ter_curve_utils as tcu
-from ....rc import Source
+from ...stellar import stars
+from ...extragalactic import elliptical
+from ...rc import ter_curve_utils as tcu
+from ...rc import Source
 
 
 DATA_DIR = pth.abspath(pth.dirname(__file__))

@@ -8,7 +8,7 @@ from matplotlib.colors import LogNorm
 
 from scopesim import load_example_optical_train
 
-from scopesim_templates.calibration.micado import viking_fields as vf
+from scopesim_templates.micado import viking_fields as vf
 
 PLOTS = False
 
