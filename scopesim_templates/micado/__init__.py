@@ -7,7 +7,7 @@ from ..utils.general_utils import add_function_call_str
 
 @add_function_call_str
 def darkness():
-    _darkness()
+    return _darkness()
 
 
 @add_function_call_str
