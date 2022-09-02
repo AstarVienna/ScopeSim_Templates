@@ -4,6 +4,7 @@ from .cluster import cluster as _cluster
 from .viking_fields import viking_fields
 from ..utils.general_utils import add_function_call_str
 
+from . import spectral_calibrations
 
 @add_function_call_str
 def darkness():

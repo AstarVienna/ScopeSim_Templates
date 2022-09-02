@@ -16,9 +16,12 @@ DATA_DIR = p.join(p.dirname(__file__), "data")
 
 
 def line_list(unit_flux=1*PHOTLAM,
-              dwave=0.0001,
-              smoothing_fwhm=5,
-              filename="masterlinelist_2.1.txt"):
+              dwave=0.001,
+              smoothing_fwhm=0.003,
+              width=15.,
+              height=1.,
+              filename="masterlinelist_2.1.txt",
+              ):
     """
     Make a ScopeSim.Source object for the calibration lamp line list
 
@@ -31,10 +34,9 @@ def line_list(unit_flux=1*PHOTLAM,
         Flux conversion factor for a relative intensity value of 1.
         The unit can be overridden with any equivalent astropy Quantity.
     dwave : float
-        [nm] Bin width
+        Bin width in units of input file
     smoothing_fwhm : int, float
-        Default 5 bins. FWHM of smoothing kernel in units of number of bins
-        (bin width = dwave)
+        FWHM of smoothing kernel in units of ``dwave`` (i.e. input file)
     filename : str
         Name of line list file found in ``micado/data``
 
@@ -66,9 +68,10 @@ def line_list(unit_flux=1*PHOTLAM,
         unit_flux *= PHOTLAM
 
     # import line list and pad with zeros
-    wave, flux = import_line_spectrum(filename)
+    wave, flux = import_line_spectrum(filename, dwave)
+
     if smoothing_fwhm is not None and isinstance(smoothing_fwhm, (int, float)):
-        sigma = smoothing_fwhm / 2.35
+        sigma = smoothing_fwhm / dwave / 2.35
         kernel = signal.windows.gaussian(M=int(8 * sigma + 1), std=sigma)
         kernel /= kernel.sum()
         flux = signal.convolve(flux, kernel, mode="same")
@@ -78,10 +81,13 @@ def line_list(unit_flux=1*PHOTLAM,
                           lookup_table=flux * unit_flux)
 
     # make unity image that covers MICADO FOV of +/- 30" arcsec
-    hw = 30./3600         # input needed in [deg]
-    hdr = ipu.header_from_list_of_xy([-hw, hw], [-hw, hw], 1./3600)      # [deg]
+    dw = 0.5 * width / 3600         # input needed in [deg]
+    dh = 0.5 * height / 3600         # input needed in [deg]
+    pixel_scale = 0.1 * dw
+
+    hdr = ipu.header_from_list_of_xy([-dw, dw], [-dh, dh], pixel_scale)      # [deg]
     hdr["SPEC_REF"] = 0
-    im = np.ones((hdr["NAXIS2"], hdr["NAXIS2"]))
+    im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
     field = fits.ImageHDU(header=hdr, data=im)
 
     line_list_src = Source(image_hdu=field, spectra=[spec])
@@ -89,7 +95,7 @@ def line_list(unit_flux=1*PHOTLAM,
     return line_list_src
 
 
-def import_line_spectrum(filename):
+def import_line_spectrum(filename, dwave=0.0001):
     """
     Read in and pad the line list into a spectrum
 
@@ -107,14 +113,16 @@ def import_line_spectrum(filename):
 
     """
     line_tbl = ioascii.read(p.join(DATA_DIR, filename))
-    dwave = 0.0001
-    wave = line_tbl["Wavelength"]
-    flux = line_tbl["Relative_Intensity"]
-    i_bin = ((wave - wave[0]) / dwave).astype(int)
+
+    wave = line_tbl["Wavelength"].data
+    wave = np.round(wave / dwave) * dwave       # round to level of dwave
     wave_filled = np.arange(wave[0], wave[-1] + dwave, dwave)
-    flux_filled = np.zeros(i_bin[-1] + 1)
-    # .. todo: warning, this only works if dwave is smaller than the minimum
-    #          distance between lines
-    flux_filled[i_bin] += flux
+    w0 = wave[0]
+
+    flux = line_tbl["Relative_Intensity"].data
+    flux_filled = np.zeros_like(wave_filled)
+    for w, f in zip(wave, flux):
+        i = int((w - w0) / dwave)
+        flux_filled[i] += f
 
     return wave_filled, flux_filled
