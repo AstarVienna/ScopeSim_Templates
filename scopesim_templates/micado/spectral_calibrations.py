@@ -114,13 +114,13 @@ def import_line_spectrum(filename, dwave=0.0001):
     """
     line_tbl = ioascii.read(p.join(DATA_DIR, filename))
 
+    flux = line_tbl["Relative_Intensity"].data
     wave = line_tbl["Wavelength"].data
     wave = np.round(wave / dwave) * dwave       # round to level of dwave
-    wave_filled = np.arange(wave[0], wave[-1] + dwave, dwave)
-    w0 = wave[0]
-
-    flux = line_tbl["Relative_Intensity"].data
+    w0, w1 = wave[0], wave[-1]
+    wave_filled = np.arange(w0 - dwave, w1 + 2 * dwave, dwave)
     flux_filled = np.zeros_like(wave_filled)
+
     for w, f in zip(wave, flux):
         i = int((w - w0) / dwave)
         flux_filled[i] += f

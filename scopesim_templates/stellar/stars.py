@@ -181,7 +181,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
 
         >>> import numpy as np
         >>> import astropy.units as u
-        >>> from scopesim_templates.basic.stars import stars
+        >>> from scopesim_templates.stellar import stars
         >>>
         >>> n = 100
         >>> spec_types = ["A0V", "G2V", "K0III", "M5III", "O8I"]
