@@ -14,5 +14,5 @@ from .stellar.stars import star, stars, star_grid, star_field
 from .stellar.clusters import cluster
 from .extragalactic.galaxies import galaxy, galaxy3d, elliptical
 from .calibration.calibration import empty_sky
-from .calibration.micado import darkness, flatlamp
-from .calibration import micado
+from .micado import darkness, flatlamp
+from . import micado

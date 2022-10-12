@@ -44,6 +44,14 @@ def function_call_str(func, args):
     return func_call
 
 
+def add_function_call_str(func, *args, **kwargs):
+    def inner_func():
+        src = func(*args, **kwargs)
+        src.meta["function_call"] = function_call_str(func, kwargs)
+        return src
+    return inner_func
+
+
 def make_img_wcs_header(ra, dec, pixel_scale, image_size):
     """
     Create a WCS header for an image
