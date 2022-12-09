@@ -19,7 +19,8 @@ __all__ = ["star",
            ]
 
 
-def star_field(n, mmin, mmax, width, height=None, filter_name="V", ra=RA0, dec=DEC0, **kwargs):
+def star_field(n, mmin, mmax, width, height=None, filter_name="V",
+               ra=RA0, dec=DEC0, **kwargs):
     """
     Creates a super basic field of stars with random positions and brightnesses
 
@@ -145,7 +146,8 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1, ra=RA0, dec=DEC0):
 
 
 @deprecated_renamed_argument('mags', 'amplitudes', '0.1')
-def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, dec=DEC0):
+def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
+          ra=RA0, dec=DEC0):
     """
     Creates a scopesim.Source object for a list of stars with given amplitudes
     
@@ -166,9 +168,11 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles", ra=RA0, 
     ra, dec : float
         coordinates of the center of the field
     library: str
-        Library where the spectroscopic types are taken. By default are taken from the pickles library using
-        the `pyckles` package. Other libraries available are kurucz, bosz/lr, bosz/mr, bosz/hr, etc for MIR coverage
-        and different spectral resolutions. Please see the `spextra` package for more information
+        Library where the spectroscopic types are taken. By default are taken
+        from the pickles library using the `pyckles` package. Other libraries
+        available are kurucz, bosz/lr, bosz/mr, bosz/hr, etc for MIR coverage
+        and different spectral resolutions. Please see the `spextra` package
+        for more information
 
 
     Returns
