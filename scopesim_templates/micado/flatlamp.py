@@ -5,60 +5,6 @@ from astropy.io import fits
 import astropy.units as u
 from scopesim import Source
 import scopesim
-from synphot import Empirical1D, SourceSpectrum, BlackBody1D
-
-
-def pinhole_mask(x, y, waves, temperature=1500*u.K, scale_factor=1):
-    """
-    Creates a Source object with point sources at coordinates (x, y) in the slit
-
-    Parameters
-    ----------
-    x, y : array-like
-        [arcsec] Coords relative to centre of FOV (i.e. optical axis)
-    waves : array-like, u.Quantity
-        [um] Array of wavelength values.
-    temperature : float, u.Quantity, optional
-        [deg K] Temperature of WCU blackbody spectrum.
-    scale_factor : float, optional
-        Multiplier for the flux spectrum, if the flux is too weak.
-
-
-    Returns
-    -------
-    src : scopesim.Source
-
-
-    Examples
-    --------
-    Pin-holes every 0.5 arcsec along the MICADO long-slit
-    ::
-        x = np.arange(-1.5, 13.51, 0.5)
-        y = np.zeros_like(x)
-        waves = np.arange(0.7, 2.5, 0.001) * u.um
-
-        src = pinhole_mask(x, y, waves, scale_factor=9001)
-
-    A grid of pin-holes every 5 arcsec for the MICADO 4mas IMG mode
-    ::
-        dr = np.arange(-25, 26, 5)      # [arcsec]
-        x, y = np.meshgrid(dr, dr)
-        x, y = x.flatten(), y.flatten()
-        waves = np.arange(0.7, 2.5, 0.001) * u.um
-
-        src = pinhole_mask(x, y, waves, scale_factor=9001)
-
-    """
-    if not isinstance(waves, u.Quantity):
-        waves *= u.um
-    if not isinstance(temperature, u.Quantity):
-        temperature *= u.K
-
-    blackbody_spectrum = BlackBody1D(temperature=temperature)
-    spec = blackbody_spectrum(waves) * scale_factor
-    src = Source(x=x, y=y, lam=waves, spectra=[spec])
-
-    return src
 
 
 def flatlamp(
