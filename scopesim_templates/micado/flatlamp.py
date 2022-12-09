@@ -1,10 +1,54 @@
 """Flat lamp for MICADO."""
 import numpy
 import numpy as np
-import scopesim
 from astropy.io import fits
-from scopesim import Source
 import astropy.units as u
+from scopesim import Source
+import scopesim
+from synphot import Empirical1D, SourceSpectrum, BlackBody1D
+
+
+
+
+
+
+def pinhole_mask(x, y, waves, temperature=1500*u.K):
+    """
+    Creates a Source object with point sources at coordinates (x, y) in the slit
+
+    Parameters
+    ----------
+    x, y : array-like
+        [arcsec]
+    waves : array-like
+        [um]
+    temperature : float, astropy.Quantity, optional
+        [deg K]
+
+    Returns
+    -------
+    src : scopesim.Source
+
+
+    Examples
+    --------
+    ::
+        x = np.arange(-1.5, 13.51, 0.5)
+        y = np.zeros_like(x)
+        waves = np.arange(0.7, 2.5, 0.001) * u.um
+        src = pinhole_mask(x, y, waves)
+
+    """
+    if not isinstance(waves, u.Quantity):
+        wave *= u.um
+    if not isinstance(temperature, u.Quantity):
+        temperature *= u.K
+
+    blackbody_spectrum = BlackBody1D(temperature=temperature)
+    spec = blackbody_spectrum(wav)
+    src = Source(x=x, y=y, lam=waves, spectra=[spec])
+
+    return src
 
 
 def flatlamp(
