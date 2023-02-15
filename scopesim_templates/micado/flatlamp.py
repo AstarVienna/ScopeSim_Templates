@@ -1,10 +1,10 @@
 """Flat lamp for MICADO."""
 import numpy
 import numpy as np
-import scopesim
 from astropy.io import fits
-from scopesim import Source
 import astropy.units as u
+from scopesim import Source
+import scopesim
 
 
 def flatlamp(
@@ -76,7 +76,8 @@ def flatlamp(
 
     sa = 1.0200000e+02
     se = 3.3502039e+05
-    lam = numpy.logspace(numpy.log(sa), numpy.log(se), base=numpy.e, num=number_of_points) * u.Angstrom
+    lam = numpy.logspace(numpy.log(sa), numpy.log(se), base=numpy.e,
+                         num=number_of_points) * u.Angstrom
 
     return Source(
             image_hdu=hdu,

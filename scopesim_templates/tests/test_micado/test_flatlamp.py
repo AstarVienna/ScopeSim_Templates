@@ -1,6 +1,7 @@
 """Test for flatlamp."""
 from astropy.io.fits import ImageHDU
 from synphot import SourceSpectrum
+
 from scopesim_templates.micado import flatlamp
 from scopesim_templates.rc import Source
 

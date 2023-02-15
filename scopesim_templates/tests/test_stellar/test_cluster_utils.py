@@ -36,8 +36,8 @@ class TestMass2SpT:
     def test_returns_g2v_for_1_msun(self):
         assert cu.mass2spt(1.02) == "G2V"
 
-    def test_returns_m9v_for_0_01_msun(self):
-        assert cu.mass2spt(0.01) == "M9V"
+    def test_returns_m95v_for_0_01_msun(self):
+        assert cu.mass2spt(0.01) == "M9.5V"
 
     def test_multiple_masses_at_once(self):
         spts = cu.mass2spt([2.3, 1.02])
