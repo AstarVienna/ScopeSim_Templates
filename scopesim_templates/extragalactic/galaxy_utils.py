@@ -57,7 +57,7 @@ def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
     """
 
     # Silently cast to integer
-    os_factor = np.int(oversample)
+    os_factor = int(oversample)
 
     if os_factor <= 0:
         raise ValueError("Oversampling factor must be >=1.")
