@@ -326,6 +326,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     # ..todo: shift header values according to offset
 
     src.meta.update(params)
+    # Ensure the number of _meta_dicts is the same as the number of _fields.
+    src._meta_dicts += [{}] * (len(src.fields) - len(src._meta_dicts))
 
     return src
 
