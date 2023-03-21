@@ -70,7 +70,6 @@ class TestVikingCatalogues:
         assert len(viking_src.fields) == len(gals) + len(stars)
 
 
-@pytest.mark.xfail(reason="load_example_optical_train is broken on CI, see https://github.com/AstarVienna/ScopeSim/issues/160")
 class TestWithScopeSim:
     def test_runs_through_scopesim_basic_instrument(self):
         # configure basic_instrument to MICADO specs
