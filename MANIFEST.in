@@ -1,5 +1,5 @@
-include README.md
-include LICENCE.txt
+include README.rst
+include LICENSE
 include scopesim_templates/defaults.yaml
 include scopesim_templates/stellar/mamajek_alt.dat
 graft scopesim_templates/micado/data/
