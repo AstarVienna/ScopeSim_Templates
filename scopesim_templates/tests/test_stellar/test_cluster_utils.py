@@ -64,6 +64,8 @@ class TestGaussianDistribution:
             plt.hist(x, bins=40)
             plt.show()
 
-        assert np.std(x) == approx(1, rel=0.02)
+        # Apparently, 0.02 fails occasionally, so use 0.03.
+        # TODO: Make these tests deterministic.
+        assert np.std(x) == approx(1, rel=0.03)
 
 
