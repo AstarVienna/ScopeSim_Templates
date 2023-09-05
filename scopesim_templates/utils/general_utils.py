@@ -38,8 +38,8 @@ def ab_spectrum(mag=0):
 
 def function_call_str(func, args):
     func_str = ".".join([func.__module__, func.__name__])
-    args_str = ", ".join(["{}={}".format(key, args[key]) for key in args])
-    func_call = "{}({})".format(func_str, args_str)
+    args_str = ", ".join([f"{key}={args[key]}" for key in args])
+    func_call = f"{func_str}({args_str})"
 
     return func_call
 
@@ -54,7 +54,7 @@ def add_function_call_str(func, *args, **kwargs):
 
 def make_img_wcs_header(ra, dec, pixel_scale, image_size):
     """
-    Create a WCS header for an image
+    Create a WCS header for an image.
 
     ra : str, float
         "hh:mm:ss.s" or deg for the center of the image
@@ -90,7 +90,5 @@ def make_img_wcs_header(ra, dec, pixel_scale, image_size):
 
 
 def make_cube_wcs_header():
-    """
-    TODO: Think if we need it
-    """
-    return NotImplementedError
+    """TODO: Think if we need it."""
+    raise NotImplementedError()

@@ -1,7 +1,6 @@
 import os
 import numpy as np
 from astropy.io import ascii
-from astropy.table import Table
 from scipy.interpolate import interp1d
 import pyckles
 
@@ -33,32 +32,29 @@ def mass2spt(mass):
     if isinstance(mass, (list, np.ndarray)):
         spts = [mass2spt(m) for m in mass]
         return same_type(spts, mass)
-    else:
-        ii = int(F_MASS2IDX(mass))
-        return MAMAJEK["SpT"][ii]
+    ii = int(F_MASS2IDX(mass))
+    return MAMAJEK["SpT"][ii]
 
 
 def mass2Mv(mass):
     if isinstance(mass, (list, np.ndarray)):
         spts = [mass2Mv(m) for m in mass]
         return same_type(spts, mass)
-    else:
-        return F_MASS2MV(mass)
+    return F_MASS2MV(mass)
 
 
 def closest_pickles(spt):
     if isinstance(spt, (list, np.ndarray)):
         spts = [closest_pickles(s) for s in spt]
         return same_type(spts, spt)
-    else:
 
-        mask_lum = np.array([spt[0] in pic_spt for pic_spt in PICKLES_MS_V])
-        lum_types = PICKLES_MS_V[mask_lum]
-        classes = np.array([float(lt[1:-1]) for lt in lum_types])
-        ii = np.argmin(np.abs(classes - float(spt[1:-1])))
-        closest_pickle = lum_types[ii]
+    mask_lum = np.array([spt[0] in pic_spt for pic_spt in PICKLES_MS_V])
+    lum_types = PICKLES_MS_V[mask_lum]
+    classes = np.array([float(lt[1:-1]) for lt in lum_types])
+    ii = np.argmin(np.abs(classes - float(spt[1:-1])))
+    closest_pickle = lum_types[ii]
 
-        return closest_pickle
+    return closest_pickle
 
 
 def king_distribution(n, r_core, r_tidal):
@@ -74,9 +70,3 @@ def gaussian_distribution(n, fwhm, seed=None):
         np.random.seed(seed)
     x, y = np.random.normal(loc=0, scale=fwhm/2.35, size=(2, n))
     return x, y
-
-
-
-
-
-

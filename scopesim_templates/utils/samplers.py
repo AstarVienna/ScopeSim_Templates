@@ -1,17 +1,20 @@
-# a collection of samplers for generating distributions
+"""A collection of samplers for generating distributions."""
+
 import numpy as np
 
 
 def randomvariate(pdf, n, xmin, xmax):
     """
-    Create random numbers according to an arbitrary PDF
-    Uses the rejection method for generating random numbers derived from an arbitrary
-    probability distribution. For reference, see Bevington's book, page 84. Based on
-    rejection*.py.
+    Create random numbers according to an arbitrary PDF.
+
+    Uses the rejection method for generating random numbers derived from an
+    arbitrary probability distribution. For reference, see Bevington's book,
+    page 84. Based on rejection*.py.
     Usage:
     >>> randomvariate(P,N,xmin,xmax)
     where
-    P : probability distribution function from which you want to generate random numbers
+    P : probability distribution function from which you want to generate
+    random numbers
     N : desired number of random values
     xmin,xmax : range of random numbers desired
     Returns:
@@ -49,20 +52,30 @@ def randomvariate(pdf, n, xmin, xmax):
 
 def np_rvs(pdf, n, xmin, xmax, sampling=10000):
     """
-    numpy adaptation of randomvariate
+    Numpy adaptation of randomvariate.
+
     This works in only one dimension
-    This version is 100 to 1000 times faster than randomvariate for reasonable sized samples
+    This version is 100 to 1000 times faster than randomvariate for reasonable
+    sized samples
+
     Parameters
     ----------
-    pdf : probability density function to sample
-    n : number of returned random values
-    xmin, xmax: range of random numbers desired
-    sampling : initial sampling of the parameter space. Increase for complex distributions.
+    pdf : TYPE
+        Probability density function to sample.
+    n : TYPE
+        Number of returned random values.
+    xmin, xmax : TYPE
+        Range of random numbers desired.
+    sampling : TYPE, optional
+        Initial sampling of the parameter space. Increase for complex
+        distributions. The default is 10000.
+
     Returns
     -------
-        np.array with the values
-    """
+    TYPE
+        np.array with the values.
 
+    """
     x = np.linspace(xmin, xmax, sampling)
     y = pdf(x)
     pmin = y.min()
@@ -80,20 +93,17 @@ def np_rvs(pdf, n, xmin, xmax, sampling=10000):
     return ran[:n]
 
 
-#def uniform_proposal(x, xmin, ):
-#    return np.random.uniform(xmin, xmax)
-
-
 def _metropolis_sampler(pdf, nsamples, xmin, xmax):
     """
-        Taken from Here
-        https://stackoverflow.com/questions/51050658/how-to-generate-random-numbers-with-predefined-probability-distribution
-        Usage
+    Taken from here:
+    https://stackoverflow.com/questions/51050658/how-to-generate-random-numbers-with-predefined-probability-distribution
+
+    Usage
         s1 = Sersic1D(amplitude=1, r_eff=5, n=4)
         p = lambda r: s1(r)
         samples = list(metropolis_sampler(p, N))
     """
-    x = np.random.uniform(xmin, xmax) # start somewhere
+    x = np.random.uniform(xmin, xmax)  # start somewhere
 
     for i in range(nsamples):
         trial = np.random.uniform(xmin, xmax)  # random neighbour from the proposal distribution
@@ -108,7 +118,10 @@ def _metropolis_sampler(pdf, nsamples, xmin, xmax):
 def metropolis_sampler(pdf, nsamples, xmin, xmax):
     """
     This is a version of a metropolis sampler.
-    Depending of the characteristics of the distribution it can be slower or comparable in speed to rvs
+
+    Depending of the characteristics of the distribution it can be slower or
+    comparable in speed to rvs
     """
-    result = list(_metropolis_sampler(pdf=pdf, nsamples=nsamples, xmin=xmin, xmax=xmax))
+    result = list(_metropolis_sampler(pdf=pdf, nsamples=nsamples,
+                                      xmin=xmin, xmax=xmax))
     return np.array(result)
