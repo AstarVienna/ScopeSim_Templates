@@ -40,9 +40,9 @@ def galaxy(sed,           # The SED of the galaxy
            dec=-10):
 
     """
-    Creates a source object of a galaxy described by its Sersic index and other  parameters.
+    Create a source object of a galaxy described by its Sersic index and other parameters.
 
-    This function is ideal for imaging or simple spectroscopy
+    This function is ideal for imaging or simple spectroscopy.
 
     Parameters
     ----------
@@ -78,12 +78,11 @@ def galaxy(sed,           # The SED of the galaxy
     params["object"] = "galaxy"
     params["function_call"] = gu.function_call_str(galaxy, params)
 
-    if isinstance(amplitude, u.Quantity) is False:
+    if not isinstance(amplitude, u.Quantity):
         amplitude = amplitude * u.ABmag
-    if isinstance(pixel_scale, u.Quantity) is False:
-        pixel_scale = pixel_scale * u.arcsec
-    if isinstance(r_eff, u.Quantity) is False:
-        r_eff = r_eff * u.arcsec
+    pixel_scale <<= u.arcsec
+    r_eff <<= u.arcsec
+
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
         scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
@@ -127,7 +126,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
              ngrid=10):       # griding parameter
 
     """
-    Creates a simplified 3D map of a galaxy with flux, rotation velocity and velocity dispersion
+    Create a simplified 3D map of a galaxy with flux, rotation velocity and velocity dispersion.
 
     The maps are binned according to the `ngrid` parameter, higher `ngrid` will create
     finer binned fields, but it may increase the computation time.
@@ -174,16 +173,13 @@ def galaxy3d(sed,           # The SED of the galaxy,
     params["object"] = "galaxy3D"
     params["function_call"] = gu.function_call_str(galaxy3d, params)
 
-    if isinstance(amplitude, u.Quantity) is False:
+    if not isinstance(amplitude, u.Quantity):
         amplitude = amplitude * u.ABmag
-    if isinstance(pixel_scale, u.Quantity) is False:
-        pixel_scale = pixel_scale * u.arcsec
-    if isinstance(r_eff, u.Quantity) is False:
-        r_eff = r_eff * u.arcsec
-    if isinstance(vmax, u.Quantity) is False:
-        vmax = vmax*u.km/u.s
-    if isinstance(sigma, u.Quantity) is False:
-        sigma = sigma*u.km/u.s
+    pixel_scale <<= u.arcsec
+    r_eff <<= u.arcsec
+    vmax <<= u.km / u.s
+    sigma <<= u.km / u.s
+
     if isinstance(sed, str):
         sp = Spextrum(sed).redshift(z=z)
         scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
@@ -214,19 +210,19 @@ def galaxy3d(sed,           # The SED of the galaxy,
     masks = gal.get_masks(ngrid=ngrid)
     w, h = intensity.shape
 
-    wcs_dict = dict(NAXIS=2,
-                    NAXIS1=2 * x_0 + 1,
-                    NAXIS2=2 * y_0 + 1,
-                    CRPIX1=w // 2,
-                    CRPIX2=h // 2,
-                    CRVAL1=0,
-                    CRVAL2=0,
-                    CDELT1=-1 * pixel_scale.to(u.deg).value,
-                    CDELT2=pixel_scale.to(u.deg).value,
-                    CUNIT1="DEG",
-                    CUNIT2="DEG",
-                    CTYPE1='RA---TAN',
-                    CTYPE2='DEC--TAN')
+    wcs_dict = {NAXIS: 2,
+                NAXIS1: 2 * x_0 + 1,
+                NAXIS2: 2 * y_0 + 1,
+                CRPIX1: w // 2,
+                CRPIX2: h // 2,
+                CRVAL1: 0,
+                CRVAL2: 0,
+                CDELT1: -1 * pixel_scale.to(u.deg).value,
+                CDELT2: pixel_scale.to(u.deg).value,
+                CUNIT1: "DEG",
+                CUNIT2: "DEG",
+                CTYPE1: "RA---TAN",
+                CTYPE2: "DEC--TAN"}
 
     wcs = WCS(wcs_dict)
 
@@ -258,7 +254,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
 def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     """
-    Creates a spiral galaxy using NGC1232L as the template
+    Create a spiral galaxy using NGC1232L as the template.
 
     Two components are included
         - the newer population (spiral arms), and
@@ -280,7 +276,6 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     params = {"extent": extent,
               "fluxes": fluxes,
               "offset": offset}
-    pass
     params["function_call"] = gu.function_call_str(spiral_two_component, params)
     params["object"] = "two component spiral galaxy"
 
@@ -288,8 +283,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         if extent.unit.physical_type == "angle":
             extent = extent.to(u.deg).value
         else:
-            raise ValueError("Physical type of extent must be 'angle': "
-                             "".format(extent.unit.physical_type))
+            raise ValueError("Physical type of extent must be 'angle', but is:"
+                             f" {extent.unit.physical_type}.")
     else:
         extent /= 3600.
 
@@ -337,7 +332,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 def elliptical(r_eff, pixel_scale, filter_name, amplitude,
                spectrum="NGC_0584", **kwargs):
     """
-    Create a extended :class:`.Source` object for an elliptical galaxy
+    Create a extended :class:`.Source` object for an elliptical galaxy.
 
     .. note:: This docstring is from simcado, needs to be updated
 
