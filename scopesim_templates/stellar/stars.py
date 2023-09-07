@@ -7,7 +7,8 @@ import pyckles
 from spextra import Spextrum
 
 from scopesim_templates.stellar import stars_utils as su
-from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
+from scopesim_templates.utils.general_utils import function_call_str, \
+    RA0, DEC0, add_function_call_str
 from scopesim_templates import rc
 
 
@@ -64,7 +65,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
               "ra": ra,
               "dec": dec}
     params.update(kwargs)
-    params["function_call"] = function_call_str(star_field, params)
+    params["function_call"] = function_call_str(star_field, kwargs=params)
     params["object"] = "star field"
 
     if height is None:
@@ -94,6 +95,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
     return src
 
 
+@add_function_call_str
 def star_grid(n, mmin, mmax, filter_name="V", separation=1, ra=RA0, dec=DEC0):
     """
     Create a square grid of A0V stars at equal magnitude intervals.
@@ -122,28 +124,17 @@ def star_grid(n, mmin, mmax, filter_name="V", separation=1, ra=RA0, dec=DEC0):
     src : ``scopesim.Source``
 
     """
-    params = {"n": n,
-              "mmin": mmin,
-              "mmax": mmax,
-              "filter_name": filter_name,
-              "separation": separation,
-              "ra": ra,
-              "dec": dec}
-    params["function_call"] = function_call_str(star_grid, params)
-    params["object"] = "star grid"
-
     side_len = int(np.ceil(np.sqrt(n)))
     x = separation * (np.arange(n) % side_len - (side_len - 1) / 2)
     y = separation * (np.arange(n) // side_len - (side_len - 1) / 2)
 
     src = star_field(n, mmin, mmax, side_len, filter_name=filter_name,
                      x=x, y=y, ra=ra, dec=dec)
-    src.meta.update(params)
-
     return src
 
 
 @deprecated_renamed_argument("mags", "amplitudes", "0.1")
+@add_function_call_str
 def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
           ra=RA0, dec=DEC0):
     """
@@ -216,19 +207,6 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         >>> stars(filter_name, amplitudes, spec_types, x=x, y=y)
 
     """
-    params = {"filter_name": filter_name,
-              "amplitudes": amplitudes,
-              "spec_types": spec_types,
-              "x": x,
-              "y": y,
-              "object": "stars",
-              "ra": ra,
-              "dec": dec,
-              "object": "stars"}
-
-    params["function_call"] = function_call_str(star_grid, params)
-    params["object"] = "stars"
-
     if not isinstance(spec_types, (list, tuple, np.ndarray)):
         spec_types = [spec_types]
 
@@ -279,8 +257,6 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
                 data=[x, y, ref, weight, spec_types])
 
     src = rc.Source(spectra=spectra, table=tbl)
-    src.meta.update(params)
-
     return src
 
 

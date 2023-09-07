@@ -70,7 +70,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
               "ra": ra,
               "dec": dec}
     params.update(kwargs)
-    params["function_call"] = function_call_str(cluster, params)
+    params["function_call"] = function_call_str(cluster, kwargs=params)
     params["object"] = "cluster"
 
     # 1. sample masses from an IMF

@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""TBA."""
+
+import logging
+import functools
+from inspect import signature
+
 import numpy as np
 
 from astropy import units as u
@@ -36,20 +43,36 @@ def ab_spectrum(mag=0):
     return SourceSpectrum(ConstFlux1D, amplitude=mag*u.ABmag)
 
 
-def function_call_str(func, args):
-    func_str = ".".join([func.__module__, func.__name__])
-    args_str = ", ".join([f"{key}={args[key]}" for key in args])
-    func_call = f"{func_str}({args_str})"
+def _get_kwargs_and_defaults(args, kwargs, defaults):
+    default_keys = iter(defaults)
+    for arg in args:
+        yield next(default_keys), arg
+    for key in default_keys:
+        yield key, kwargs.get(key, defaults[key].default)
 
-    return func_call
+
+def function_call_str(func, args=None, kwargs=None):
+    args = args or ()
+    kwargs = kwargs or {}
+    defaults = signature(func).parameters
+    call_kwargs = dict(_get_kwargs_and_defaults(args, kwargs, defaults))
+    kwargs_repr = ", ".join(f"{k}={v!r}" for k, v in call_kwargs.items())
+    func_str = f"{func.__module__}.{func.__qualname__}"
+    call_str = f"{func_str}({kwargs_repr})"
+    return call_str
 
 
-def add_function_call_str(func, *args, **kwargs):
-    def inner_func():
+def add_function_call_str(func):
+    """Decorator to add constructor signature to meta of returned source."""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        call_str = function_call_str(func, args, kwargs)
+        logging.debug(f"Calling {call_str} ...")
         src = func(*args, **kwargs)
-        src.meta["function_call"] = function_call_str(func, kwargs)
+        src.meta["object"] = func.__name__
+        src.meta["function_call"] = call_str
         return src
-    return inner_func
+    return wrapper
 
 
 def make_img_wcs_header(ra, dec, pixel_scale, image_size):

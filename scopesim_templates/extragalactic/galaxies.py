@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+"""TBA."""
+
 import numpy as np
 import pyckles
 
-import synphot
 from astropy import units as u
 from astropy.io import fits
 from astropy.utils import deprecated_renamed_argument
@@ -10,13 +12,13 @@ from astropy.wcs import WCS
 
 from spextra import Spextrum
 
-from ..rc import Source, __config__
-from ..rc import im_plane_utils as ipu
-from ..rc import ter_curve_utils as tcu
+from ..rc import Source, __config__, im_plane_utils as ipu, \
+    ter_curve_utils as tcu
 from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
 from ..misc.misc import source_from_array
 from ..utils import general_utils as gu
+from ..utils.general_utils import add_function_call_str, hdu_to_synphot
 
 
 __all__ = ["galaxy",
@@ -26,6 +28,7 @@ __all__ = ["galaxy",
 
 
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
+@add_function_call_str
 def galaxy(sed,           # The SED of the galaxy
            z=0,             # redshift
            amplitude=15,           # magnitude
@@ -74,25 +77,16 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
-    params = locals()
-    params["object"] = "galaxy"
-    params["function_call"] = gu.function_call_str(galaxy, params)
-
-    if not isinstance(amplitude, u.Quantity):
-        amplitude = amplitude * u.ABmag
     pixel_scale <<= u.arcsec
     r_eff <<= u.arcsec
+    r_eff_scaled = r_eff.value / pixel_scale.value
 
     if isinstance(sed, str):
-        sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
-    elif isinstance(sed, (Spextrum, synphot.SourceSpectrum)):
-        scaled_sp = sed
+        spec = Spextrum(sed).redshift(z=z)
+    elif isinstance(sed, Spextrum.__bases__):
+        spec = sed.redshift(z=z)
 
-    r_eff = r_eff.to(u.arcsec).value
-    pixel_scale = pixel_scale.to(u.arcsec).value
-
-    image_size = 2 * (r_eff * extend / pixel_scale)  # TODO: Needs unit check
+    image_size = 2 * r_eff_scaled * extend  # TODO: Needs unit check
     x_0 = image_size // 2
     y_0 = image_size // 2
 
@@ -100,17 +94,17 @@ def galaxy(sed,           # The SED of the galaxy
                        np.arange(image_size))
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                     r_eff=r_eff/pixel_scale,
+                     r_eff=r_eff_scaled,
                      amplitude=1,  n=n, ellip=ellip, theta=theta)
 
-    src = source_from_array(arr=gal.intensity, sed=sed, pixel_scale=pixel_scale,
-                            amplitude=amplitude, filter_curve=filter_curve, ra=ra, dec=dec)
-
-    src.meta.update(params)
+    src = source_from_array(arr=gal.intensity, sed=spec,
+                            pixel_scale=pixel_scale, amplitude=amplitude,
+                            filter_curve=filter_curve, ra=ra, dec=dec)
     return src
 
 
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
+@add_function_call_str
 def galaxy3d(sed,           # The SED of the galaxy,
              z=0,             # redshift
              amplitude=15,           # magnitude
@@ -169,10 +163,6 @@ def galaxy3d(sed,           # The SED of the galaxy,
     -------
     src : scopesim.Source
     """
-    params = locals()
-    params["object"] = "galaxy3D"
-    params["function_call"] = gu.function_call_str(galaxy3d, params)
-
     if not isinstance(amplitude, u.Quantity):
         amplitude = amplitude * u.ABmag
     pixel_scale <<= u.arcsec
@@ -210,19 +200,19 @@ def galaxy3d(sed,           # The SED of the galaxy,
     masks = gal.get_masks(ngrid=ngrid)
     w, h = intensity.shape
 
-    wcs_dict = {NAXIS: 2,
-                NAXIS1: 2 * x_0 + 1,
-                NAXIS2: 2 * y_0 + 1,
-                CRPIX1: w // 2,
-                CRPIX2: h // 2,
-                CRVAL1: 0,
-                CRVAL2: 0,
-                CDELT1: -1 * pixel_scale.to(u.deg).value,
-                CDELT2: pixel_scale.to(u.deg).value,
-                CUNIT1: "DEG",
-                CUNIT2: "DEG",
-                CTYPE1: "RA---TAN",
-                CTYPE2: "DEC--TAN"}
+    wcs_dict = {"NAXIS": 2,
+                "NAXIS1": 2 * x_0 + 1,
+                "NAXIS2": 2 * y_0 + 1,
+                "CRPIX1": w // 2,
+                "CRPIX2": h // 2,
+                "CRVAL1": 0,
+                "CRVAL2": 0,
+                "CDELT1": -1 * pixel_scale.to(u.deg).value,
+                "CDELT2": pixel_scale.to(u.deg).value,
+                "CUNIT1": "DEG",
+                "CUNIT2": "DEG",
+                "CTYPE1": "RA---TAN",
+                "CTYPE2": "DEC--TAN"}
 
     wcs = WCS(wcs_dict)
 
@@ -248,10 +238,10 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
         src = src + Source(image_hdu=hdu, spectra=spec)
 
-    src.meta.update(params)
     return src
 
 
+@add_function_call_str
 def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     """
     Create a spiral galaxy using NGC1232L as the template.
@@ -273,11 +263,11 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     -------
     gal : scopesim.Source
     """
-    params = {"extent": extent,
-              "fluxes": fluxes,
-              "offset": offset}
-    params["function_call"] = gu.function_call_str(spiral_two_component, params)
-    params["object"] = "two component spiral galaxy"
+    # params = {"extent": extent,
+    #           "fluxes": fluxes,
+    #           "offset": offset}
+    # params["function_call"] = gu.function_call_str(spiral_two_component, params)
+    # params["object"] = "two component spiral galaxy"
 
     if isinstance(extent, u.Quantity):
         if extent.unit.physical_type == "angle":
@@ -300,7 +290,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
     src = Source()
     src.fields = hdulist[img_ext:spec_ext]
-    src.spectra = [gu.hdu_to_synphot(hdu) for hdu in hdulist[spec_ext:]]
+    src.spectra = [hdu_to_synphot(hdu) for hdu in hdulist[spec_ext:]]
 
     for ii in range(len(src.fields)):
         w, h = src.fields[ii].data.shape
@@ -320,8 +310,9 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     # ..todo: scale image plane according to fluxes
     # ..todo: shift header values according to offset
 
-    src.meta.update(params)
+    # src.meta.update(params)
     # Ensure the number of _meta_dicts is the same as the number of _fields.
+    # TODO: check if this still works with the new decorator...
     src._meta_dicts += [{}] * (len(src.fields) - len(src._meta_dicts))
 
     return src
@@ -329,6 +320,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
 @deprecated_renamed_argument('magnitude', 'amplitude', '0.1')
 @deprecated_renamed_argument('half_light_radius', 'r_eff', '0.1')
+# @add_function_call_str
 def elliptical(r_eff, pixel_scale, filter_name, amplitude,
                spectrum="NGC_0584", **kwargs):
     """
@@ -405,6 +397,7 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
     # 4 make Source object
     # """
 
+    # TODO: apply decorator here as well, somehow...
     params = {"n": 4,
               "ellipticity": 0.5,
               "angle": 30,
@@ -421,7 +414,7 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
               "spectrum_name": str(spectrum),
               "rescale_spectrum": True}
     params.update(kwargs)
-    params["function_call"] = gu.function_call_str(elliptical, params)
+    params["function_call"] = gu.function_call_str(elliptical, kwargs=params)
     params["object"] = "elliptical galaxy"
 
     # 1 make a sersic profile ImageHDU
