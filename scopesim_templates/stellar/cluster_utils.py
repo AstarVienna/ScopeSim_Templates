@@ -17,36 +17,22 @@ mask_metal = tbl["metalicity"] == "normal"
 PICKLES_MS_V = tbl["name"][mask_evol * mask_metal]
 
 
-def same_type(new_arr, old_arr):
-    if isinstance(old_arr, list):
-        new_arr = list(new_arr)
-    elif isinstance(old_arr, tuple):
-        new_arr = tuple(new_arr)
-    elif isinstance(old_arr, np.ndarray):
-        new_arr = np.array(new_arr)
-
-    return new_arr
-
-
 def mass2spt(mass):
     if isinstance(mass, (list, np.ndarray)):
-        spts = [mass2spt(m) for m in mass]
-        return same_type(spts, mass)
+        return [mass2spt(m) for m in mass]
     ii = int(F_MASS2IDX(mass))
     return MAMAJEK["SpT"][ii]
 
 
 def mass2Mv(mass):
     if isinstance(mass, (list, np.ndarray)):
-        spts = [mass2Mv(m) for m in mass]
-        return same_type(spts, mass)
+        return [mass2Mv(m) for m in mass]
     return F_MASS2MV(mass)
 
 
 def closest_pickles(spt):
     if isinstance(spt, (list, np.ndarray)):
-        spts = [closest_pickles(s) for s in spt]
-        return same_type(spts, spt)
+        return [closest_pickles(s) for s in spt]
 
     mask_lum = np.array([spt[0] in pic_spt for pic_spt in PICKLES_MS_V])
     lum_types = PICKLES_MS_V[mask_lum]

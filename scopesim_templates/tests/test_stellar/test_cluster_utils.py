@@ -1,4 +1,5 @@
 from pytest import approx
+from collections.abc import Iterable
 import numpy as np
 from astropy.table import Table
 import scopesim_templates.stellar.cluster_utils as cu
@@ -22,7 +23,7 @@ class TestMass2Mv:
 
     def test_returns_multiple_mvs_for_masses(self):
         mvs = cu.mass2Mv(np.array([200, 1.02]))
-        assert isinstance(mvs, np.ndarray)
+        assert isinstance(mvs, Iterable)
         assert mvs[1] == approx(4.79, rel=0.01)
 
 
@@ -67,5 +68,3 @@ class TestGaussianDistribution:
         # Apparently, 0.02 fails occasionally, so use 0.03.
         # TODO: Make these tests deterministic.
         assert np.std(x) == approx(1, rel=0.03)
-
-
