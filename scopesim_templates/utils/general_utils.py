@@ -44,6 +44,7 @@ def ab_spectrum(mag=0):
 
 
 def _get_kwargs_and_defaults(args, kwargs, defaults):
+    # BUG: This sometimes raises StopIteration, find out why and catch it!
     default_keys = iter(defaults)
     for arg in args:
         yield next(default_keys), arg
@@ -51,7 +52,8 @@ def _get_kwargs_and_defaults(args, kwargs, defaults):
         yield key, kwargs.get(key, defaults[key].default)
 
 
-def function_call_str(func, args=None, kwargs=None):
+def function_call_str(func, args=None, kwargs=None) -> str:
+    """Generate function call signature string including default values."""
     args = args or ()
     kwargs = kwargs or {}
     defaults = signature(func).parameters
@@ -67,7 +69,7 @@ def add_function_call_str(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         call_str = function_call_str(func, args, kwargs)
-        logging.debug(f"Calling {call_str} ...")
+        logging.debug("Calling %s ...", call_str)
         src = func(*args, **kwargs)
         src.meta["object"] = func.__name__
         src.meta["function_call"] = call_str
