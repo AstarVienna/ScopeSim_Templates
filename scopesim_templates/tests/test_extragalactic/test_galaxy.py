@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+import pytest
 
 from astropy import units as u
 from synphot import SourceSpectrum
@@ -9,6 +10,27 @@ from scopesim_templates.rc import Source
 from scopesim_templates.extragalactic import galaxies
 
 PLOTS = False
+
+
+class TestGalaxy:
+    def test_redshift(self):
+        sp0 = galaxies.galaxy("kc96/s0", z=0, amplitude=10*u.ABmag,
+                              filter_curve="g", pixel_scale=0.05, r_eff=2.5,
+                              n=4, ellip=0.5, theta=45, extend=3).spectra[0]
+        sp1 = galaxies.galaxy("kc96/s0", z=1, amplitude=10*u.ABmag,
+                              filter_curve="g", pixel_scale=0.05, r_eff=2.5,
+                              n=4, ellip=0.5, theta=45, extend=3).spectra[0]
+        assert sp0.waveset.max() < sp1.waveset.max()
+        kwargs = {"filter_curve": "g", "system_name": "AB"}
+        assert sp0.get_magnitude(**kwargs) == sp1.get_magnitude(**kwargs)
+
+    @pytest.mark.parametrize("amp", [10*u.ABmag, 15*u.ABmag, 20*u.ABmag])
+    def test_scaling(self, amp):
+        gal = galaxies.galaxy("kc96/s0", z=0, amplitude=amp,
+                              filter_curve="g", pixel_scale=0.05, 
+                              r_eff=2.5, n=4, ellip=0.5, theta=45, extend=3)
+        kwargs = {"filter_curve": "g", "system_name": "AB"}
+        assert gal.spectra[0].get_magnitude(**kwargs) == amp
 
 
 class TestElliptical:
