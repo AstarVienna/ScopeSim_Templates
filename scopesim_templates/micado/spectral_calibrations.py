@@ -1,4 +1,4 @@
-from os import path as p
+from pathlib import Path
 
 import numpy as np
 from scipy import signal
@@ -10,9 +10,8 @@ from synphot.units import PHOTLAM
 
 from scopesim import Source
 from scopesim.optics import image_plane_utils as ipu
-from ..rc import ter_curve_utils as tcu
 
-DATA_DIR = p.join(p.dirname(__file__), "data")
+DATA_DIR = Path(__file__).parent / "data"
 
 
 def line_list(unit_flux=1*PHOTLAM,
@@ -23,7 +22,7 @@ def line_list(unit_flux=1*PHOTLAM,
               filename="masterlinelist_2.1.txt",
               ):
     """
-    Make a ScopeSim.Source object for the calibration lamp line list
+    Make a ScopeSim.Source object for the calibration lamp line list.
 
     [PHOTLAM] = [ph s-1 cm-2 AA-1]
 
@@ -85,7 +84,7 @@ def line_list(unit_flux=1*PHOTLAM,
     dh = 0.5 * height / 3600         # input needed in [deg]
     pixel_scale = 0.1 * dw
 
-    hdr = ipu.header_from_list_of_xy([-dw, dw], [-dh, dh], pixel_scale)      # [deg]
+    hdr = ipu.header_from_list_of_xy([-dw, dw], [-dh, dh], pixel_scale)  # [deg]
     hdr["SPEC_REF"] = 0
     im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
     field = fits.ImageHDU(header=hdr, data=im)
@@ -97,7 +96,7 @@ def line_list(unit_flux=1*PHOTLAM,
 
 def import_line_spectrum(filename, dwave=0.0001):
     """
-    Read in and pad the line list into a spectrum
+    Read in and pad the line list into a spectrum.
 
     Parameters
     ----------
@@ -112,7 +111,7 @@ def import_line_spectrum(filename, dwave=0.0001):
         flux vector in units of whatever is in the input file
 
     """
-    line_tbl = ioascii.read(p.join(DATA_DIR, filename))
+    line_tbl = ioascii.read(DATA_DIR / filename)
 
     flux = line_tbl["Relative_Intensity"].data
     wave = line_tbl["Wavelength"].data
