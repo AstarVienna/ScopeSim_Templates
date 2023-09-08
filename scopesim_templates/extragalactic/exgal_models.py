@@ -257,7 +257,7 @@ class GalaxyBase:
             Velocity map.
 
         """
-        if self.sigma <= 0.0:
+        if self.vmax <= 0.0:
             return np.ones_like(self.x)
         mod = VelField.from_galaxy_base(self)
         return mod(self.x, self.y)
