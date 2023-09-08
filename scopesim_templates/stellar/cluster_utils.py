@@ -1,12 +1,14 @@
-import os
+from pathlib import Path
+
 import numpy as np
-from astropy.io import ascii
+from astropy.io.ascii import read as read_ascii
 from scipy.interpolate import interp1d
+
 import pyckles
 
 
-DIRNAME = os.path.dirname(os.path.abspath(__file__))
-MAMAJEK = ascii.read(os.path.join(DIRNAME, "mamajek_alt.dat"), delimiter="|")
+DIRNAME = Path(__file__).parent
+MAMAJEK = read_ascii(DIRNAME / "mamajek_alt.dat", delimiter="|")
 F_MASS2MV = interp1d(MAMAJEK["Msun"], MAMAJEK["Mv"], 1)
 F_MASS2IDX = interp1d(MAMAJEK["Msun"], range(len(MAMAJEK["Msun"])), 0)
 PICKLES = pyckles.SpectralLibrary("pickles")

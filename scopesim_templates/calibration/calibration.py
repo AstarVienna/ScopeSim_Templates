@@ -21,7 +21,7 @@ __all__ = ["lamp",
 def lamp(waves, fwhm, fluxes) -> Source:
     """
     Create a homogenous source with a spectrum of emission lines.
-    
+
     Emission line spectrum is superposed to a very faint continuum.
 
     Parameters

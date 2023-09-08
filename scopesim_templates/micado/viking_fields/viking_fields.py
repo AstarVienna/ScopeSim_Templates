@@ -1,12 +1,8 @@
-import os
-from os import path as pth
-from copy import deepcopy
+from pathlib import Path
 
 import numpy as np
 from astropy.io import ascii
 from astropy import units as u
-from matplotlib import pyplot as plt
-from matplotlib.colors import LogNorm
 import yaml
 
 import pyckles
@@ -17,13 +13,14 @@ from ...rc import ter_curve_utils as tcu
 from ...rc import Source
 
 
-DATA_DIR = pth.abspath(pth.dirname(__file__))
+DATA_DIR = Path(__file__).parent
+
 
 def viking_field(star_cat_id="illum", gal_cat_id="1", pixel_scale=0.004,
                  ra=None, dec=None, gal_field_size=60, gal_x=None, gal_y=None,
                  random_seed=None):
     """
-    Make a field with background stars and galaxies according to Ric's input
+    Make a field with background stars and galaxies according to Ric's input.
 
     Any combination of the star and galaxy catalogues is possible.
 
@@ -83,7 +80,7 @@ def viking_field(star_cat_id="illum", gal_cat_id="1", pixel_scale=0.004,
 
 def load_stars_source(cat_id="illum", ra=None, dec=None):
     """
-    Makes a Source for one of Ric's Viking star fields
+    Make a Source for one of Ric's Viking star fields.
 
     Parameters
     ----------
@@ -98,7 +95,7 @@ def load_stars_source(cat_id="illum", ra=None, dec=None):
     src : Source
 
     """
-    tbl = ascii.read(pth.join(DATA_DIR, f"cat_{cat_id}.dat"))
+    tbl = ascii.read(DATA_DIR / f"cat_{cat_id}.dat")
     tbl_meta = yaml.full_load("\n".join(tbl.meta["comments"]))
 
     if ra is None:
@@ -117,7 +114,7 @@ def load_galaxies_source(cat_id="1", pixel_scale=0.004, xs=None, ys=None,
                          angles=None, ellipticitys=None, ns=None, box_size=60,
                          random_seed=None):
     """
-    Makes a Source full of faint galaxies for one of Ric's background fields
+    Make a Source full of faint galaxies for one of Ric's background fields.
 
     .. warning: This funciton uses astropy's Sersic2D class, which can
        have unexpected consequences with GalFit (speak to Carmelo Archidiacono)
@@ -159,14 +156,14 @@ def load_galaxies_source(cat_id="1", pixel_scale=0.004, xs=None, ys=None,
     if random_seed is not None:
         np.random.seed(random_seed)
 
-    tbl = ascii.read(pth.join(DATA_DIR, f"faintgal_{cat_id}.dat"))
+    tbl = ascii.read(DATA_DIR / f"faintgal_{cat_id}.dat")
 
-    H_mag = tbl["H_mag"].data.astype(float)             # [Vega mag]
-    Reff = tbl["Reff"].data.astype(float)               # [mas]
+    h_mag = tbl["H_mag"].data.astype(float)             # [Vega mag]
+    reff = tbl["Reff"].data.astype(float)               # [mas]
     gal_type = tbl["type"].data.astype(float)           # [0=ellip, 1=spiral]
 
-    scale_factors = 10**(-0.4*H_mag)
-    r_effs = 1e-3 * Reff                                # [arcsec]
+    scale_factors = 10**(-0.4 * h_mag)
+    r_effs = 1e-3 * reff                                # [arcsec]
     widths = 2 * r_effs
 
     # Or should there be a range > involved? E.g. Spiral 1-2, Ellip 3-5?
@@ -175,9 +172,9 @@ def load_galaxies_source(cat_id="1", pixel_scale=0.004, xs=None, ys=None,
     if ns is None:
         n_gals = len(gal_type)
         ns = np.random.random(n_gals)   # Sersic index
-        ns[gal_type==1] += 1            # Spirals n=[1..2]
-        ns[gal_type==0] *= 2            # Ellips n=[3..5] => ([0..1] * 2) + 3
-        ns[gal_type==0] += 3
+        ns[gal_type == 1] += 1            # Spirals n=[1..2]
+        ns[gal_type == 0] *= 2            # Ellips n=[3..5] => ([0..1] * 2) + 3
+        ns[gal_type == 0] += 3
 
     if angles is None:
         angles = np.random.random(n_gals) * 360         # [deg]

@@ -37,15 +37,16 @@ def _make_spectrum(sed):
         raise TypeError("Parameter 'sed' must be Spextrum, SourceSpectrum or "
                         f"str, found {type(sed)=}.") from err
 
-        
+
 def _make_scaled_spectrum(sed, amplitude, filter_curve):
     spec = _make_spectrum(sed)
     if amplitude is None:
         return spec
 
+    # This might be redundant, check spextra method!
     if not isinstance(amplitude, u.Quantity):
         amplitude = amplitude * u.ABmag
-    
+
     return spec.scale_to_magnitude(amplitude, filter_curve)
 
 
@@ -129,7 +130,7 @@ def uniform_source(sed, amplitude=None, filter_curve="V", extend=60,
 @add_function_call_str
 def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
                          waverange=None, inst_pkg_path=None) -> Source:
-    """
+    r"""
     Create a ``scopesim.Source`` object directly from a ``fits.ImageHDU``.
 
     Parameters
@@ -210,9 +211,9 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1,
                                    bunit=None) -> Source:
     """
     Create a source from an image where pixel values have known flux and unit.
-    
+
     The units of the flux density expressed by 'bunit'.
-    
+
     It is possible to change the flux and pixel scale to simulate e.g. more
     distant objects.
 
@@ -311,7 +312,7 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve,
 
     data = arr / np.sum(arr)
     hdu = fits.ImageHDU(data=data, header=header)
-    
+
     spec = _make_scaled_spectrum(sed, amplitude, filter_curve)
     src = Source(image_hdu=hdu, spectra=spec)
     return src
@@ -377,7 +378,6 @@ def source_from_cube(cube, ext=1) -> Source:
 
     Parameters
     ----------
-
     cube : Filename, ImageHDU or HDUList containing the cube
     ext : extension where the data is located
 
@@ -391,10 +391,10 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None,
                         amplitude=None, filter_curve=None) -> Source:
     """
     Create a very basic source from cube.
-    
+
     That source might work with the current implementation of ``field_of_view``
     objects.
-    
+
     It basically divides the cube in monocromatic slices (images).
     The associated spectra are just delta functions.
     """

@@ -65,7 +65,7 @@ def function_call_str(func, args=None, kwargs=None) -> str:
 
 
 def add_function_call_str(func):
-    """Decorator to add constructor signature to meta of returned source."""
+    """Add constructor signature to meta of returned source. Decorator."""
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         call_str = function_call_str(func, args, kwargs)

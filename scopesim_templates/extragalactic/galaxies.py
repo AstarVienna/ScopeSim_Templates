@@ -27,6 +27,24 @@ __all__ = ["galaxy",
            "elliptical"]
 
 
+def _galaxy_setup(pixel_scale, r_eff, extend, **kwargs):
+    """Construct GalaxyBase (wrapper), kwargs are passed to that class."""
+    pixel_scale <<= u.arcsec
+    r_eff <<= u.arcsec
+    r_eff_scaled = r_eff.value / pixel_scale.value
+
+    image_size = 2 * r_eff_scaled * extend  # TODO: Needs unit check
+    x_0 = image_size // 2
+    y_0 = image_size // 2
+
+    x, y = np.meshgrid(np.arange(image_size),
+                       np.arange(image_size))
+
+    gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0, r_eff=r_eff_scaled,
+                     amplitude=1, **kwargs)
+    return gal, pixel_scale
+
+
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
 @add_function_call_str
 def galaxy(sed,           # The SED of the galaxy
@@ -41,7 +59,6 @@ def galaxy(sed,           # The SED of the galaxy
            extend=3,     # extend in units of r_eff
            ra=10,
            dec=-10):
-
     """
     Create a source object of a galaxy described by its Sersic index and other parameters.
 
@@ -77,30 +94,41 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
-    pixel_scale <<= u.arcsec
-    r_eff <<= u.arcsec
-    r_eff_scaled = r_eff.value / pixel_scale.value
+    gal, pixel_scale = _galaxy_setup(pixel_scale, r_eff, extend,
+                                     n=n, ellip=ellip, theta=theta)
 
     if isinstance(sed, str):
         spec = Spextrum(sed).redshift(z=z)
     elif isinstance(sed, Spextrum.__bases__):
         spec = sed.redshift(z=z)
 
-    image_size = 2 * r_eff_scaled * extend  # TODO: Needs unit check
-    x_0 = image_size // 2
-    y_0 = image_size // 2
-
-    x, y = np.meshgrid(np.arange(image_size),
-                       np.arange(image_size))
-
-    gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                     r_eff=r_eff_scaled,
-                     amplitude=1,  n=n, ellip=ellip, theta=theta)
-
     src = source_from_array(arr=gal.intensity, sed=spec,
                             pixel_scale=pixel_scale, amplitude=amplitude,
                             filter_curve=filter_curve, ra=ra, dec=dec)
     return src
+
+
+def _get_masked_subsources(gal, ngrid, scaled_sp, header):
+    masks = gal.get_masks(ngrid=ngrid)
+    intensity = gal.intensity / np.sum(gal.intensity)
+    velocity = gal.velocity.value
+    dispersion = gal.dispersion.value
+    total_flux = np.sum(intensity)
+    for i, mask in enumerate(masks):
+        data = mask * intensity
+        factor = np.sum(data) / total_flux
+
+        masked_vel = np.ma.array(velocity, mask=mask == 0)
+        masked_sigma = np.ma.array(dispersion, mask=mask == 0)
+        med_vel = np.ma.median(masked_vel)
+        med_sig = np.ma.median(masked_sigma)
+
+        spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig) * factor
+
+        header.update({"SPEC_REF": i})
+        hdu = fits.ImageHDU(data=data, header=header)
+
+        yield Source(image_hdu=hdu, spectra=spec)
 
 
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
@@ -118,99 +146,85 @@ def galaxy3d(sed,           # The SED of the galaxy,
              sigma=100,
              extend=2,        # extend in units of r_eff
              ngrid=10):       # griding parameter
-
     """
     Create a simplified 3D map of a galaxy with flux, rotation velocity and velocity dispersion.
 
-    The maps are binned according to the `ngrid` parameter, higher `ngrid` will create
-    finer binned fields, but it may increase the computation time.
+    The maps are binned according to the `ngrid` parameter, higher `ngrid`
+    will create finer binned fields, but it may increase the computation time.
 
-    The `ngrid` parameter does not specify the number of bins. A ngrid=10 will create
-    around 40 independent regions whilst a `ngrid` of 100 will create around 2300 regions
+    The `ngrid` parameter does not specify the number of bins. A ngrid=10 will
+    create around 40 independent regions whilst a `ngrid` of 100 will create
+    around 2300 regions.
 
     This function is ideal for spectroscopy
 
     Parameters
     ----------
     sed : str or Spextrum
-        SED of the galaxy, it can be a string or a Spextrum object
+        SED of the galaxy, it can be a string or a Spextrum object.
     z : float
-        redshift of the galaxy
+        Redshift of the galaxy.
     amplitude : float, u.Quantity
-        magnitude or flux of the galaxy. The spectrum will be re-escaled to this magnitude
+        Magnitude or flux of the galaxy. The spectrum will be re-escaled to
+        this value.
     filter_curve : str
-        name of the filter where the magnitude is measured
+        Name of the filter where the `amplitude` is measured.
     pixel_scale : float
-        the scale of the image in arcsec/pixel
+        The scale of the image in arcsec/pixel.
     r_eff : float
-        effective radius of the galaxy in arcsec. It accepts astropy.units
+        Effective radius of the galaxy in arcsec. It accepts astropy.units.
     n : float
-        Sersic index of the galaxy
+        Sersic index of the galaxy.
     ellip : float
-        ellipticity of the galaxy
+        Ellipticity of the galaxy.
     theta : float
-        position angle of the galaxy
+        Position angle of the galaxy.
     vmax : float
-        maximum rotation velocity of the galaxy
+        Maximum rotation velocity of the galaxy.
     sigma : float
-        velocity dispersion of the galaxy
+        Velocity dispersion of the galaxy.
     extend : float
-        Size of the image in units of r_eff
+        Size of the image in units of `r_eff`.
     ngrid : int
-        gridding parameter for creating of the galaxy
+        Gridding parameter for creating of the galaxy.
 
     Returns
     -------
     src : scopesim.Source
     """
-    if not isinstance(amplitude, u.Quantity):
-        amplitude = amplitude * u.ABmag
-    pixel_scale <<= u.arcsec
-    r_eff <<= u.arcsec
     vmax <<= u.km / u.s
     sigma <<= u.km / u.s
 
+    gal, pixel_scale = _galaxy_setup(pixel_scale, r_eff, extend,
+                                     n=n, ellip=ellip, theta=theta,
+                                     vmax=vmax, sigma=sigma)
+
     if isinstance(sed, str):
-        sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = sp.scale_to_magnitude(amplitude=amplitude, filter_curve=filter_curve)
+        shift_sp = Spextrum(sed).redshift(z=z)
+        scaled_sp = shift_sp.scale_to_magnitude(amplitude=amplitude,
+                                                filter_curve=filter_curve)
     elif isinstance(sed, Spextrum):
         scaled_sp = sed
+    else:
+        raise TypeError("Parameter 'sed' must be Spextrum, SourceSpectrum or "
+                        f"str, found {type(sed)=}.")
 
-    r_eff = r_eff.to(u.arcsec)
-    pixel_scale = pixel_scale.to(u.arcsec)
-    vmax = vmax.to(u.km/u.s)
-    sigma = sigma.to(u.km/u.s)
-
-    image_size = 2 * (r_eff.value * extend / pixel_scale.value)  # TODO: Needs unit check
-    print(image_size, r_eff)
-    x_0 = image_size // 2
-    y_0 = image_size // 2
-
-    x, y = np.meshgrid(np.arange(image_size),
-                       np.arange(image_size))
-
-    gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0,
-                     r_eff=r_eff.value/pixel_scale.value,
-                     amplitude=1, n=n,
-                     ellip=ellip, theta=theta, vmax=vmax, sigma=sigma)
-
-    intensity = gal.intensity / np.sum(gal.intensity)
-    velocity = gal.velocity.value
-    dispersion = gal.dispersion.value
-    masks = gal.get_masks(ngrid=ngrid)
-    w, h = intensity.shape
+    # TODO: don't think we really need to call intensity here
+    w, h = gal.intensity.shape
+    assert w == gal.x.shape[0], f"{w}, {gal.x.shape}"
+    assert h == gal.y.shape[1], f"{h}, {gal.y.shape}"
 
     wcs_dict = {"NAXIS": 2,
-                "NAXIS1": 2 * x_0 + 1,
-                "NAXIS2": 2 * y_0 + 1,
+                "NAXIS1": 2 * gal.x_0 + 1,
+                "NAXIS2": 2 * gal.y_0 + 1,
                 "CRPIX1": w // 2,
                 "CRPIX2": h // 2,
                 "CRVAL1": 0,
                 "CRVAL2": 0,
                 "CDELT1": -1 * pixel_scale.to(u.deg).value,
                 "CDELT2": pixel_scale.to(u.deg).value,
-                "CUNIT1": "DEG",
-                "CUNIT2": "DEG",
+                "CUNIT1": "deg",
+                "CUNIT2": "deg",
                 "CTYPE1": "RA---TAN",
                 "CTYPE2": "DEC--TAN"}
 
@@ -219,26 +233,8 @@ def galaxy3d(sed,           # The SED of the galaxy,
     header = fits.Header(wcs.to_header())
     header.update({"SPEC_REF": 0})
 
-    src = Source()
-    total_flux = np.sum(intensity)
-
-    for i, m in enumerate(masks):
-        data = m * intensity
-        factor = np.sum(data) / total_flux
-
-        masked_vel = np.ma.array(velocity, mask=m == 0)
-        masked_sigma = np.ma.array(dispersion, mask=m == 0)
-        med_vel = np.ma.median(masked_vel)
-        med_sig = np.ma.median(masked_sigma)
-
-        spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig) * factor
-
-        header.update({"SPEC_REF": i})
-        hdu = fits.ImageHDU(data=data, header=header)
-
-        src = src + Source(image_hdu=hdu, spectra=spec)
-
-    return src
+    return sum(_get_masked_subsources(gal, ngrid, scaled_sp, header),
+               start=Source())
 
 
 @add_function_call_str
@@ -263,10 +259,6 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     -------
     gal : scopesim.Source
     """
-    # params = {"extent": extent,
-    #           "fluxes": fluxes,
-    #           "offset": offset}
-    # params["function_call"] = gu.function_call_str(spiral_two_component, params)
     # params["object"] = "two component spiral galaxy"
 
     if isinstance(extent, u.Quantity):
@@ -292,23 +284,22 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     src.fields = hdulist[img_ext:spec_ext]
     src.spectra = [hdu_to_synphot(hdu) for hdu in hdulist[spec_ext:]]
 
-    for ii in range(len(src.fields)):
-        w, h = src.fields[ii].data.shape
-        src.fields[ii].header["CRPIX1"] = w // 2
-        src.fields[ii].header["CRPIX2"] = h // 2
-        src.fields[ii].header["CRVAL1"] = 0
-        src.fields[ii].header["CRVAL2"] = 0
-        src.fields[ii].header["CDELT1"] = extent / w
-        src.fields[ii].header["CDELT2"] = extent / w
-        src.fields[ii].header["CUNIT1"] = "DEG"
-        src.fields[ii].header["CUNIT2"] = "DEG"
-        src.fields[ii].header["CTYPE1"] = "RA---TAN"
-        src.fields[ii].header["CTYPE2"] = "DEC--TAN"
-        src.fields[ii].header["SPEC_REF"] = src.fields[ii].header["SPEC_EXT"] \
-                                            - spec_ext
+    for field in src.fields:
+        w, h = field.data.shape
+        field.header["CRPIX1"] = w // 2
+        field.header["CRPIX2"] = h // 2
+        field.header["CRVAL1"] = 0
+        field.header["CRVAL2"] = 0
+        field.header["CDELT1"] = extent / w
+        field.header["CDELT2"] = extent / w
+        field.header["CUNIT1"] = "DEG"
+        field.header["CUNIT2"] = "DEG"
+        field.header["CTYPE1"] = "RA---TAN"
+        field.header["CTYPE2"] = "DEC--TAN"
+        field.header["SPEC_REF"] = field.header["SPEC_EXT"] - spec_ext
 
-    # ..todo: scale image plane according to fluxes
-    # ..todo: shift header values according to offset
+    # TODO: scale image plane according to fluxes
+    # TODO: shift header values according to offset
 
     # src.meta.update(params)
     # Ensure the number of _meta_dicts is the same as the number of _fields.
@@ -384,12 +375,7 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
     -------
     galaxy_src : Source
 
-
-    See Also
-    --------
-
     """
-
     # """
     # 1 make a sersic profile ImageHDU
     # 2 get spectrum from Brown
@@ -418,19 +404,19 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
     params["object"] = "elliptical galaxy"
 
     # 1 make a sersic profile ImageHDU
-    im = gal_utils.sersic_profile(r_eff=r_eff / pixel_scale,    # everything in terms of pixels
-                                  n=params["n"],
-                                  ellipticity=params["ellipticity"],
-                                  angle=params["angle"],
-                                  normalization=params["normalization"],
-                                  width=params["width"] / pixel_scale,
-                                  height=params["height"] / pixel_scale)
+    img = gal_utils.sersic_profile(r_eff=r_eff / pixel_scale,    # everything in terms of pixels
+                                   n=params["n"],
+                                   ellipticity=params["ellipticity"],
+                                   angle=params["angle"],
+                                   normalization=params["normalization"],
+                                   width=params["width"] / pixel_scale,
+                                   height=params["height"] / pixel_scale)
 
-    hw, hh = 0.5 * params["width"], 0.5 * params["height"]
-    xs = (np.array([-hw, hw]) + params["x_offset"]) / 3600.
-    ys = (np.array([-hh, hh]) + params["y_offset"]) / 3600.
+    h_w, h_h = 0.5 * params["width"], 0.5 * params["height"]
+    xs = (np.array([-h_w, h_w]) + params["x_offset"]) / 3600.
+    ys = (np.array([-h_h, h_h]) + params["y_offset"]) / 3600.
     hdr = ipu.header_from_list_of_xy(xs, ys, pixel_scale / 3600.)
-    hdu = fits.ImageHDU(data=im, header=hdr)
+    hdu = fits.ImageHDU(data=img, header=hdr)
 
     # 2 get spectrum from Brown
     if isinstance(spectrum, str):
@@ -441,7 +427,7 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
     # 3 scale the spectra and get the weights
     if params["rescale_spectrum"]:
         if not isinstance(amplitude, u.Quantity):
-            amplitude = amplitude << u.ABmag
+            amplitude <<= u.ABmag
         spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
 
     # 4 make Source object

@@ -1,16 +1,16 @@
-"""This file should contain analytical extragalactic models."""
+"""Module should contain analytical extragalactic models."""
 
 from dataclasses import dataclass
-from collections.abc import Generator
+# from collections.abc import Generator
 
 import numpy as np
 
 from astropy import units as u
-from astropy.units import Quantity, UnitsError
+from astropy.units import UnitsError
 from astropy.modeling.core import (Fittable1DModel, Fittable2DModel,
                                    ModelDefinitionError)
 
-from astropy.modeling.parameters import Parameter, InputParameterError
+from astropy.modeling.parameters import Parameter
 from astropy.modeling.models import Sersic2D
 
 
@@ -27,7 +27,6 @@ class VelField(Fittable2DModel):
 
     Parameters
     ----------
-
     ellip : float, u.Quantity
         Ellipticity on the sky
 
@@ -83,7 +82,7 @@ class VelField(Fittable2DModel):
         #   azimuthal angle in the plane of the galaxy = cos(theta) = cost
         cost = (-(x - x_0) * np.sin(theta) + (y - y_0) *
                 np.cos(theta)) / (r + 0.00001)
-        vrot = vmax*2 / np.pi*np.arctan(r/r_d)         #arctan model
+        vrot = vmax*2 / np.pi*np.arctan(r/r_d)         # arctan model
 
         return vrot * np.sin(incl) * cost
 
@@ -125,7 +124,6 @@ class DispersionField(Fittable2DModel):
 
     Parameters
     ----------
-
     incl : float, u.Quantity
         Inclination inclination between the normal to the galaxy plane and the
         line-of-sight.
@@ -148,7 +146,7 @@ class DispersionField(Fittable2DModel):
 
     """
 
-   # incl = Parameter(default=45)
+    # incl = Parameter(default=45)
     ellip = Parameter(default=0)
     theta = Parameter(default=0)
     sigma = Parameter(default=100)
@@ -209,7 +207,7 @@ class DispersionField(Fittable2DModel):
 class GalaxyBase:
     """
     Class to define a galaxy.
-    
+
     It takes a set of parameters and creates the different moments for
     """
 
@@ -283,7 +281,7 @@ class GalaxyBase:
     def regrid(self, ngrid: int = 10) -> np.ndarray:
         """
         Regrid the smooth velocity field.
-        
+
         Regrid to regions with similar velocity and velocity dispersion.
 
         Parameters
@@ -312,7 +310,7 @@ class GalaxyBase:
 
         return total_field
 
-    def get_masks(self, ngrid: int = 10) -> Generator[np.ma.MaskedArray]:
+    def get_masks(self, ngrid: int = 10):  # TODO 3.9: -> Generator[np.ma.MaskedArray]:
         """
         Return a generator of numpy masks from the regrided regions.
 

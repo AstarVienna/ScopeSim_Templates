@@ -3,11 +3,13 @@ import pyckles
 from astropy import units as u
 from astropy.table import Table
 from astropy.utils import deprecated_renamed_argument
+
+from spextra import Spextrum
+
 from scopesim_templates import rc
 from scopesim_templates.stellar import imf, cluster_utils as cu
 from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
 
-from spextra import Spextrum
 
 __all__ = ["cluster"]
 
@@ -85,7 +87,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
 
     # 3. get spectra from pyckles
     pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
-    unique_spts = np.unique(spec_types)
+    unique_spts = set(spec_types)
     spectra = [pickles[spt] for spt in unique_spts]
 
     # 4. scale all spectra to V=0
