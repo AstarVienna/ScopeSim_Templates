@@ -224,7 +224,7 @@ class GalaxyBase:
     sigma: float = 0.0
     q: float = 0.2
     e_in: float = 0.04
-    e_out: float = 0.42
+    e_out: float = -0.42
 
     @property
     def intensity(self) -> np.ndarray:
