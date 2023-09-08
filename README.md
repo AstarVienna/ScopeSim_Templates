@@ -1,8 +1,15 @@
 # ScopeSim Templates
 
+[![Build Status](https://github.com/AstarVienna/ScopeSim_Templates/actions/workflows/tests.yml/badge.svg)](https://github.com/AstarVienna/ScopeSim_Templates/actions/workflows/tests.yml/badge.svg)
+[![Documentation Status](https://readthedocs.org/projects/scopesim-templates/badge/?version=latest)](https://scopesim-templates.readthedocs.io/en/latest)
+[![Codecov](https://img.shields.io/codecov/c/github/AstarVienna/ScopeSim_Templates/\branch/dev_master?logo=codecov)](https://app.codecov.io/gh/AstarVienna/ScopeSim_Templates/tree/dev_master)
+[![PyPI - Version](https://img.shields.io/pypi/v/ScopeSim-Templates)](https://pypi.org/project/ScopeSim-Templates/)
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 This packages contain a number of templates to generate `Source` objects to be used in simulations with the [ScopeSim Simulator](https://scopesim.readthedocs.io/en/latest/)
 
-The Documentation can be found here: https://scopesim_templates.readthedocs.io/en/latest
+The Documentation can be found here: https://scopesim-templates.readthedocs.io/en/latest
 
 ## Installation
 
