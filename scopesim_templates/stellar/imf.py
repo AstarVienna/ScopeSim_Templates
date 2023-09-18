@@ -57,7 +57,9 @@ class IMF():
         multiplicity object to create multiple star systems.
     """
 
-    def __init__(self, mass_limits=np.array([0.1, 150]), multiplicity=None):
+    def __init__(self, mass_limits=None, multiplicity=None):
+        if mass_limits is None:
+            mass_limits = np.array([0.1, 150])
         self._multi_props = multiplicity
         self._mass_limits = mass_limits
 
@@ -368,7 +370,7 @@ class IMF_broken_powerlaw(IMF):
         Output:
         xi - probability of measuring that mass.
         """
-        return_float = type(m) == float
+        return_float = isinstance(m, float)
 
         m = np.atleast_1d(m)
         xi = np.zeros(len(m), dtype=float)
@@ -394,7 +396,7 @@ class IMF_broken_powerlaw(IMF):
         Output:
         xi - probability of measuring that mass.
         """
-        return_float = type(m) == float
+        return_float = isinstance(m, float)
 
         m = np.atleast_1d(m)
 
@@ -432,7 +434,7 @@ class IMF_broken_powerlaw(IMF):
 
     def m_xi(self, m):
         """Mass-weighted probability m*xi."""
-        return_float = type(m) == float
+        return_float = isinstance(m, float)
         m = np.atleast_1d(m)
         mxi = np.zeros(len(m), dtype=float)
 
@@ -495,7 +497,7 @@ class IMF_broken_powerlaw(IMF):
 
     def prim_xi(self, a):
         """Helper function."""
-        return_float = type(a) == float
+        return_float = isinstance(a, float)
 
         a = np.atleast_1d(a)
         val = np.zeros(len(a), dtype=float)
@@ -520,7 +522,7 @@ class IMF_broken_powerlaw(IMF):
 
     def prim_mxi(self, a):
         """Helper function."""
-        return_float = type(a) == float
+        return_float = isinstance(a, float)
 
         a = np.atleast_1d(a)
         val = np.zeros(len(a), dtype=float)
@@ -645,7 +647,7 @@ class IMF_broken_powerlaw(IMF):
         Given a list of random numbers (r), return a list of masses
         selected from the IMF.
         """
-        return_float = type(r) == float
+        return_float = isinstance(r, float)
         r = np.atleast_1d(r)  # Make sure it is an array
 
         x = r * self.lamda[-1]
@@ -769,7 +771,7 @@ def prim_power(m, power):
 
     returns: m**(power + 1) / (power + 1) and handles the case when power = -1
     """
-    return_float = (type(m) == float) and (type(power) == float)
+    return_float = isinstance(m, float) and isinstance(power, float)
 
     m = np.atleast_1d(m)
     power = np.atleast_1d(power)
@@ -794,7 +796,7 @@ def inv_prim_power(x, power):
     returns ((1+power) * x)**(1.0 / (1 + power)) and handles the case
     when power == -1.
     """
-    return_float = (type(x) == float) and (type(power) == float)
+    return_float = isinstance(x, float) and isinstance(power, float)
 
     x = np.atleast_1d(x)
     power = np.atleast_1d(power)
@@ -824,8 +826,8 @@ def inv_prim_power(x, power):
 
 
 def log_normal(m, mean_logm, sigma_logm):
-    return_float = (type(m) == float) and (type(mean_logm) == float) and \
-        (type(sigma_logm) == float)
+    return_float = isinstance(m, float) and isinstance(mean_logm, float) and \
+        isinstance(sigma_logm, float)
 
     m = np.atleast_1d(m)
     mean_logm = np.atleast_1d(mean_logm)
@@ -840,8 +842,8 @@ def log_normal(m, mean_logm, sigma_logm):
 
 
 def prim_log_normal(m, mean_logm, sigma_logm):
-    return_float = (type(m) == float) and (type(mean_logm) == float) and \
-        (type(sigma_logm) == float)
+    return_float = isinstance(m, float) and isinstance(mean_logm, float) and \
+        isinstance(sigma_logm, float)
 
     m = np.atleast_1d(m)
     mean_logm = np.atleast_1d(mean_logm)
@@ -856,8 +858,8 @@ def prim_log_normal(m, mean_logm, sigma_logm):
 
 
 def inv_prim_log_normal(m, mean_logm, sigma_logm):
-    return_float = (type(m) == float) and (type(mean_logm) == float) and \
-        (type(sigma_logm) == float)
+    return_float = isinstance(m, float) and isinstance(mean_logm, float) and \
+        isinstance(sigma_logm, float)
 
     m = np.atleast_1d(m)
     mean_logm = np.atleast_1d(mean_logm)
@@ -872,8 +874,8 @@ def inv_prim_log_normal(m, mean_logm, sigma_logm):
 
 
 def mlog_normal(m, mean_logm, sigma_logm):
-    return_float = (type(m) == float) and (type(mean_logm) == float) and \
-        (type(sigma_logm) == float)
+    return_float = isinstance(m, float) and isinstance(mean_logm, float) and \
+        isinstance(sigma_logm, float)
 
     m = np.atleast_1d(m)
     mean_logm = np.atleast_1d(mean_logm)
@@ -888,8 +890,8 @@ def mlog_normal(m, mean_logm, sigma_logm):
 
 
 def prim_mlog_normal(m, mean_logm, sigma_logm):
-    return_float = (type(m) == float) and (type(mean_logm) == float) and \
-        (type(sigma_logm) == float)
+    return_float = isinstance(m, float) and isinstance(mean_logm, float) and \
+        isinstance(sigma_logm, float)
 
     m = np.atleast_1d(m)
     mean_logm = np.atleast_1d(mean_logm)
@@ -913,7 +915,7 @@ def theta_closed(x):
     Pass in float or array of floats (x) and return 0 for x<0
     and 1 for everything else.
     """
-    is_float = type(x) == float
+    is_float = isinstance(x, float)
 
     x = np.atleast_1d(x)
     val = (x >= 0).astype("float")
@@ -928,7 +930,7 @@ def theta_open(x):
     Pass in float or array of floats (x) and return 1 for x>0
     and 0 for everything else.
     """
-    is_float = type(x) == float
+    is_float = isinstance(x, float)
 
     x = np.atleast_1d(x)
     val = (x > 0).astype("float")
@@ -943,7 +945,7 @@ def delta(x):
     Pass in float or array of floats (x) and return 0.5 for x==0
     and 1.0 for everything else.
     """
-    is_float = type(x) == float
+    is_float = isinstance(x, float)
 
     x = np.atleast_1d(x)
     val = np.ones(len(x), dtype=float)
