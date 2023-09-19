@@ -1,4 +1,4 @@
-from pytest import approx
+from pytest import approx, mark
 from collections.abc import Iterable
 import numpy as np
 from astropy.table import Table
@@ -9,36 +9,34 @@ PLOTS = False
 
 
 class TestCatExists:
-    def test_cat_parameter_exists(self):
+    def test_cat_is_table(self):
         assert isinstance(cu.MAMAJEK, Table)
+
+    def test_cat_is_nonempty(self):
         assert len(cu.MAMAJEK) > 0
 
 
-class TestMass2Mv:
-    def test_returns_1_11_for_a0v(self):
-        assert cu.mass2Mv(2.3) == approx(1.11, abs=0.1)
-
-    def test_returns_minus_6_for_200_msun(self):
-        assert cu.mass2Mv(200) == approx(-6, abs=0.2)
+class TestMass2AbsMag:
+    @mark.parametrize("mass, mv, atol",
+                      [(2.3, 1.11, 0.1),
+                       (200, -6, 0.2)])
+    def test_returns_correct_value(self, mass, mv, atol):
+        assert cu.mass2absmag(mass) == approx(mv, abs=atol)
 
     def test_returns_multiple_mvs_for_masses(self):
-        mvs = cu.mass2Mv(np.array([200, 1.02]))
+        mvs = cu.mass2absmag(np.array([200, 1.02]))
         assert isinstance(mvs, Iterable)
         assert mvs[1] == approx(4.79, rel=0.01)
 
 
 class TestMass2SpT:
-    def test_returns_o5v_for_250_msun(self):
-        assert cu.mass2spt(250) == "O5V"
-
-    def test_returns_a0v_for_2_3_msun(self):
-        assert cu.mass2spt(2.3) == "A0V"
-
-    def test_returns_g2v_for_1_msun(self):
-        assert cu.mass2spt(1.02) == "G2V"
-
-    def test_returns_m95v_for_0_01_msun(self):
-        assert cu.mass2spt(0.01) == "M9.5V"
+    @mark.parametrize("mass, spt",
+                      [(250, "O5V"),
+                       (2.3, "A0V"),
+                       (1.02, "G2V"),
+                       (0.01, "M9.5V")])
+    def test_returns_correct_value(self, mass, spt):
+        assert cu.mass2spt(mass) == spt
 
     def test_multiple_masses_at_once(self):
         spts = cu.mass2spt([2.3, 1.02])
@@ -47,15 +45,20 @@ class TestMass2SpT:
 
 
 class TestClosestPickles:
-    def test_individual_sources(self):
-        assert cu.closest_pickles("O1V") == "O5V"
-        assert cu.closest_pickles("G6V") == "G5V"
-        assert cu.closest_pickles("G7V") == "G8V"
-        assert cu.closest_pickles("M9V") == "M6V"
+    @mark.parametrize("spt_in, spt_out",
+                      [("O1V", "O5V"),
+                       ("G6V", "G5V"),
+                       ("G7V", "G8V"),
+                       ("M9V", "M6V"),
+                       ("M2.4V", "M25V")])
+    def test_individual_sources(self, spt_in, spt_out):
+        assert cu.closest_pickles(spt_in) == spt_out
 
-    def test_multiple_sources(self):
-        assert cu.closest_pickles(["O1V", "M9V"])[0] == "O5V"
-        assert cu.closest_pickles(["O1V"]*10000)[0] == "O5V"
+    @mark.parametrize("spts_in, spt_out",
+                      [(["O1V", "M9V"], "O5V"),
+                       (["O1V"]*10000, "O5V")])
+    def test_multiple_sources(self, spts_in, spt_out):
+        assert cu.closest_pickles(spts_in)[0] == spt_out
 
 
 class TestGaussianDistribution:
