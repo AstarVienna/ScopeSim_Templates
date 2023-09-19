@@ -84,6 +84,12 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     spec_types = cu.mass2spt(masses)
     spec_types = cu.closest_pickles(spec_types)
 
+    # HACK: Delete this once pyckles issue #5 is solved!
+    # Check tests here to see if it works
+    for i, spt in enumerate(spec_types):
+        if spt == "M25V":
+            spec_types[i] = "M25V   "
+
     # 3. get spectra from pyckles
     pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
     unique_spts = set(spec_types)
