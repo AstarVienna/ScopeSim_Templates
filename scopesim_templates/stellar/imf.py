@@ -52,7 +52,7 @@ class IMF():
         solar masses. First element is taken as the min, second element
         the max (e.g. `mass_limits` = [min_mass, max_mass]).
 
-    multiplicity : Multiplicity object or None
+    multiplicity : SPISEA Multiplicity object or None
         If None, no multiplicity is assumed. Otherwise, use
         multiplicity object to create multiple star systems.
     """
