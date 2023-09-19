@@ -1,4 +1,5 @@
 import numpy as np
+from collections.abc import Iterable
 
 
 def nearest_spec_type(spec, cat_tbl):
@@ -18,7 +19,7 @@ def nearest_spec_type(spec, cat_tbl):
         Closest spectral type in the Pickles catalogue
 
     """
-    if isinstance(spec, (list, tuple, np.ndarray)):
+    if isinstance(spec, Iterable) and not isinstance(spec, str):
         return [nearest_spec_type(spt, cat_tbl) for spt in spec]
 
     if spec in cat_tbl["name"]:
