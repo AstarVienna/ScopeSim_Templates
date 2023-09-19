@@ -696,8 +696,7 @@ class IMFSalpeter1955(IMF_broken_powerlaw):
         mass_limits = np.array([0.40, 10.0])
         powers = np.array([-2.3])
 
-        IMF_broken_powerlaw.__init__(self, mass_limits, powers,
-                                     multiplicity=multiplicity)
+        super().__init__(mass_limits, powers, multiplicity=multiplicity)
 
 
 class Miller_Scalo_1979(IMF_broken_powerlaw):
@@ -711,8 +710,7 @@ class Miller_Scalo_1979(IMF_broken_powerlaw):
         mass_limits = np.array([0.1, 1, 10, np.inf])
         powers = np.array([-1.4, -2.5, -3.3])
 
-        IMF_broken_powerlaw.__init__(self, mass_limits, powers,
-                                     multiplicity=multiplicity)
+        super().__init__(mass_limits, powers, multiplicity=multiplicity)
 
 
 class Kennicutt_1983(IMF_broken_powerlaw):
@@ -726,8 +724,7 @@ class Kennicutt_1983(IMF_broken_powerlaw):
         mass_limits = np.array([0.1, 1, np.inf])
         powers = np.array([-1.4, -2.5])
 
-        IMF_broken_powerlaw.__init__(self, mass_limits, powers,
-                                     multiplicity=multiplicity)
+        super().__init__(mass_limits, powers, multiplicity=multiplicity)
 
 
 class Kroupa_2001(IMF_broken_powerlaw):
@@ -741,8 +738,7 @@ class Kroupa_2001(IMF_broken_powerlaw):
         mass_limits = np.array([0.01, 0.08, 0.5, 1, np.inf])
         powers = np.array([-0.3, -1.3, -2.3, -2.3])
 
-        IMF_broken_powerlaw.__init__(self, mass_limits, powers,
-                                     multiplicity=multiplicity)
+        super().__init__(mass_limits, powers, multiplicity=multiplicity)
 
 
 class Weidner_Kroupa_2004(IMF_broken_powerlaw):
@@ -756,8 +752,7 @@ class Weidner_Kroupa_2004(IMF_broken_powerlaw):
         mass_limits = np.array([0.01, 0.08, 0.5, 1, np.inf])
         powers = np.array([-0.3, -1.3, -2.3, -2.35])
 
-        IMF_broken_powerlaw.__init__(self, mass_limits, powers,
-                                     multiplicity=multiplicity)
+        super().__init__(mass_limits, powers, multiplicity=multiplicity)
 
 
 ##################################################
