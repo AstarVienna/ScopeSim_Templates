@@ -246,8 +246,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         weight = np.ones(shape=amplitudes.shape)
 
     # get the references to the unique stellar types
-    ref_dict = {spt: ii for ii, spt in enumerate(unique_types)}
-    ref = np.array([ref_dict[i] for i in spec_types])
+    ref = np.array([unique_types.index(i) for i in spec_types])
 
     if len(ref) == 1:
         ref = ref[0] * np.ones(len(x), dtype=int)

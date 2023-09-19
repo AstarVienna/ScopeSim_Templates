@@ -77,9 +77,8 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
 
     # 1. sample masses from an IMF
     kroupa = imf.Kroupa_2001(params["multiplicity_object"])
-    results = kroupa.generate_cluster(mass, seed=params["seed"])
-    masses, _, _, _ = results
-    masses[masses > 250] = 250
+    masses, _, _, _ = kroupa.generate_cluster(mass, seed=params["seed"])
+    masses.clip(max=250, out=masses)
 
     # 2. get spec_types for masses
     spec_types = cu.mass2spt(masses)
