@@ -77,13 +77,18 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
 
     # 1. sample masses from an IMF
     kroupa = imf.Kroupa_2001(params["multiplicity_object"])
-    results = kroupa.generate_cluster(mass, seed=params["seed"])
-    masses, _, _, _ = results
-    masses[masses > 250] = 250
+    masses, _, _, _ = kroupa.generate_cluster(mass, seed=params["seed"])
+    masses.clip(max=250, out=masses)
 
     # 2. get spec_types for masses
     spec_types = cu.mass2spt(masses)
     spec_types = cu.closest_pickles(spec_types)
+
+    # HACK: Delete this once pyckles issue #5 is solved!
+    # Check tests here to see if it works
+    for i, spt in enumerate(spec_types):
+        if spt == "M25V":
+            spec_types[i] = "M25V   "
 
     # 3. get spectra from pyckles
     pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
@@ -101,7 +106,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
            for spt in spec_types]
 
     # 6. make weight list from Mv + dist_mod(distance)
-    Mvs = np.array(cu.mass2Mv(masses))
+    Mvs = np.array(cu.mass2absmag(masses))
     dist_mod = 5 * np.log10(distance) - 5
     weight = 10 ** (-0.4 * (Mvs + dist_mod))
 

@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+"""Contains aux functions for clusters.py."""
+
 from pathlib import Path
+from collections.abc import Iterable
 
 import numpy as np
 from astropy.io.ascii import read as read_ascii
+# from astropy.modeling.functional_models import KingProjectedAnalytic1D
 from scipy.interpolate import interp1d
 
 import pyckles
@@ -20,37 +25,98 @@ PICKLES_MS_V = tbl["name"][mask_evol * mask_metal]
 
 
 def mass2spt(mass):
-    if isinstance(mass, (list, np.ndarray)):
+    """
+    Find the closest spectral type for a given stellar mass.
+
+    Parameters
+    ----------
+    mass : float or iterable of floats
+        Star mass in units of solar mass.
+
+    Returns
+    -------
+    spt : str or list of str
+        Spectral type or list of spectral types.
+
+    Notes
+    -----
+    `mass` should not be passed as a quantity.
+
+    """
+    if isinstance(mass, Iterable):
+        # recursive
         return [mass2spt(m) for m in mass]
-    ii = int(F_MASS2IDX(mass))
-    return MAMAJEK["SpT"][ii]
+
+    idx = F_MASS2IDX(mass).astype(int)
+    return MAMAJEK["SpT"][idx]
 
 
-def mass2Mv(mass):
-    if isinstance(mass, (list, np.ndarray)):
-        return [mass2Mv(m) for m in mass]
-    return F_MASS2MV(mass)
+def mass2absmag(mass):
+    """
+    Interpolate the absolute V magnitude (Mv) for a given stellar mass.
+
+    Parameters
+    ----------
+    mass : float or iterable of floats
+        Star mass in units of solar mass.
+
+    Returns
+    -------
+    absmag : float or list of floats
+        Absolute magnitude or magnitudes.
+
+    Notes
+    -----
+    `mass` should not be passed as a quantity.
+
+    """
+    if isinstance(mass, Iterable):
+        # recursive
+        return [mass2absmag(m) for m in mass]
+
+    # Round to match interpolation precision, float to not have array.
+    return float(F_MASS2MV(mass).round(3))
 
 
 def closest_pickles(spt):
-    if isinstance(spt, (list, np.ndarray)):
+    """
+    Retrieve closest spectral type available in the loaded Pyckles catalog.
+
+    Parameters
+    ----------
+    spt : str or sequence of str
+        Spectral type or types.
+
+    Returns
+    -------
+    closest_pickle : str or list of str
+        Closest spectral type or types in the catalog.
+
+    """
+    if isinstance(spt, Iterable) and not isinstance(spt, str):
+        # recursive
         return [closest_pickles(s) for s in spt]
 
-    mask_lum = np.array([spt[0] in pic_spt for pic_spt in PICKLES_MS_V])
-    lum_types = PICKLES_MS_V[mask_lum]
-    classes = np.array([float(lt[1:-1]) for lt in lum_types])
-    ii = np.argmin(np.abs(classes - float(spt[1:-1])))
-    closest_pickle = lum_types[ii]
+    to_strip = "OBAFGKMIV "
+
+    lum_types = PICKLES_MS_V[PICKLES_MS_V.startswith(spt[0])]
+    assert lum_types.strip(to_strip).isdigit().all()
+    # The join is necessary to correctly parse 'M25V' as 2.5 and not 25...
+    num_only = np.char.join(".", lum_types.strip(to_strip))
+    classes = np.array(num_only).astype(float)
+
+    idx = np.abs(classes - float(spt.strip(to_strip))).argmin()
+    closest_pickle = lum_types[idx]
 
     return closest_pickle
 
 
-def king_distribution(n, r_core, r_tidal):
-    from astropy.modeling.functional_models import KingProjectedAnalytic1D
-    king = KingProjectedAnalytic1D(r_core=r_core, r_tidal=r_tidal)
-    y = king(np.linspace(0, r_tidal, 100))
+# Unused function, commented out to not annoy pylint...
+# def king_distribution(n, r_core, r_tidal):
+#     king = KingProjectedAnalytic1D(r_core=r_core, r_tidal=r_tidal)
+#     y = king(np.linspace(0, r_tidal, 100))
 
-    return None
+#     return None
 
 
 def gaussian_distribution(n, fwhm, seed=None):
