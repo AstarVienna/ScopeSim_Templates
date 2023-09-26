@@ -45,8 +45,8 @@ def flatlamp(
     ay = np.arange(sy)
     xx, yy = np.meshgrid(ax, ay, sparse=True)
 
-    crpx = width // 2
-    crpy = height // 2
+    crpx = (width - 1) / 2
+    crpy = (height - 1) / 2
 
     # * 1. is necessary for the normalization later
     image = - ((xx - crpx) ** 2 + (yy - crpy) ** 2) * 1.
@@ -58,8 +58,8 @@ def flatlamp(
 
     hdu = fits.ImageHDU(data=image)
 
-    hdu.header["CRPIX1"] = crpx
-    hdu.header["CRPIX2"] = crpy
+    hdu.header["CRPIX1"] = crpx + 1
+    hdu.header["CRPIX2"] = crpy + 1
     hdu.header["CRVAL1"] = 0
     hdu.header["CRVAL2"] = 0
     hdu.header["CDELT1"] = pixel_scale / 3600

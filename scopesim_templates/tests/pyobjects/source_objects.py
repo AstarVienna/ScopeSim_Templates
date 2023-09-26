@@ -5,14 +5,14 @@ import astropy.units as u
 
 
 def _basic_imagehdu(n=11):
-    hdr_dict = {"CRPIX1": n / 2,
-                "CRPIX2": n / 2,
+    hdr_dict = {"CRPIX1": (n + 1) / 2,
+                "CRPIX2": (n + 1) / 2,
                 "CRVAL1": 0,
                 "CRVAL2": 0,
                 "CDELT1": 0.1 / 3600,
                 "CDELT2": 0.1 / 3600,
-                "CUNIT1":"DEG",
-                "CUNIT2":"DEG",
+                "CUNIT1": "deg",
+                "CUNIT2": "deg",
                 "CTYPE1": 'RA---TAN',
                 "CTYPE2": 'DEC--TAN'}
 
@@ -43,8 +43,8 @@ def _make_dummy_cube(scale, wave_unit, ref_wave, wave_step, wave_type, bunit):
                               NAXIS1=data.shape[2] + 1,
                               NAXIS2=data.shape[1] + 1,
                               NAXIS3=data.shape[0] + 1,
-                              CRPIX1=data.shape[2] // 2,
-                              CRPIX2=data.shape[1] // 2,
+                              CRPIX1=(data.shape[2] + 1) / 2,
+                              CRPIX2=(data.shape[1] + 1) / 2,
                               CRPIX3=1,
                               CRVAL1=0,
                               CRVAL2=0,
