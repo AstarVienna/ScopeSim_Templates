@@ -217,8 +217,8 @@ def galaxy3d(sed,           # The SED of the galaxy,
     wcs_dict = {"NAXIS": 2,
                 "NAXIS1": 2 * gal.x_0 + 1,
                 "NAXIS2": 2 * gal.y_0 + 1,
-                "CRPIX1": w // 2,
-                "CRPIX2": h // 2,
+                "CRPIX1": (w + 1) / 2,
+                "CRPIX2": (h + 1) / 2,
                 "CRVAL1": 0,
                 "CRVAL2": 0,
                 "CDELT1": -1 * pixel_scale.to(u.deg).value,
@@ -286,8 +286,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
     for field in src.fields:
         w, h = field.data.shape
-        field.header["CRPIX1"] = w // 2
-        field.header["CRPIX2"] = h // 2
+        field.header["CRPIX1"] = (w + 1) / 2,
+        field.header["CRPIX2"] = (h + 1) / 2,
         field.header["CRVAL1"] = 0
         field.header["CRVAL2"] = 0
         field.header["CDELT1"] = extent / w
