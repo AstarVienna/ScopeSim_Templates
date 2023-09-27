@@ -292,8 +292,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
         field.header["CRVAL2"] = 0
         field.header["CDELT1"] = extent / w
         field.header["CDELT2"] = extent / w
-        field.header["CUNIT1"] = "DEG"
-        field.header["CUNIT2"] = "DEG"
+        field.header["CUNIT1"] = "deg"
+        field.header["CUNIT2"] = "deg"
         field.header["CTYPE1"] = "RA---TAN"
         field.header["CTYPE2"] = "DEC--TAN"
         field.header["SPEC_REF"] = field.header["SPEC_EXT"] - spec_ext
