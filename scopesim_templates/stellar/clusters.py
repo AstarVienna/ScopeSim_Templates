@@ -6,9 +6,9 @@ from astropy.utils import deprecated_renamed_argument
 
 from spextra import Spextrum
 
-from scopesim_templates import rc
-from scopesim_templates.stellar import imf, cluster_utils as cu
-from scopesim_templates.utils.general_utils import function_call_str, RA0, DEC0
+from ..rc import __config__, Source
+from ..utils.general_utils import function_call_str, RA0, DEC0
+from . import imf, cluster_utils as cu
 
 
 __all__ = ["cluster"]
@@ -68,7 +68,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
               "core_radius": core_radius,
               "tidal_radius": None,
               "multiplicity_object": None,
-              "seed": rc.__config__["!random.seed"],
+              "seed": __config__["!random.seed"],
               "ra": ra,
               "dec": dec}
     params.update(kwargs)
@@ -124,7 +124,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
                 units=[u.arcsec, u.arcsec, None, None, u.solMass, None])
 
     # 9. make Source with table, spectra
-    src = rc.Source(table=tbl, spectra=spectra)
+    src = Source(table=tbl, spectra=spectra)
     src.meta.update(params)
 
     return src
