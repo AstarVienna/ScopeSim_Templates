@@ -1,3 +1,5 @@
+"""Currently only contains a simple zero-age open cluster."""
+
 import numpy as np
 import pyckles
 from astropy import units as u
