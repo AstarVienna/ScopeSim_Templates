@@ -12,7 +12,7 @@ from scopesim_templates.rc import Source
 from scopesim_templates.stellar import cluster
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def basic_cluster():
     return cluster()
 
