@@ -1,14 +1,12 @@
 import pytest
 
 import numpy as np
-from astropy.io import fits
 from astropy import units as u
 from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm
 
-from scopesim import load_example_optical_train
-
 from scopesim_templates.micado import viking_fields as vf
+from scopesim_templates.rc import load_example_optical_train
 
 PLOTS = False
 

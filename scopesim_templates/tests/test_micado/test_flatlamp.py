@@ -1,4 +1,5 @@
 """Test for flatlamp."""
+
 from astropy.io.fits import ImageHDU
 from synphot import SourceSpectrum
 

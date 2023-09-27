@@ -1,6 +1,7 @@
 import pytest
 
 import pyckles
+
 from scopesim_templates.stellar import stars_utils as stu
 
 

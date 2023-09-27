@@ -4,15 +4,16 @@ import numpy as np
 import astropy.units as u
 import synphot as sp
 
-from scopesim_templates.stellar import *
-from scopesim_templates.rc import ter_curve_utils as tcu
-from scopesim_templates.rc import Source
+from scopesim_templates.stellar import star, stars, star_field, star_grid,\
+    cluster
+from scopesim_templates.rc import Source, ter_curve_utils as tcu
 
 
 def source_eq(source_lhs: Source, source_rhs: Source):
     """hacky way to ensure two source"""
     eq = len(source_lhs.spectra) == len(source_rhs.spectra)
-    for spectrum_lhs, spectrum_rhs in zip(source_lhs.spectra, source_rhs.spectra):
+    for spectrum_lhs, spectrum_rhs in zip(source_lhs.spectra,
+                                          source_rhs.spectra):
         eq = eq and all(spectrum_lhs.waveset == spectrum_rhs.waveset)
     return eq
 
@@ -25,10 +26,10 @@ class TestStar:
         src_from_star_unit = star("Generic/Johnson.V", 0*u.mag, "A0V", 0, 0)
         src_from_stars_unit = stars("Generic/Johnson.V", [0*u.mag], ["A0V"], [0], [0])
 
-        a = source_eq(src_from_star, src_from_stars)
-        assert(source_eq(src_from_star, src_from_stars))
-        assert(source_eq(src_from_star, src_from_star_unit))
-        assert(source_eq(src_from_star, src_from_stars_unit))
+        _ = source_eq(src_from_star, src_from_stars)
+        assert source_eq(src_from_star, src_from_stars)
+        assert source_eq(src_from_star, src_from_star_unit)
+        assert source_eq(src_from_star, src_from_stars_unit)
 
 
 class TestStars:
