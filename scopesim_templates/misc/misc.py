@@ -13,7 +13,7 @@ from astropy.utils.decorators import deprecated_renamed_argument
 from synphot import SourceSpectrum, Empirical1D
 
 from spextra import Spextrum
-from ..rc import Source, ter_curve_utils as tu #  , scopesim_utils as su
+from ..rc import Source, ter_curve_utils as tu
 from ..utils.general_utils import add_function_call_str, make_img_wcs_header,\
     RA0, DEC0
 

@@ -6,10 +6,10 @@ from astropy.utils.decorators import deprecated_renamed_argument
 import pyckles
 from spextra import Spextrum
 
-from scopesim_templates.stellar import stars_utils as su
-from scopesim_templates.utils.general_utils import function_call_str, \
-    RA0, DEC0, add_function_call_str
-from scopesim_templates import rc
+from ..rc import __config__, Source
+from ..utils.general_utils import RA0, DEC0, add_function_call_str,\
+    function_call_str
+from . import stars_utils as su
 
 
 __all__ = ["star",
@@ -61,7 +61,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
               "width": width,
               "height": height,
               "filter_name": "V",
-              "seed": rc.__config__["!random.seed"],
+              "seed": __config__["!random.seed"],
               "ra": ra,
               "dec": dec}
     params.update(kwargs)
@@ -255,7 +255,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     tbl = Table(names=["x", "y", "ref", "weight", "spec_types"],
                 data=[x, y, ref, weight, spec_types])
 
-    src = rc.Source(spectra=spectra, table=tbl)
+    src = Source(spectra=spectra, table=tbl)
     return src
 
 

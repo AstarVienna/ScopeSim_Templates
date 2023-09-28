@@ -8,8 +8,7 @@ from astropy import units as u
 from synphot import SourceSpectrum, Empirical1D
 from synphot.units import PHOTLAM
 
-from scopesim import Source
-from scopesim.optics import image_plane_utils as ipu
+from ..rc import Source, im_plane_utils
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -84,7 +83,8 @@ def line_list(unit_flux=1*PHOTLAM,
     dh = 0.5 * height / 3600         # input needed in [deg]
     pixel_scale = 0.1 * dw
 
-    hdr = ipu.header_from_list_of_xy([-dw, dw], [-dh, dh], pixel_scale)  # [deg]
+    hdr = im_plane_utils.header_from_list_of_xy([-dw, dw], [-dh, dh],
+                                                pixel_scale)  # [deg]
     hdr["SPEC_REF"] = 0
     im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
     field = fits.ImageHDU(header=hdr, data=im)

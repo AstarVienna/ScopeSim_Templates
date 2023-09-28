@@ -2,9 +2,11 @@ from pytest import approx, mark
 from collections.abc import Iterable
 import numpy as np
 from astropy.table import Table
+
 import scopesim_templates.stellar.cluster_utils as cu
 
 from matplotlib import pyplot as plt
+
 PLOTS = False
 
 

@@ -1,9 +1,10 @@
 """Test cluster."""
+
 from astropy.table import Table
 from synphot import SourceSpectrum
+
 from scopesim_templates.micado import cluster
 from scopesim_templates.rc import Source
-import scopesim_templates
 
 
 class TestCluster:

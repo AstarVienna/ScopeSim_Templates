@@ -1,5 +1,5 @@
 from scopesim_templates import cluster
-from scopesim import Source
+from scopesim_templates.rc import Source
 
 
 def test_actually_works():

@@ -1,7 +1,8 @@
-from scopesim_templates import calibration
 from astropy.table import Table
-from scopesim import Source
 from synphot import SourceSpectrum
+
+from scopesim_templates import calibration
+from scopesim_templates.rc import Source
 
 
 class TestEmptySky:

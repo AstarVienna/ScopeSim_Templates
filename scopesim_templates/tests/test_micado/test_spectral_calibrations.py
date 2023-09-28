@@ -1,6 +1,5 @@
 # This test suite takes long because it creates a 10 million entry spectrum 5x over
 
-import pytest
 from pytest import approx
 
 import numpy as np

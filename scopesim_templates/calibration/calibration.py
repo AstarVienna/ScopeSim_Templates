@@ -8,7 +8,7 @@ from astropy import units as u
 
 from spextra import Spextrum
 
-from scopesim_templates.rc import Source, __config__
+from ..rc import Source, __config__
 from ..utils.general_utils import add_function_call_str
 from ..misc.misc import uniform_source
 
