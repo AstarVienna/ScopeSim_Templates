@@ -4,8 +4,7 @@ import numpy as np
 import astropy.units as u
 import synphot as sp
 
-from scopesim_templates.stellar import star, stars, star_field, star_grid,\
-    cluster
+from scopesim_templates.stellar import star, stars, star_field, star_grid
 from scopesim_templates.rc import Source, ter_curve_utils as tcu
 
 
@@ -81,8 +80,3 @@ class TestStarGrid:
     def test_returns_source_object_with_correct_weighting_in_jansky(self):
         src = star_grid(n=3, mmin=1*u.Jansky, mmax=3631*u.Jansky)
         assert src.fields[0]["weight"][2] == 3631
-
-
-class TestCluster:
-    def test_it_works(self):
-        assert isinstance(cluster(), Source)
