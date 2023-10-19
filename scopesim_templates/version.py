@@ -2,6 +2,12 @@ from importlib import metadata
 version = metadata.version(__package__)
 date = '2023-10-19 08:00:00 GMT'
 yaml_descriptions = """
+- version : 0.5.1-alpha
+  date : 202x-xx-xx
+  comment : None.
+  changes :
+  - None.
+
 - version : 0.5.0
   date : 2023-10-19
   comment : Fix off-by-one error.
