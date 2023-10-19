@@ -2,12 +2,13 @@ import numpy as np
 from astropy.modeling.models import Sersic2D
 
 
+# TODO: could this be done with the existing implementation of GalaxyBase?
 def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
                    normalization="total",
                    width=1024, height=1024, x_offset=0, y_offset=0,
                    oversample=1):
     """
-    Returns a 2D array with a normalised Sersic profile
+    Return a 2D array with a normalised Sersic profile.
 
     Parameters
     ----------
@@ -55,7 +56,6 @@ def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
     :func:`.galaxy` where parameter units are in [arcsec] or [pc]
 
     """
-
     # Silently cast to integer
     os_factor = int(oversample)
 
@@ -66,7 +66,7 @@ def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
     height_os = os_factor * height
     x, y = np.meshgrid(np.arange(width_os), np.arange(height_os))
 
-    dx = 0.5 * width_os  + x_offset * os_factor
+    dx = 0.5 * width_os + x_offset * os_factor
     dy = 0.5 * height_os + y_offset * os_factor
 
     r_eff_os = r_eff * os_factor
@@ -78,8 +78,8 @@ def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
     # Rebin os_factord image
     img = _rebin(img_os, os_factor)
 
-    thresh = np.max([img[0,:].max(), img[-1,:].max(),
-                     img[:,0].max(), img[:,-1].max()])
+    thresh = np.max([img[0, :].max(), img[-1, :].max(),
+                     img[:, 0].max(), img[:, -1].max()])
     img[img < thresh] = 0
 
     if "cen" in normalization.lower():
@@ -91,8 +91,7 @@ def sersic_profile(r_eff=100, n=4, ellipticity=0.5, angle=30,
 
 
 def _rebin(img, bpix):
-    """Rebin image img by block averaging bpix x bpix pixels"""
-
+    """Rebin image img by block averaging bpix x bpix pixels."""
     xedge = np.shape(img)[0] % bpix
     yedge = np.shape(img)[1] % bpix
     img_block = img[xedge:, yedge:]

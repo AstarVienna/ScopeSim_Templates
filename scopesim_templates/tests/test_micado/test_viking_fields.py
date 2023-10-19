@@ -1,14 +1,12 @@
 import pytest
 
 import numpy as np
-from astropy.io import fits
 from astropy import units as u
 from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm
 
-from scopesim import load_example_optical_train
-
 from scopesim_templates.micado import viking_fields as vf
+from scopesim_templates.rc import load_example_optical_train
 
 PLOTS = False
 
@@ -70,7 +68,6 @@ class TestVikingCatalogues:
         assert len(viking_src.fields) == len(gals) + len(stars)
 
 
-@pytest.mark.xfail(reason="load_example_optical_train is broken on CI, see https://github.com/AstarVienna/ScopeSim/issues/160")
 class TestWithScopeSim:
     def test_runs_through_scopesim_basic_instrument(self):
         # configure basic_instrument to MICADO specs

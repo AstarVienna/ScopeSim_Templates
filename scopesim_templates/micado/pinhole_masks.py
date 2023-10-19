@@ -1,7 +1,8 @@
 import numpy as np
 from astropy import units as u
-from scopesim import Source
 from synphot import BlackBody1D, SourceSpectrum, Empirical1D
+
+from ..rc import Source
 
 
 def pinhole_mask(x, y, waves, temperature=1500*u.K, sum_factor=1):

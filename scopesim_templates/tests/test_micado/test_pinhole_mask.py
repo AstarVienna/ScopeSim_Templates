@@ -1,14 +1,13 @@
 """Test for flatlamp."""
+
 import numpy as np
 from astropy.table import Table
 from astropy import units as u
 from matplotlib import pyplot as plt
 from synphot import SourceSpectrum
 
-from scopesim import load_example_optical_train
-
 from scopesim_templates.micado.pinhole_masks import pinhole_mask
-from scopesim_templates.rc import Source
+from scopesim_templates.rc import Source, load_example_optical_train
 
 PLOTS = False
 

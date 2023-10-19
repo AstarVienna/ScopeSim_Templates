@@ -1,10 +1,10 @@
 """Flat lamp for MICADO."""
-import numpy
+
 import numpy as np
 from astropy.io import fits
 import astropy.units as u
-from scopesim import Source
-import scopesim
+
+from ..rc import Source
 
 
 def flatlamp(
@@ -45,8 +45,8 @@ def flatlamp(
     ay = np.arange(sy)
     xx, yy = np.meshgrid(ax, ay, sparse=True)
 
-    crpx = width // 2
-    crpy = height // 2
+    crpx = (width - 1) / 2
+    crpy = (height - 1) / 2
 
     # * 1. is necessary for the normalization later
     image = - ((xx - crpx) ** 2 + (yy - crpy) ** 2) * 1.
@@ -58,14 +58,14 @@ def flatlamp(
 
     hdu = fits.ImageHDU(data=image)
 
-    hdu.header["CRPIX1"] = crpx
-    hdu.header["CRPIX2"] = crpy
+    hdu.header["CRPIX1"] = crpx + 1
+    hdu.header["CRPIX2"] = crpy + 1
     hdu.header["CRVAL1"] = 0
     hdu.header["CRVAL2"] = 0
     hdu.header["CDELT1"] = pixel_scale / 3600
     hdu.header["CDELT2"] = pixel_scale / 3600
-    hdu.header["CUNIT1"] = "DEG"
-    hdu.header["CUNIT2"] = "DEG"
+    hdu.header["CUNIT1"] = "deg"
+    hdu.header["CUNIT2"] = "deg"
     hdu.header["CTYPE1"] = "RA---TAN"
     hdu.header["CTYPE2"] = "DEC--TAN"
 
@@ -76,8 +76,8 @@ def flatlamp(
 
     sa = 1.0200000e+02
     se = 3.3502039e+05
-    lam = numpy.logspace(numpy.log(sa), numpy.log(se), base=numpy.e,
-                         num=number_of_points) * u.Angstrom
+    lam = np.logspace(np.log(sa), np.log(se), base=np.e,
+                      num=number_of_points) * u.Angstrom
 
     return Source(
             image_hdu=hdu,
