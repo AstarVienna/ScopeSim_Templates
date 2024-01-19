@@ -205,7 +205,7 @@ class IMF():
                     isMultiple = np.append(isMultiple, newIsMultiple)
                     systemMasses = np.append(systemMasses, newSystemMasses)
                     t2 = time.time()
-                    print(F"All loop: {t2 - t1}")
+                    # print(F"All loop: {t2 - t1}")
             else:
                 newTotalMassTally = newMasses.sum()
 

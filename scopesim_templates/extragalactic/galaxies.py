@@ -273,7 +273,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     filename = "spiral_two_component.fits"
     url = __config__["!file.server_url"]
     use_cache = __config__["!file.use_cache"]
-    print(url+filename)
+    # print(url+filename)
 
     path = download_file(remote_url=url+filename, cache=use_cache)
     hdulist = fits.open(path)
