@@ -193,9 +193,11 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
 
     if filter_name is not None and isinstance(filter_name, str):
         filter_curve = tu.get_filter(filter_name)
-        waves = filter_curve.waverange
+        waverange = filter_curve.waverange
 
-    spec = SourceSpectrum(Empirical1D, points=waves, lookup_table=[1, 1])
+    waves = np.linspace(waverange[0], waverange[1], num=10)
+    lookup_table = [1,] * len(waves)
+    spec = SourceSpectrum(Empirical1D, points=waves, lookup_table=lookup_table)
     tu.scale_spectrum(spec, filter_name=filter_name, amplitude=amp_unit)
 
     if image_hdu.header.get("SPEC_REF") is None:
@@ -430,6 +432,7 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None,
     zpix = np.arange(specwcs.spectral.array_shape[0])
     # keeping wavelengths in native coordinates
     waves = specwcs.pixel_to_world(zpix)
+    assert len(waves) > 3, "At least 4 wavelength points are required."
     zero_spec = np.zeros(shape=zpix.shape) * bunit
 
     hdus = []

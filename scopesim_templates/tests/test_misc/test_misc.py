@@ -59,7 +59,7 @@ class TestPointSource:
         assert isinstance(src, Source)
 
     def test_initialize_from_synphot(self):
-        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000, 10000], lookup_table=[1, 1])
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000] * 4, lookup_table=[1] * 4)
         src = misc.point_source(sed=sp)
         assert isinstance(src, Source)
 
@@ -71,7 +71,7 @@ class TestUniformSource:
         assert isinstance(src, Source)
 
     def test_initialize_from_synphot(self):
-        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000, 10000], lookup_table=[1, 1])
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000] * 4, lookup_table=[1] * 4)
         src = misc.uniform_source(sed=sp)
         assert isinstance(src, Source)
 
