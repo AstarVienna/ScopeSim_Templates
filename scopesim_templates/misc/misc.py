@@ -198,7 +198,7 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     waves = np.linspace(waverange[0], waverange[1], num=10)
     lookup_table = [1,] * len(waves)
     spec = SourceSpectrum(Empirical1D, points=waves, lookup_table=lookup_table)
-    tu.scale_spectrum(spec, filter_name=filter_name, amplitude=amp_unit)
+    spec = tu.scale_spectrum(spec, filter_name=filter_name, amplitude=amp_unit)
 
     if image_hdu.header.get("SPEC_REF") is None:
         image_hdu.header["SPEC_REF"] = 0
