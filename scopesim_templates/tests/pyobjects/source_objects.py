@@ -38,10 +38,10 @@ def starting_star_imagehdu():
 
     # Fits headers of the image. Yes it needs a WCS
     hdr = fits.Header(dict(NAXIS=2,
-                           NAXIS1=n + 1,
-                           NAXIS2=n + 1,
-                           CRPIX1=n / 2,
-                           CRPIX2=n / 2,
+                           NAXIS1=n,
+                           NAXIS2=n,
+                           CRPIX1=(n + 1) / 2,
+                           CRPIX2=(n + 1) / 2,
                            CRVAL1=0,
                            CRVAL2=0,
                            CDELT1=0.2 / 3600,
