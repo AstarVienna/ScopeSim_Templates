@@ -15,7 +15,7 @@ from scopesim_templates.rc import Source, load_example_optical_train
 
 METIS_FILTER_PATH = r"F:/Work/irdb/METIS/filters/TC_filter_H2O-ice.dat"
 
-PLOTS = True
+PLOTS = False
 
 
 class TestSourceFromImageHDU:
