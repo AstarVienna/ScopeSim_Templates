@@ -24,6 +24,7 @@ def hdu_to_synphot(hdu):
     flux = hdu.data["flux"]
     flux_unit = u.Unit(hdu.header["TUNIT2"])
 
+    assert len(wave) > 3, "At least 4 wavelength points are required."
     spec = SourceSpectrum(Empirical1D, points=wave*wave_unit,
                           lookup_table=flux*flux_unit)
 
