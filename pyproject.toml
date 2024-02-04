@@ -4,7 +4,7 @@ name = "ScopeSim_Templates"
 version = "0.5.1-alpha"
 description = "On-sky source templates for ScopeSim"
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = {text = "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"}
 authors = [
     {name = "A* Vienna", email="astar.astro@univie.ac.at"},
