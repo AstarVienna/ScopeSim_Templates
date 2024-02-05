@@ -21,17 +21,17 @@ classifiers=[
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
 dependencies = [
-    "numpy>=1.19.5",
-    "scipy>=1.10.0",
-    "astropy>=5.0",
-    "matplotlib>=3.2.0",
+    "numpy>=1.26.3",
+    "scipy>=1.11.4",
+    "astropy>=5.3.3",
+    "matplotlib>=3.7.2",
 
-    "docutils>=0.15",
-    "beautifulsoup4>=4.4",
+    "docutils>=0.19",
+    "beautifulsoup4>=4.12.1",
     "lxml>=4.9.3",
-    "pyyaml>=5.3",
+    "pyyaml>=6.0.1",
 
-    "synphot>=1.1.0",
+    "synphot>=1.2.1",
 
     "scopesim>=0.7.0",
     "pyckles>=0.2",
