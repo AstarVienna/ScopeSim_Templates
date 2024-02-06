@@ -1,7 +1,7 @@
 [project]
 name = "ScopeSim_Templates"
 # When updating the version, also add a date and release notes to version.py
-version = "0.5.1-alpha"
+version = "0.5.1"
 description = "On-sky source templates for ScopeSim"
 readme = "README.rst"
 requires-python = ">=3.9"
