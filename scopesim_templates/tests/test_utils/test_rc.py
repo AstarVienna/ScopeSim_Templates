@@ -1,3 +1,5 @@
+from astar_utils import NestedMapping
+
 from scopesim_templates import rc
 
 
@@ -6,4 +8,4 @@ class TestRC:
         assert hasattr(rc, "Source")
 
     def test_default_yaml_is_read_in(self):
-        isinstance(rc.__config__, rc.SystemDict)
+        isinstance(rc.__config__, NestedMapping)

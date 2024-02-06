@@ -36,6 +36,7 @@ dependencies = [
     "scopesim>=0.7.0",
     "pyckles>=0.2",
     "spextra>=0.33",
+    "astar-utils>=0.2.1",
 ]
 
 [project.optional-dependencies]
