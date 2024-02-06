@@ -1,3 +1,5 @@
+import pytest
+
 import numpy as np
 
 from astropy.io import fits
@@ -23,6 +25,34 @@ def _basic_imagehdu(n=11):
     hdu = fits.ImageHDU(data=im)
     hdu.header.update(hdr_dict)
 
+    return hdu
+
+
+@pytest.fixture(scope="module")
+def starting_star_imagehdu():
+    """Create the same star as in starting.ipynb"""
+    n = 100
+    sigma = 5
+    x, y = np.meshgrid(np.arange(n), np.arange(n))
+    img = np.exp(-1 * (((x - n / 2) / sigma) ** 2 + ((y - n / 2) / sigma) ** 2))
+
+    # Fits headers of the image. Yes it needs a WCS
+    hdr = fits.Header(dict(NAXIS=2,
+                           NAXIS1=n,
+                           NAXIS2=n,
+                           CRPIX1=(n + 1) / 2,
+                           CRPIX2=(n + 1) / 2,
+                           CRVAL1=0,
+                           CRVAL2=0,
+                           CDELT1=0.2 / 3600,
+                           CDELT2=0.2 / 3600,
+                           CUNIT1="DEG",
+                           CUNIT2="DEG",
+                           CTYPE1='RA---TAN',
+                           CTYPE2='DEC--TAN'))
+
+    # Creating an ImageHDU object
+    hdu = fits.ImageHDU(data=img, header=hdr)
     return hdu
 
 

@@ -75,6 +75,7 @@ def line_list(unit_flux=1*PHOTLAM,
         flux = signal.convolve(flux, kernel, mode="same")
 
     # make spectrum
+    assert len(wave) > 3, "At least 4 wavelength points are required."
     spec = SourceSpectrum(Empirical1D, points=wave * u.nm,
                           lookup_table=flux * unit_flux)
 

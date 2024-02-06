@@ -1,10 +1,10 @@
 [project]
 name = "ScopeSim_Templates"
 # When updating the version, also add a date and release notes to version.py
-version = "0.5.0"
+version = "0.5.1"
 description = "On-sky source templates for ScopeSim"
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = {text = "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"}
 authors = [
     {name = "A* Vienna", email="astar.astro@univie.ac.at"},
@@ -21,21 +21,22 @@ classifiers=[
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
 dependencies = [
-    "numpy>=1.19.5",
-    "scipy>=1.10.0",
-    "astropy>=5.0",
-    "matplotlib>=3.2.0",
+    "numpy>=1.26.3",
+    "scipy>=1.11.4",
+    "astropy>=5.3.3",
+    "matplotlib>=3.7.2",
 
-    "docutils>=0.15",
-    "beautifulsoup4>=4.4",
-    "lxml>=4.5.0",
-    "pyyaml>=5.3",
+    "docutils>=0.19",
+    "beautifulsoup4>=4.12.1",
+    "lxml>=4.9.3",
+    "pyyaml>=6.0.1",
 
-    "synphot>=1.1.0",
+    "synphot>=1.2.1",
 
     "scopesim>=0.7.0",
     "pyckles>=0.2",
     "spextra>=0.33",
+    "astar-utils>=0.2.1",
 ]
 
 [project.optional-dependencies]

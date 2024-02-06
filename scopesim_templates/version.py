@@ -1,7 +1,17 @@
 from importlib import metadata
 version = metadata.version(__package__)
-date = '2023-10-19 08:00:00 GMT'
+date = '2024-02-06 18:00:00 GMT'
 yaml_descriptions = """
+- version : 0.5.1
+  date : 2024-02-06
+  comment : Patch to remove Python 3.8 and SystemDict.
+  changes :
+  - Drop support for Python 3.8 #77
+  - Use astar_utils.NestedMapping instead of scopesim.system_dict.SystemDict #76
+  - Fix scaling of spectrum #74
+  - Add config file for auto-generated release notes #68
+  - Comment out print statements, perhaps replace with logging later #72
+
 - version : 0.5.0
   date : 2023-10-19
   comment : Fix off-by-one error.
