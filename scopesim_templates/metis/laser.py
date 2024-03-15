@@ -2,4 +2,4 @@
 """WCU laser spectrum for METIS."""
 
 def laser_spectrum():
-    pass
+    ...
