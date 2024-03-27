@@ -11,10 +11,12 @@ from ..rc import Source, im_plane_utils
 
 
 def laser_spectrum(img_size=(12, 12),
-                   waves=np.arange(3, 6, .001)*u.um,
                    centers=[3.39, 4.73, 5.263]*u.um,
                    fwhms=[8E-8, 8E-7, 6E-5]*u.um,
                    fluxes=[1, 7, 500],
+                   waves=None,
+                   specdict=None,
+):
     """
     Create laser calibration spectrum source for METIS.
 
@@ -22,8 +24,6 @@ def laser_spectrum(img_size=(12, 12),
     ----------
     img_size : TYPE, optional
         FOV size in arcsec, plus a little extra. The default is (12, 12).
-    waves : TYPE, optional
-        Input wavelength axis. The default is np.arange(3, 6, .001)*u.um.
     centers : TYPE, optional
         Emission line centers. The default is [3.39, 4.73, 5.263]*u.um.
     fwhms : TYPE, optional
@@ -31,12 +31,26 @@ def laser_spectrum(img_size=(12, 12),
     fluxes : TYPE, optional
         Emission line total fluxes. The default is [1, 7, 500] to create lines
         of roughly equal amplitude.
+    waves : array-like, optional
+        Input wavelength axis. Either `waves` or `specdict` must be given. If
+        both are given, `waves` takes precedence.The default is None.
+    specdict : Mapping, optional
+        Dict-like structure containing the keys "wave_min", "wave_max" and
+        "spectral_bin_width", which is used to construct the wavelength axis.
+        Either `waves` or `specdict` must be given. If both are given, `waves`
+        takes precedence. The default is None.
 
     Returns
     -------
     src : Source
 
     """
+    if waves is None:
+        if specdict is None:
+            raise ValueError("Either waves or specdict must be given.")
+        waves = np.arange(specdict["wave_min"], specdict["wave_max"],
+                          specdict["spectral_bin_width"])
+
     # Taken from micado.spectral_calibration.line_list:
     dw = 0.5 * img_size[0] / 3600         # input needed in [deg]
     dh = 0.5 * img_size[1] / 3600         # input needed in [deg]
