@@ -14,7 +14,7 @@ def laser_spectrum(img_size=(12, 12),
                    waves=np.arange(3, 6, .001)*u.um,
                    centers=[3.39, 4.73, 5.263]*u.um,
                    fwhms=[8E-8, 8E-7, 6E-5]*u.um,
-                   fluxes=[20, 1, 22]):
+                   fluxes=[1, 7, 500],
     """
     Create laser calibration spectrum source for METIS.
 
@@ -29,7 +29,7 @@ def laser_spectrum(img_size=(12, 12),
     fwhms : TYPE, optional
         Emission line FWHMs. The default is [8E-8, 8E-7, 6E-5]*u.um.
     fluxes : TYPE, optional
-        Emission line total fluxes. The default is [20, 1, 22] to create lines
+        Emission line total fluxes. The default is [1, 7, 500] to create lines
         of roughly equal amplitude.
 
     Returns
