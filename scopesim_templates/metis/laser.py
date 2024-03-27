@@ -35,10 +35,10 @@ def laser_spectrum(img_size=(12, 12),
         Input wavelength axis. Either `waves` or `specdict` must be given. If
         both are given, `waves` takes precedence.The default is None.
     specdict : Mapping, optional
-        Dict-like structure containing the keys "wave_min", "wave_max" and
-        "spectral_bin_width", which is used to construct the wavelength axis.
-        Either `waves` or `specdict` must be given. If both are given, `waves`
-        takes precedence. The default is None.
+        Dict-like structure containing the keys "wave_min", "wave_max",
+        "spectral_bin_width" and "wave_unit", which is used to construct the
+        wavelength axis. Either `waves` or `specdict` must be given. If both
+        are given, `waves` takes precedence. The default is None.
 
     Returns
     -------
@@ -48,8 +48,11 @@ def laser_spectrum(img_size=(12, 12),
     if waves is None:
         if specdict is None:
             raise ValueError("Either waves or specdict must be given.")
-        waves = np.arange(specdict["wave_min"], specdict["wave_max"],
-                          specdict["spectral_bin_width"])
+        waves = np.arange(
+            specdict["wave_min"],
+            specdict["wave_max"],
+            specdict["spectral_bin_width"]
+        ) * u.Unit(specdict["wave_unit"])
 
     # Taken from micado.spectral_calibration.line_list:
     dw = 0.5 * img_size[0] / 3600         # input needed in [deg]
