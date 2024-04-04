@@ -64,12 +64,13 @@ def laser_spectrum(
     hdr["SPEC_REF"] = 0
     im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
     field = fits.ImageHDU(header=hdr, data=im)
-    spec = Spextrum.emission_line_spectrum(centers, fwhms, fluxes, waves=waves)
+    spec = Spextrum.emission_line_spectrum(centers.round(5), fwhms, fluxes,
+                                           waves=waves)
     src = Source(image_hdu=field, spectra=spec)
     return src
 
 
-def laser_spectrum_lm(specdict, n_tunable: int = 5, **kwargs):
+def laser_spectrum_lm(specdict, n_tunable: int = 20, **kwargs):
     """
     Calibration laser for METIS LM bands.
 
@@ -85,7 +86,7 @@ def laser_spectrum_lm(specdict, n_tunable: int = 5, **kwargs):
     n_tunable : int, optional
         Number of emission lines created for the tunable laser between 4.68 and
         4.78 um. Passing 1 will create a single line at 4.73 um.
-        The default is 5.
+        The default is 20.
     **kwargs : TYPE
         Any other keyword arguments passed to ``laser_spectrum``.
         In particular, `centers`, `fwhms` and `fluxes` will override the
