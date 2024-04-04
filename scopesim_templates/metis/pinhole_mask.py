@@ -6,9 +6,11 @@ from itertools import product
 import numpy as np
 from astropy import units as u
 
+from ..utils.general_utils import add_function_call_str
 from ..micado.pinhole_masks import pinhole_mask as micado_mask
 
 
+@add_function_call_str
 def pinhole_mask(
         nx=5,
         ny=28,

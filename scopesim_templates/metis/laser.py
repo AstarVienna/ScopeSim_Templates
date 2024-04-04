@@ -7,9 +7,11 @@ from astropy.io import fits
 
 from spextra import Spextrum
 
+from ..utils.general_utils import add_function_call_str
 from ..rc import Source, im_plane_utils
 
 
+@add_function_call_str
 def laser_spectrum(
         centers,
         fwhms,
