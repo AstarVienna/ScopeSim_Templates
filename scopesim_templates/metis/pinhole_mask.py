@@ -17,6 +17,7 @@ def pinhole_mask(
         dx=0.45,
         dy=0.27945,
         waves=np.arange(3, 6, .001)*u.um,
+        temperature = 1500*u.K,
         **kwargs
 ):
     """
@@ -46,4 +47,6 @@ def pinhole_mask(
 
     """
     x, y = zip(*product(np.linspace(-dx, dx, nx), np.linspace(-dy, dy, ny)))
-    return micado_mask(x, y, waves, **kwargs)
+
+    return micado_mask(x, y, waves, temperature, **kwargs)
+
