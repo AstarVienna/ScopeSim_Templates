@@ -5,6 +5,7 @@ from . import extragalactic
 from . import misc
 from . import stellar
 from . import utils
+from . import metis
 
 # This warning is emitted when just doing "import scopesim_templates", which
 # should be a normal non-warning thing to do.
