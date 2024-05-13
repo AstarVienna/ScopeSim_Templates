@@ -2,6 +2,12 @@ from importlib import metadata
 version = metadata.version(__package__)
 date = '2024-02-06 18:00:00 GMT'
 yaml_descriptions = """
+- version : 0.5.2
+  date : 2024-05-13
+  comment : Patch to add METIS calibration sources.
+  changes :
+  - Add scopesim_templates/metis/laser.py and pinhole_mask.py
+
 - version : 0.5.1
   date : 2024-02-06
   comment : Patch to remove Python 3.8 and SystemDict.
