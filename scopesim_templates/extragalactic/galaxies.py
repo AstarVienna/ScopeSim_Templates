@@ -57,8 +57,8 @@ def galaxy(sed,           # The SED of the galaxy
            ellip=0.1,         # ellipticity
            theta=0,         # position angle
            extend=3,     # extend in units of r_eff
-           ra=10,
-           dec=-10):
+           ra=0.0,
+           dec=0.0):
     """
     Create a source object of a galaxy described by its Sersic index and other parameters.
 
@@ -86,9 +86,9 @@ def galaxy(sed,           # The SED of the galaxy
     extend : float
         Size of the image in units of r_eff
     ra : float, str
-        RA of the source, default 10
+        RA of the source in degree, default 0.0
     dec : float, str
-        DEC of the source, default -10
+        DEC of the source in degree, default 0.0
 
     Returns
     -------
