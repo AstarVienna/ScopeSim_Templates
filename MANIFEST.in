@@ -2,6 +2,7 @@ include README.rst
 include LICENSE
 include scopesim_templates/defaults.yaml
 include scopesim_templates/stellar/mamajek_alt.dat
+include scopesim_templates/extragalactic/spiral_two_component.fits.bz2
 graft scopesim_templates/micado/data/
 graft scopesim_templates/micado/viking_fields/
 prune scopesim_templates/tests*

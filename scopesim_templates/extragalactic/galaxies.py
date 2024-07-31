@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """TBA."""
+import pathlib
 
 import numpy as np
 import pyckles
@@ -7,12 +8,11 @@ import pyckles
 from astropy import units as u
 from astropy.io import fits
 from astropy.utils import deprecated_renamed_argument
-from astropy.utils.data import download_file
 from astropy.wcs import WCS
 
 from spextra import Spextrum
 
-from ..rc import Source, __config__, im_plane_utils as ipu, \
+from ..rc import Source, im_plane_utils as ipu, \
     ter_curve_utils as tcu
 from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
@@ -270,12 +270,8 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     else:
         extent /= 3600.
 
-    filename = "spiral_two_component.fits"
-    url = __config__["!file.server_url"]
-    use_cache = __config__["!file.use_cache"]
-    # print(url+filename)
-
-    path = download_file(remote_url=url+filename, cache=use_cache)
+    filename = "spiral_two_component.fits.bz2"
+    path = pathlib.Path(__file__).parent.absolute() / filename
     hdulist = fits.open(path)
     img_ext = hdulist[0].header["IMG_EXT"]
     spec_ext = hdulist[0].header["SPEC_EXT"]

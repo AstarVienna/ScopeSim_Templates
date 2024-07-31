@@ -2,9 +2,5 @@ spectral :
   wave_min : 0.3
   wave_max : 3.0
 
-file :
-  server_url : "https://scopesim.univie.ac.at/scopesim_templates/"
-  use_cache : True
-
 random :
   seed : 9001
