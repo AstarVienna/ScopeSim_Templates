@@ -13,4 +13,15 @@ on:
 
 jobs:
   call-tests:
-    uses: AstarVienna/DevOps/.github/workflows/tests.yml@master
+    name: Offline tests
+    uses: AstarVienna/DevOps/.github/workflows/tests.yml@main
+    with:
+      poetry: False
+    secrets: inherit
+
+  call-webtests:
+    name: Network tests
+    uses: AstarVienna/DevOps/.github/workflows/webtests.yml@main
+    with:
+      poetry: False
+    secrets: inherit
