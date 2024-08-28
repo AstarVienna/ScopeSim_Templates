@@ -237,7 +237,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         #            for spt in zip(cat_spec_types)]
         spectra = [Spextrum(modelclass=pickles_lib[spt]).scale_to_magnitude(
             filter_curve=filter_name, amplitude=zero)
-                   for spt in zip(cat_spec_types)]
+                   for spt in cat_spec_types]
 
     else:
         spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(
