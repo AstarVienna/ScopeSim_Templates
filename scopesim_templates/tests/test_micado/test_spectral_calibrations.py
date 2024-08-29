@@ -25,7 +25,7 @@ class TestLineList:
             plt.show()
 
         assert isinstance(src.spectra[0], SourceSpectrum)
-        assert isinstance(src.fields[0], fits.ImageHDU)
+        assert isinstance(getattr(src.fields[0], "field", src.fields[0]), fits.ImageHDU)
 
     def test_returns_flux_scaled_spectrum(self):
         src1 = mic_sc.line_list()

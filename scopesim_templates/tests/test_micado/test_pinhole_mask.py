@@ -24,7 +24,9 @@ class TestPinholeMask:
 
         assert isinstance(ph_mask, Source)
         assert isinstance(ph_mask.spectra[0], SourceSpectrum)
-        assert isinstance(ph_mask.fields[0], Table)
+        assert (isinstance(getattr(ph_mask.fields[0], "field",
+                                   ph_mask.fields[0]), Table)
+                or isinstance(ph_mask.fields[0], Table))
 
     def test_pinhole_with_basic_instrument(self):
         dr = np.arange(-25, 26, 5)      # [arcsec]

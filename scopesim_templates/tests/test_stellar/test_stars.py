@@ -11,9 +11,14 @@ from scopesim_templates.rc import Source, ter_curve_utils as tcu
 def source_eq(source_lhs: Source, source_rhs: Source):
     """hacky way to ensure two source"""
     eq = len(source_lhs.spectra) == len(source_rhs.spectra)
-    for spectrum_lhs, spectrum_rhs in zip(source_lhs.spectra,
-                                          source_rhs.spectra):
-        eq = eq and all(spectrum_lhs.waveset == spectrum_rhs.waveset)
+    if isinstance(source_lhs.spectra, list):
+        for spectrum_lhs, spectrum_rhs in zip(source_lhs.spectra,
+                                              source_rhs.spectra):
+            eq = eq and all(spectrum_lhs.waveset == spectrum_rhs.waveset)
+    elif isinstance(source_lhs.spectra, dict):
+        for spectrum_lhs, spectrum_rhs in zip(source_lhs.spectra.values(),
+                                              source_rhs.spectra.values()):
+            eq = eq and all(spectrum_lhs.waveset == spectrum_rhs.waveset)
     return eq
 
 
