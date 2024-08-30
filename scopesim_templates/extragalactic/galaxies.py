@@ -272,27 +272,29 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
     filename = "spiral_two_component.fits.bz2"
     path = pathlib.Path(__file__).parent.absolute() / filename
-    hdulist = fits.open(path)
-    img_ext = hdulist[0].header["IMG_EXT"]
-    spec_ext = hdulist[0].header["SPEC_EXT"]
+    with fits.open(path) as hdulist:
+        img_ext = hdulist[0].header["IMG_EXT"]
+        spec_ext = hdulist[0].header["SPEC_EXT"]
 
-    src = Source()
-    src.fields = hdulist[img_ext:spec_ext]
-    src.spectra = [hdu_to_synphot(hdu) for hdu in hdulist[spec_ext:]]
+        srcs = []
+        for i in range(img_ext, spec_ext):
+            w, h = hdulist[i].data.shape
+            hdulist[i].header["CRPIX1"] = (w + 1) / 2,
+            hdulist[i].header["CRPIX2"] = (h + 1) / 2,
+            hdulist[i].header["CRVAL1"] = 0
+            hdulist[i].header["CRVAL2"] = 0
+            hdulist[i].header["CDELT1"] = extent / w
+            hdulist[i].header["CDELT2"] = extent / w
+            hdulist[i].header["CUNIT1"] = "deg"
+            hdulist[i].header["CUNIT2"] = "deg"
+            hdulist[i].header["CTYPE1"] = "RA---TAN"
+            hdulist[i].header["CTYPE2"] = "DEC--TAN"
+            # hdulist[i].header["SPEC_REF"] = hdulist[i].header["SPEC_EXT"] - spec_ext
 
-    for field in src.fields:
-        w, h = field.data.shape
-        field.header["CRPIX1"] = (w + 1) / 2,
-        field.header["CRPIX2"] = (h + 1) / 2,
-        field.header["CRVAL1"] = 0
-        field.header["CRVAL2"] = 0
-        field.header["CDELT1"] = extent / w
-        field.header["CDELT2"] = extent / w
-        field.header["CUNIT1"] = "deg"
-        field.header["CUNIT2"] = "deg"
-        field.header["CTYPE1"] = "RA---TAN"
-        field.header["CTYPE2"] = "DEC--TAN"
-        field.header["SPEC_REF"] = field.header["SPEC_EXT"] - spec_ext
+            i_spec_ext = spec_ext - img_ext + i
+            srcs.append(Source(image_hdu=hdulist[i],
+                        spectra=[hdu_to_synphot(hdulist[i_spec_ext])]))
+    src = sum(srcs[1:], start=srcs[0])
 
     # TODO: scale image plane according to fluxes
     # TODO: shift header values according to offset
@@ -300,7 +302,7 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
     # src.meta.update(params)
     # Ensure the number of _meta_dicts is the same as the number of _fields.
     # TODO: check if this still works with the new decorator...
-    src._meta_dicts += [{}] * (len(src.fields) - len(src._meta_dicts))
+    # src._meta_dicts += [{}] * (len(src.fields) - len(src._meta_dicts))
 
     return src
 
