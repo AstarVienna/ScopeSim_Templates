@@ -194,6 +194,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
     """
     vmax <<= u.km / u.s
     sigma <<= u.km / u.s
+    amplitude <<= u.ABmag
 
     gal, pixel_scale = _galaxy_setup(pixel_scale, r_eff, extend,
                                      n=n, ellip=ellip, theta=theta,
