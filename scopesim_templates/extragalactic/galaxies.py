@@ -29,7 +29,6 @@ __all__ = ["galaxy",
 
 def _galaxy_setup(pixel_scale, r_eff, extend, **kwargs):
     """Construct GalaxyBase (wrapper), kwargs are passed to that class."""
-    pixel_scale <<= u.arcsec
     r_eff <<= u.arcsec
     r_eff_scaled = r_eff.value / pixel_scale.value
 
@@ -42,7 +41,7 @@ def _galaxy_setup(pixel_scale, r_eff, extend, **kwargs):
 
     gal = GalaxyBase(x=x, y=y, x_0=x_0, y_0=y_0, r_eff=r_eff_scaled,
                      amplitude=1, **kwargs)
-    return gal, pixel_scale
+    return gal
 
 
 @deprecated_renamed_argument('plate_scale', 'pixel_scale', '0.1')
@@ -94,8 +93,9 @@ def galaxy(sed,           # The SED of the galaxy
     -------
     src : scopesim.Source
     """
-    gal, pixel_scale = _galaxy_setup(pixel_scale, r_eff, extend,
-                                     n=n, ellip=ellip, theta=theta)
+    pixel_scale <<= u.arcsec
+    gal = _galaxy_setup(pixel_scale, r_eff, extend,
+                        n=n, ellip=ellip, theta=theta)
 
     if isinstance(sed, str):
         spec = Spextrum(sed).redshift(z=z)
@@ -110,20 +110,18 @@ def galaxy(sed,           # The SED of the galaxy
 
 def _get_masked_subsources(gal, ngrid, scaled_sp, header):
     masks = gal.get_masks(ngrid=ngrid)
-    intensity = gal.intensity / np.sum(gal.intensity)
-    velocity = gal.velocity.value
-    dispersion = gal.dispersion.value
-    total_flux = np.sum(intensity)
+    intensity = gal.intensity / gal.intensity.sum()
+    velocity = gal.velocity
+    dispersion = gal.dispersion
+
     for i, mask in enumerate(masks):
-        data = mask * intensity
-        factor = np.sum(data) / total_flux
+        # logger.debug("creating subsource %d", i)
+        data = mask * intensity  # 0 ... 1
 
-        masked_vel = np.ma.array(velocity, mask=mask == 0)
-        masked_sigma = np.ma.array(dispersion, mask=mask == 0)
-        med_vel = np.ma.median(masked_vel)
-        med_sig = np.ma.median(masked_sigma)
+        med_vel = velocity[mask].mean()
+        med_sig = dispersion[mask].mean()
 
-        spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig) * factor
+        spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig)
 
         header.update({"SPEC_REF": i})
         hdu = fits.ImageHDU(data=data, header=header)
@@ -195,10 +193,11 @@ def galaxy3d(sed,           # The SED of the galaxy,
     vmax <<= u.km / u.s
     sigma <<= u.km / u.s
     amplitude <<= u.ABmag
+    pixel_scale <<= u.arcsec
 
-    gal, pixel_scale = _galaxy_setup(pixel_scale, r_eff, extend,
-                                     n=n, ellip=ellip, theta=theta,
-                                     vmax=vmax, sigma=sigma)
+    gal = _galaxy_setup(pixel_scale, r_eff, extend,
+                        n=n, ellip=ellip, theta=theta,
+                        vmax=vmax, sigma=sigma)
 
     if isinstance(sed, str):
         shift_sp = Spextrum(sed).redshift(z=z)

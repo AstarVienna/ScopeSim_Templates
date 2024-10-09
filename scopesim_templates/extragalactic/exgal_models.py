@@ -1,15 +1,13 @@
 """Module should contain analytical extragalactic models."""
 
 from dataclasses import dataclass
-# from collections.abc import Generator
+from collections.abc import Generator
 
 import numpy as np
 
 from astropy import units as u
 from astropy.units import UnitsError
-from astropy.modeling.core import (Fittable1DModel, Fittable2DModel,
-                                   ModelDefinitionError)
-
+from astropy.modeling.core import Fittable2DModel
 from astropy.modeling.parameters import Parameter
 from astropy.modeling.models import Sersic2D
 
@@ -29,10 +27,9 @@ class VelField(Fittable2DModel):
     ----------
     ellip : float, u.Quantity
         Ellipticity on the sky
-
     theta : float, u.Quantity
-        Position angle of the major axis wrt to north (=up) measured
-        counterclockwise.
+        Position angle of the major axis. The rotation angle increases
+        counterclockwise from the positive x axis.
     vmax : float, u.Quantity
         Constant rotation velocity for R>>rd.
     r_eff : float
@@ -80,8 +77,8 @@ class VelField(Fittable2DModel):
         r = ((x - x_0) ** 2 + (y - y_0) ** 2) ** 0.5
 
         #   azimuthal angle in the plane of the galaxy = cos(theta) = cost
-        cost = (-(x - x_0) * np.sin(theta) + (y - y_0) *
-                np.cos(theta)) / (r + 0.00001)
+        cost = (-(x - x_0) * np.cos(theta) + (y - y_0) *
+                np.sin(theta)) / (r + 0.00001)
         vrot = vmax*2 / np.pi*np.arctan(r/r_d)         # arctan model
 
         return vrot * np.sin(incl) * cost
@@ -112,11 +109,11 @@ class DispersionField(Fittable2DModel):
 
     This follows a broken power law as in Veale et al. 2017
 
-    .. math:: \sigma(R)=\sigma_0 2^{\gamma_1-\gamma_2} (\frac{R}{R_b})^{\gamma_1}(1+\frac{R}{R_b}^{\gamma_2-\gamma_1}
+    .. math:: \sigma(R)=\sigma_0 2^{\gamma_1-\gamma_2} \left(\frac{R}{R_b}\right)^{\gamma_1}\left(1+\frac{R}{R_b}\right)^{\gamma_2-\gamma_1}
 
     where
     :math:`\sigma_0` is the velocity dispersion
-    :math:`\gamma_1`  and math:`\gamma_2` are the inner and outer power slopes.
+    :math:`\gamma_1` and :math:`\gamma_2` are the inner and outer power slopes.
     Set to -0.04 and -0.42 as default values
     :math:`R_b` is the break radius, set to :math:`R_b = R_{eff}` for
     simplicity
@@ -143,7 +140,9 @@ class DispersionField(Fittable2DModel):
         Inner power law slope.
     e_out : float, optional
         Outer power law slope.
-
+    theta : float, u.Quantity
+        Position angle of the major axis. The rotation angle increases
+        counterclockwise from the positive x axis.
     """
 
     # incl = Parameter(default=45)
@@ -175,9 +174,9 @@ class DispersionField(Fittable2DModel):
         theta = theta.to(u.rad)
 
         a, b = r_eff, (1 - ellip) * r_eff
-        cos_theta, sin_theta = np.cos(theta), np.sin(theta)
-        x_maj = (x - x_0) * sin_theta + (y - y_0) * cos_theta + 0.1
-        x_min = -(x - x_0) * cos_theta + (y - y_0) * sin_theta + 0.1  # to avoid inf values
+        sin_theta, cos_theta = np.sin(theta), np.cos(theta)
+        x_maj = (x - x_0) * cos_theta + (y - y_0) * sin_theta + 0.1
+        x_min = -(x - x_0) * sin_theta + (y - y_0) * cos_theta + 0.1  # to avoid inf values
         z = np.sqrt((x_maj / a) ** 2 + (x_min / b) ** 2)
         result = sigma * 2**(e_in - e_out) * z**e_in * (1 + z)**(e_out - e_in)
 
@@ -291,26 +290,28 @@ class GalaxyBase:
 
         Returns
         -------
-        total_field : numpy.ndarray
+        sectors : numpy.ndarray
             A numpy array with sectors numbered.
+        uniques : set
+            Set of sector IDs.
 
         """
         velfield = self.velocity.value
         dispfield = self.dispersion.value
 
-        vel_grid = np.round((ngrid // 2) * velfield /
-                            velfield.max()) * velfield.max()
+        vel_grid = np.round((ngrid // 2) * velfield / velfield.max())
+        # Get order of magnitude for offset
+        offset = 10**(int(np.log10(vel_grid.max())) + 2)
         sigma_grid = np.round((ngrid // 2 + 2) * dispfield /
-                              dispfield.max()) * dispfield.max()
+                              dispfield.max()) * offset
         total_field = vel_grid + sigma_grid
-        uniques = np.unique(total_field)
+        _, sectors = np.unique(total_field, return_inverse=True)
+        uniques = set(sectors)
+        # logger.debug("%d sectors", len(uniques))
 
-        for i, v in enumerate(uniques):
-            total_field[total_field == v] = i + 1
+        return sectors.reshape(total_field.shape), uniques
 
-        return total_field
-
-    def get_masks(self, ngrid: int = 10):  # TODO 3.9: -> Generator[np.ma.MaskedArray]:
+    def get_masks(self, ngrid: int = 10) -> Generator[np.ndarray]:
         """
         Return a generator of numpy masks from the regrided regions.
 
@@ -322,12 +323,10 @@ class GalaxyBase:
 
         Yields
         ------
-        mask : numpy.ma.MaskedArray
-            Masked array constructed from regrided regions.
+        mask : numpy.ndarray
+            Boolean array constructed from regrided regions.
 
         """
-        grid = self.regrid(ngrid=ngrid)
-        for value in np.unique(grid):
-            mask = np.ma.masked_where(grid == value, grid,
-                                      copy=True).mask.astype(int)
-            yield mask
+        grid, uniques = self.regrid(ngrid=ngrid)
+        for value in uniques:
+            yield np.equal(grid, value)
