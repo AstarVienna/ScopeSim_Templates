@@ -117,12 +117,11 @@ def _get_masked_subsources(gal, ngrid, scaled_sp, header):
     for i, mask in enumerate(masks):
         # logger.debug("creating subsource %d", i)
         data = mask * intensity  # 0 ... 1
-        factor = data.sum()
 
         med_vel = velocity[mask].mean()
         med_sig = dispersion[mask].mean()
 
-        spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig)  # * factor
+        spec = scaled_sp.redshift(vel=med_vel).smooth(sigma=med_sig)
 
         header.update({"SPEC_REF": i})
         hdu = fits.ImageHDU(data=data, header=header)
