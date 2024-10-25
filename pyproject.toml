@@ -19,22 +19,22 @@ repository = "https://github.com/AstarVienna/ScopeSim_Templates/"
 documentation = "https://scopesim-templates.readthedocs.io/"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 numpy = "^1.26.3"
-scipy = "^1.11.4"
-astropy = "^5.3.4"
+scipy = "^1.14.1"
+astropy = ">=5.3.4, <=6.0.1"
 matplotlib = "^3.8.2"
 
 docutils = "^0.19"
 beautifulsoup4 = "^4.12.1"
-lxml = "^4.9.3"
+lxml = ">=4.9.3, <=5.2.2"
 pyyaml = "^6.0.1"
-synphot = "^1.3.post0"
+synphot = "^1.3.post0"  # bump when updating sim090
 
-scopesim = "^0.8.4"
-pyckles = ">=0.3.0"
-spextra = ">=0.40.0"
-astar-utils = ">=0.2.2"  # Set to 0.3.0 when updating py310
+scopesim = ">=0.8.4"  # bump when updating sim090
+pyckles = ">=0.3.0"  # bump when updating sim090
+spextra = ">=0.40.0"  # bump when updating sim090
+astar-utils = ">=0.2.2"  # Set to 0.3.0 when updating sim090
 
 [tool.poetry.group.dev]
 optional = true
@@ -46,7 +46,7 @@ jupytext = "^1.10.0"
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"
 pytest-cov = "^4.1.0"
-skycalc_cli = "*"
+skycalc_cli = "*"  # consider removal
 
 [tool.poetry.group.docs]
 optional = true
