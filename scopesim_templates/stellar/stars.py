@@ -177,7 +177,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         >>> from scopesim_templates.stellar import stars
         >>>
         >>> n = 100
-        >>> spec_types = ["A0V", "G2V", "K0III", "M5III", "O8I"]
+        >>> spec_types = ["A0V", "G2V", "K0III", "M5III", "O8I"] * (n // 5)
         >>> ids = np.random.randint(0, 5, size=n)
         >>> star_list = [spec_types[i] for i in ids]
         >>> mags = np.random.normal(loc=20, scale=3, size=n) * u.mag
@@ -189,13 +189,14 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
 
     The final positions table is kept in the ``<Source>.fields`` attribute::
 
-        >>> src.fields[0]
+        >>> my_pos_table = src.fields[0]
 
     Each star in this table has an associated spectrum kept in the
     ``<Source>.spectra`` attribute. These stars are connected to the spectra in
     the list by the "ref" column in the ``.fields`` table::
 
         >>> src.spectra
+        [SpextrumNone, SpextrumNone, SpextrumNone, SpextrumNone, SpextrumNone]
 
     The stars can be scaled in units of u.mag, u.ABmag or u.Jansky. Any filter
     listed on the spanish VO filter profile service can be used for the scaling
@@ -204,7 +205,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
 
         >>> amplitudes = np.linspace(1, 3631, n) * u.Jansky
         >>> filter_name = "Paranal/HAWKI.Ks"
-        >>> stars(filter_name, amplitudes, spec_types, x=x, y=y)
+        >>> my_source = stars(filter_name, amplitudes, spec_types, x=x, y=y)
 
     """
     if not isinstance(spec_types, (list, tuple, np.ndarray)):
