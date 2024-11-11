@@ -22,13 +22,13 @@ substitutions:
 
 # ScopeSim Templates
 
-{{ logo }} Another tool from the [A\* Vienna software team](https://astarvienna.github.io/)
+Another tool from the [A\* Vienna software team](https://astarvienna.github.io/)
 
 A library of templates and helper functions for creating
 {class}`scopesim.source.source.Source` objects that can be used to run `ScopeSim` simulations.
 
 In short {class}`scopesim.source.source.Source` objects contain a description of the spatial and
-spectral information of the source. For more information see {ref}`here <Source Object>`.
+spectral information of the source. For more information see [here](./source_object.md).
 
 ## Installation
 
@@ -84,6 +84,8 @@ Documentation for all the helper functions contained in each package can be foun
 If you find an issue with ScopeSim Templates, please let us know via the
 [Github issues page](https://github.com/AstarVienna/ScopeSim_Templates/issues)
 
+## Contents
+
 ```{toctree}
 :maxdepth: 2
 
@@ -91,12 +93,18 @@ notebooks/starting.md
 notebooks/stellar.md
 notebooks/extragalactic.md
 source_object
-modules
 ```
 
-## More...
+## API Reference
 
-```{toctree}
-:maxdepth: 1
-:titlesonly: true
+```{eval-rst}
+.. autosummary::
+   :toctree: _autosummary
+   :recursive:
+   :caption: Package Contents
+
+   scopesim_templates.stellar
+   scopesim_templates.extragalactic
+   scopesim_templates.calibration.calibration
+   scopesim_templates.misc.misc
 ```
