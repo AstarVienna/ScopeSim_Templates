@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""TBA."""
+"""Templates that could be used to simulate more general sources."""
 
 from pathlib import Path
 import warnings

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Contains simple source functions for testing and calibration."""
+"""Contains simple source functions for testing and calibration.
+
+Simple templates that could be used to simulate calibration frames.
+Make sure to turn off the corresponding effects during the simulation.
+"""
 
 import warnings
 
