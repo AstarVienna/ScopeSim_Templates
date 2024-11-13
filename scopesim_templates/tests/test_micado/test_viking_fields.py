@@ -45,7 +45,6 @@ class TestVikingCatalogues:
         assert len(star_src.fields) == 1
         assert len(star_src.fields[0]) > 1
         assert len(star_src.spectra) == 1
-        # assert len(star_src.fields) == len(star_src._meta_dicts)
 
     def test_load_viking_field(self):
         viking_src = vf.viking_field()
