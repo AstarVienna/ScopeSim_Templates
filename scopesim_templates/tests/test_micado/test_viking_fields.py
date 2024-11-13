@@ -26,7 +26,6 @@ class TestVikingCatalogues:
 
         assert len(gal_src.fields) > 1
         assert len(gal_src.spectra) == 1
-        # assert len(gal_src.fields) == len(gal_src._meta_dicts)
 
     @pytest.mark.parametrize("cat_id",
                              [("stdstar"),
