@@ -195,7 +195,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     ``<Source>.spectra`` attribute. These stars are connected to the spectra in
     the list by the "ref" column in the ``.fields`` table::
 
-        >>> src.spectra
+        >>> list(src.spectra.values())
         [SpextrumNone, SpextrumNone, SpextrumNone, SpextrumNone, SpextrumNone]
 
     The stars can be scaled in units of u.mag, u.ABmag or u.Jansky. Any filter
