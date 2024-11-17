@@ -35,24 +35,18 @@ class TestContentOfFields:
     def test_fields_list_has_only_imagehdus_or_tables(self, src):
         for field in src.fields:
             if not isinstance(field, Table):
-                assert isinstance(getattr(field, "field", field), (Table, ImageHDU))
+                assert isinstance(field.field, (Table, ImageHDU))
 
     def test_any_tables_have_correct_column_names(self, src):
         for field in src.fields:
-            if isinstance(field, Table):
-                fld = field
-            else:
-                if isinstance(getattr(field, "field", field), Table):
-                    fld = getattr(field, "field", field)
-                else:
-                    continue
-
+            if not isinstance(field, Table):
+                continue
             req_colnames = ["x", "y", "ref", "weight"]
-            assert all(col in fld.colnames for col in req_colnames)
+            assert all(col in field.field.colnames for col in req_colnames)
 
     def test_any_imagehdus_have_correct_header_keywords(self, src):
         for field in src.fields:
-            if isinstance(getattr(field, "field", field), ImageHDU):
+            if isinstance(field.field, ImageHDU):
                 req_keys = ["SPEC_REF", "NAXIS", "NAXIS1", "NAXIS2",
                             "CUNIT1", "CUNIT2", "CTYPE1", "CTYPE2",
                             "CDELT1", "CDELT2", "CRVAL1", "CRVAL2",
@@ -69,14 +63,8 @@ class TestContentOfSpectra:
         assert isinstance(src.spectra, (list, dict))
 
     def test_spectra_list_has_only_synphot_sourcespectrum_objects(self, src):
-        if isinstance(src.spectra, list):
-            for spectrum in src.spectra:
-                assert isinstance(spectrum, SourceSpectrum)
-        elif isinstance(src.spectra, dict):
-            for spectrum in src.spectra.values():
-                assert isinstance(spectrum, SourceSpectrum)
-        else:
-            raise TypeError(src.spectra)
+        for spectrum in src.spectra.values():
+            assert isinstance(spectrum, SourceSpectrum)
 
 
 @pytest.mark.parametrize("src", SOURCE_LIST)
@@ -85,12 +73,12 @@ class TestConnectionBetweenFieldsAndSpectra:
 
     def test_all_spectra_in_table_ref_column_exist(self, src):
         for field in src.fields:
-            if isinstance(getattr(field, "field", field), Table):
+            if isinstance(field.field, Table):
                 for ref in field["ref"]:
                     assert isinstance(src.spectra[ref], SourceSpectrum)
 
     def test_all_spectra_refereced_in_imagehdu_header_exist(self, src):
         for field in src.fields:
-            if isinstance(getattr(field, "field", field), ImageHDU):
+            if isinstance(field.field, ImageHDU):
                 ref = field.header["SPEC_REF"]
                 assert isinstance(src.spectra[ref], SourceSpectrum)

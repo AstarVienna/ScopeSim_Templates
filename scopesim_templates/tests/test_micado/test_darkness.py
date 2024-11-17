@@ -15,6 +15,5 @@ class TestDarkness:
         sky = darkness()
         assert isinstance(sky, Source)
         assert isinstance(sky.spectra[0], SourceSpectrum)
-        assert (isinstance(getattr(sky.fields[0], "field", sky.fields[0]), Table)
-                or isinstance(sky.fields[0], Table))
+        assert isinstance(sky.fields[0].field, Table)
         assert sky.fields[0]["ref"][0] == 0

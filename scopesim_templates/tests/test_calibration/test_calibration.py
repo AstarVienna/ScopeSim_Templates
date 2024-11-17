@@ -13,8 +13,7 @@ class TestEmptySky:
         sky = calibration.calibration.empty_sky()
         assert isinstance(sky, Source)
         assert isinstance(sky.spectra[0], SourceSpectrum)
-        assert (isinstance(getattr(sky.fields[0], "field", sky.fields[0]), Table)
-                or isinstance(sky.fields[0], Table))
+        assert isinstance(sky.fields[0].field, Table)
         assert sky.fields[0]["ref"][0] == 0
 
 
@@ -23,8 +22,7 @@ class TestFlatField:
         flatfield = calibration.calibration.flat_field()
         assert isinstance(flatfield, Source)
         assert isinstance(flatfield.spectra[0], SourceSpectrum)
-        assert (isinstance(getattr(flatfield.fields[0], "field", flatfield.fields[0]), ImageHDU)
-                or isinstance(flatfield.fields[0], ImageHDU))
+        assert isinstance(flatfield.fields[0].field, ImageHDU)
 
 
 class TestLamp:
@@ -40,5 +38,4 @@ class TestLamp:
         )
         assert isinstance(lamp, Source)
         assert isinstance(lamp.spectra[0], SourceSpectrum)
-        assert (isinstance(getattr(lamp.fields[0], "field", lamp.fields[0]), ImageHDU)
-                or isinstance(lamp.fields[0], ImageHDU))
+        assert isinstance(lamp.fields[0].field, ImageHDU)
