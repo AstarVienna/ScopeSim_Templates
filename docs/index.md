@@ -42,30 +42,12 @@ pip install scopesim_templates
 
 ScopeSim Templates is a python package, and is therefore by nature infinitely extendable.
 
-As it is impossible for us to know all the details about your specific science case, we provide a
-small selection of basic objects (star cluster, elliptical galaxy, etc).
+As it is impossible for us to know all the details about your specific science case, we provide a small selection of basic objects (star cluster, elliptical galaxy, etc).
+A comprehensive list of those can be found below in the API reference (grouped into subpackages).
 Feel free to start with these to get started with ScopeSim.
 
-However if your needs outgrow the basic objects, we encourage you to extended the objects to fit your
-specific science case. In this case **we strongly encourage you to get in contact with us adding your code
-in the form of a subpackage**. You can do this either by opening an issue on Github, or by emailing one of the developers.
-
-## Available subpackages
-
-Documentation for all the helper functions contained in each package can be found in the API documentation for each package.
-
-```{eval-rst}
-.. autosummary::
-   :toctree: _autosummary
-   :template: custom-module-template.rst
-   :recursive:
-   :caption: Package Contents
-
-   scopesim_templates.stellar
-   scopesim_templates.extragalactic
-   scopesim_templates.calibration.calibration
-   scopesim_templates.misc.misc
-```
+However if your needs outgrow the basic objects, we encourage you to extended the objects to fit your specific science case. In this case **we strongly encourage you to get in contact with us adding your code in the form of a subpackage**.
+You can do this either by opening an issue on Github, or by emailing one of the developers.
 
 ## Contact
 
@@ -81,4 +63,19 @@ notebooks/starting.md
 notebooks/stellar.md
 notebooks/extragalactic.md
 source_object
+```
+
+## API reference
+
+```{eval-rst}
+.. autosummary::
+   :toctree: _autosummary
+   :template: custom-module-template.rst
+   :recursive:
+   :caption: Package Contents
+
+   scopesim_templates.stellar
+   scopesim_templates.extragalactic
+   scopesim_templates.calibration.calibration
+   scopesim_templates.misc.misc
 ```
