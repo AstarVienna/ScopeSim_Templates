@@ -53,6 +53,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.extlinks',
     'sphinx.ext.doctest',
+    'sphinx.ext.napoleon',
     'sphinx_copybutton',
     'myst_nb',
     'numpydoc',
@@ -89,6 +90,8 @@ autosummary_generate = True
 autoclass_content = "class"
 autodoc_default_flags = ["members", "inherited-members"]
 autodoc_docstring_signature = False
+napoleon_numpy_docstring = True
+napoleon_use_admonition_for_references = True
 
 apidoc_module_dir = os.path.abspath('../../scopesim_templates/')
 apidoc_output_dir = 'reference'
