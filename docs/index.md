@@ -100,6 +100,7 @@ source_object
 ```{eval-rst}
 .. autosummary::
    :toctree: _autosummary
+   :template: custom-module-template.rst
    :recursive:
    :caption: Package Contents
 

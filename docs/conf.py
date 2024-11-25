@@ -15,9 +15,7 @@
 import os
 import sys
 
-import sphinx_rtd_theme
-
-needs_sphinx = '1.3'
+needs_sphinx = '3.1'
 
 sys.path.insert(0, os.path.abspath('../'))
 
