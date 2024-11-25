@@ -56,7 +56,6 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx_copybutton',
     'myst_nb',
-    'numpydoc',
     ]
 
 # -- Options for intersphinx extension ---------------------------------------
@@ -85,7 +84,6 @@ extlinks = {'python': ('https://docs.python.org/3/%s', None),
             }
 
 # apidoc settings
-numpydoc_show_class_members = False
 autosummary_generate = True
 autoclass_content = "class"
 autodoc_default_flags = ["members", "inherited-members"]
