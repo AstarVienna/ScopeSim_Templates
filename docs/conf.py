@@ -89,10 +89,6 @@ autodoc_docstring_signature = False
 napoleon_numpy_docstring = True
 napoleon_use_admonition_for_references = True
 
-# apidoc_module_dir = os.path.abspath('../../scopesim_templates/')
-# apidoc_output_dir = 'reference'
-# apidoc_separate_modules = True
-# apidoc_excluded_paths = ["tests/", "docs/"]
 
 # Matplotlib plot directive config parameters
 plot_html_show_source_link = False
