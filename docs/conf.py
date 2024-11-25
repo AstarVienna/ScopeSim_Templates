@@ -15,9 +15,7 @@
 import os
 import sys
 
-import sphinx_rtd_theme
-
-needs_sphinx = '1.3'
+needs_sphinx = '3.1'
 
 sys.path.insert(0, os.path.abspath('../'))
 
@@ -53,9 +51,9 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.extlinks',
     'sphinx.ext.doctest',
+    'sphinx.ext.napoleon',
     'sphinx_copybutton',
     'myst_nb',
-    'numpydoc',
     ]
 
 # -- Options for intersphinx extension ---------------------------------------
@@ -84,16 +82,13 @@ extlinks = {'python': ('https://docs.python.org/3/%s', None),
             }
 
 # apidoc settings
-numpydoc_show_class_members = False
 autosummary_generate = True
 autoclass_content = "class"
 autodoc_default_flags = ["members", "inherited-members"]
 autodoc_docstring_signature = False
+napoleon_numpy_docstring = True
+napoleon_use_admonition_for_references = True
 
-apidoc_module_dir = os.path.abspath('../../scopesim_templates/')
-apidoc_output_dir = 'reference'
-apidoc_separate_modules = True
-apidoc_excluded_paths = ["tests/", "docs/"]
 
 # Matplotlib plot directive config parameters
 plot_html_show_source_link = False

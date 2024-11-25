@@ -42,42 +42,12 @@ pip install scopesim_templates
 
 ScopeSim Templates is a python package, and is therefore by nature infinitely extendable.
 
-As it is impossible for us to know all the details about your specific science case, we provide a
-small selection of basic objects (star cluster, elliptical galaxy, etc).
+As it is impossible for us to know all the details about your specific science case, we provide a small selection of basic objects (star cluster, elliptical galaxy, etc).
+A comprehensive list of those can be found below in the API reference (grouped into subpackages).
 Feel free to start with these to get started with ScopeSim.
 
-However if your needs outgrow the basic objects, we encourage you to extended the objects to fit your
-specific science case. In this case **we strongly encourage you to get in contact with us adding your code
-in the form of a subpackage**. You can do this either by opening an issue on Github, or by emailing one of the developers.
-
-## Available subpackages
-
-Documentation for all the helper functions contained in each package can be found in the API documentation for each package.
-
-- `stellar`:
-  : - {func}`star`: Places a single star on the field
-    - {func}`stars`: Places a list of stars on the field
-    - {func}`cluster`:  Creates an age=0 cluster with a user selected mass
-    - {func}`stars_field`: Creates field of stars with random positions
-    - {func}`star_grid`: Creates a field of stars with regular positions
-- `extragalactic`
-  : - {func}`galaxy`: A simple sersic model with a user selected SED from the `speXtra` database
-    - {func}`galaxy3D`:  A more complex model that includes a velocity field and velocity dispersion field
-    - {func}`spiral_two_component`:  Simple two component model with an outer spiral young SED and an old SED bulge
-    - {func}`elliptical`: Another sersic model using the Brown SEDs
-- `misc`
-  : - {func}`point_source`: similar to {func}`star` but using any SED from the `speXtra` database
-    - {func}`uniform_source`: Creates a uniform source with any SED from `speXtra`
-    - {func}`source_from_image_hdu`: creates a source from an `ImageHDU` with an arbitrary flux and scale
-    - {func}`source_from_imagehdu_with_flux`: creates a source from an `ImageHDU` where the flux/pixel is known
-    - {func}`source_from_file`: Load the source from a fits file. Depending on the characteristics other
-      : functions may be more suitable
-    - {func}`source_from_array`: General function to create a source from a 2D `numpy` array
-    - {func}`source_from_cube`:  Wrapper to create a source from a 3D datacube
-- `calibration`:
-  : - {func}`empty_sky`: To simulate a sky without no other sources
-    - {func}`lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
-    - {func}`flat_field`: Simulates a flat field
+However if your needs outgrow the basic objects, we encourage you to extended the objects to fit your specific science case. In this case **we strongly encourage you to get in contact with us adding your code in the form of a subpackage**.
+You can do this either by opening an issue on Github, or by emailing one of the developers.
 
 ## Contact
 
@@ -95,11 +65,12 @@ notebooks/extragalactic.md
 source_object
 ```
 
-## API Reference
+## API reference
 
 ```{eval-rst}
 .. autosummary::
    :toctree: _autosummary
+   :template: custom-module-template.rst
    :recursive:
    :caption: Package Contents
 
