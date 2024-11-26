@@ -3282,13 +3282,13 @@ test = ["Cython", "array-api-strict (>=2.0)", "asv", "gmpy2", "hypothesis (>=6.3
 
 [[package]]
 name = "scopesim"
-version = "0.9.0"
+version = "0.9.1"
 description = "Generalised telescope observation simulator"
 optional = false
 python-versions = "<3.13,>=3.10"
 files = [
-    {file = "scopesim-0.9.0-py3-none-any.whl", hash = "sha256:9cf7b51119da84f7c8ab05c653bb6ec0f92970ddb2467469a6d8cd4650c67b56"},
-    {file = "scopesim-0.9.0.tar.gz", hash = "sha256:4d00910c387692a7eef5ebf823b3153a97b3fd97a8a474e802b42719988a9c53"},
+    {file = "scopesim-0.9.1-py3-none-any.whl", hash = "sha256:92b2d5e2c657fc0bc79785ad3cc75cb80f218b3cf7b68e96481f7c370b8ea1cc"},
+    {file = "scopesim-0.9.1.tar.gz", hash = "sha256:98069eeb0f9183ad0e56ad1e42d024daf87738fd588eb124ceee4bc8f69dcddf"},
 ]
 
 [package.dependencies]
@@ -3300,7 +3300,7 @@ docutils = ">=0.19,<0.20"
 httpx = ">=0.26.0"
 lxml = ">=5.2.2,<6.0.0"
 matplotlib = ">=3.8.2,<4.0.0"
-more-itertools = ">=10.1.0,<11.0.0"
+more-itertools = ">=10.2.0,<11.0.0"
 numpy = ">=1.26.3,<2.0.0"
 pooch = ">=1.8.2,<2.0.0"
 pyyaml = ">=6.0.1,<7.0.0"
@@ -4031,4 +4031,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "fd40c9417c9b4620e5d9eb3075560871c65282672083290055008a38786803f8"
+content-hash = "d3f6e8f665d2a8dfc79b779fffc7ce20aa38ed3d6d23de5ad0a79327526a88d6"

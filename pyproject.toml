@@ -31,7 +31,7 @@ lxml = "^5.2.2"
 pyyaml = "^6.0.1"
 synphot = "^1.4.0"
 
-scopesim = ">=0.9.0"
+scopesim = ">=0.9.1"
 pyckles = ">=0.4.0"
 spextra = ">=0.41.3"
 astar-utils = ">=0.3.1"
