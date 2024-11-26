@@ -78,7 +78,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
         mmin, mmax = u.Quantity(mmin, u.mag), u.Quantity(mmax, u.mag)
 
     if "x" in kwargs and "y" in kwargs:
-        x, y = kwargs["x"], kwargs["y"]
+        x, y = kwargs.pop("x"), kwargs.pop("y")
     else:
         rands = np.random.random(size=(2, n)) - 0.5
         x, y = width * rands[0], height * rands[1]
