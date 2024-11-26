@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ScopeSim_Templates"
-version = "0.6.1a0"
+version = "0.6.1rc0"
 description = "On-sky source templates for ScopeSim"
 authors = ["Astar Vienna <astar.astro@univie.ac.at>"]
 license = "GPL-3.0-or-later"
