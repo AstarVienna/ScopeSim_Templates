@@ -88,7 +88,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
     spec_types = ["A0V"] * n
 
     src = stars(filter_name=filter_name, amplitudes=amplitudes,
-                spec_types=spec_types, x=x, y=y, ra=ra, dec=dec)
+                spec_types=spec_types, x=x, y=y, ra=ra, dec=dec, **kwargs)
     src.meta["scaling_unit"] = mmin.unit
     src.meta.update(params)
 
