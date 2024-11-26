@@ -78,7 +78,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
         mmin, mmax = u.Quantity(mmin, u.mag), u.Quantity(mmax, u.mag)
 
     if "x" in kwargs and "y" in kwargs:
-        x, y = kwargs["x"], kwargs["y"]
+        x, y = kwargs.pop("x"), kwargs.pop("y")
     else:
         rands = np.random.random(size=(2, n)) - 0.5
         x, y = width * rands[0], height * rands[1]
@@ -88,7 +88,7 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
     spec_types = ["A0V"] * n
 
     src = stars(filter_name=filter_name, amplitudes=amplitudes,
-                spec_types=spec_types, x=x, y=y, ra=ra, dec=dec)
+                spec_types=spec_types, x=x, y=y, ra=ra, dec=dec, **kwargs)
     src.meta["scaling_unit"] = mmin.unit
     src.meta.update(params)
 
@@ -244,6 +244,8 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(
             amp, filter_curve=filter_name)
                    for spec, amp in zip(spec_types, amplitudes)]
+        # TODO: actually use weights here instead of spectra scaling to avoid
+        #       O(n) scaling for number of spectra...
         weight = np.ones(shape=amplitudes.shape)
 
     # get the references to the unique stellar types
