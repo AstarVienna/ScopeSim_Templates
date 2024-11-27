@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""TBA."""
+"""Contains several functions for simple galaxy models."""
+
 import pathlib
 
 import numpy as np
