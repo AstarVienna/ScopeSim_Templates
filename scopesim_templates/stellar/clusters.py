@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Currently only contains a simple zero-age open cluster."""
 
 import numpy as np

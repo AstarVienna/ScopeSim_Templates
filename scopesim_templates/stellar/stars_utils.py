@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Internal utility functions for stellar functions."""
+
 import numpy as np
 from collections.abc import Iterable
 

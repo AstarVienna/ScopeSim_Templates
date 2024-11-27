@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Contains functions to create random or regular spaced point sources."""
+
 import numpy as np
 from astropy.table import Table
 from astropy import units as u

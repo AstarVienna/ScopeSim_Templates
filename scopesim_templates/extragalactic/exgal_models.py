@@ -1,4 +1,5 @@
-"""Module should contain analytical extragalactic models."""
+# -*- coding: utf-8 -*-
+"""Contains abstract models used by the galaxy functions."""
 
 from dataclasses import dataclass
 from collections.abc import Generator
