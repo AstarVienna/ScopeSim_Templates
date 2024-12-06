@@ -24,9 +24,9 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     Generate a source object for a young cluster.
 
     The cluster distribution follows a gaussian profile with the
-    ``core_radius`` corresponding to the HWHM of the distribution. The
+    `core_radius` corresponding to the HWHM of the distribution. The
     choice of stars follows a Kroupa IMF, with no evolved stars in the mix.
-    Ergo this is more suitable for a young cluster than an evolved custer
+    Ergo this is more suitable for a young cluster than an evolved cluster
 
 
     Parameters
@@ -42,8 +42,8 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     dec : float, str
         DEC of the source
 
-    Additional parameters
-    ---------------------
+    Other Parameters
+    ----------------
     tidal_radius : float
         [pc] Not yet implemented, for later once there is a King profile
     multiplicity : Unknown
