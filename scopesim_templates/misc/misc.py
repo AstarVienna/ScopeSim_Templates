@@ -181,7 +181,7 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
         ...                                 filter_name=filter_name,
         ...                                 pixel_unit_amplitude=20*u.Jy)
 
-    TODO: Check if the image_hdu has WCS
+    .. todo:: Check if the image_hdu has WCS
     """
     if filter_name is None and waverange is None:
         raise ValueError("Wavelength information must be given with either a "
@@ -351,7 +351,7 @@ def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve,
     """
     Create a source from a fits image.
 
-    TODO: Pass the header (or the WCS) to the source object
+    .. todo:: Pass the header (or the WCS) to the source object
 
     Parameters
     ----------
@@ -388,8 +388,9 @@ def source_from_cube(cube, ext=1) -> Source:
     In the future more checks will be performed to translate most cubes into a
     suitable format.
 
-    TODO: Set the cube to a different flux level and different pixel scales.
-    Redshift the cube
+    .. todo::
+        Set the cube to a different flux level and different pixel scales.
+        Redshift the cube
 
     Parameters
     ----------
