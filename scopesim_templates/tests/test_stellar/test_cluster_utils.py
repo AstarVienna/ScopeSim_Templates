@@ -43,7 +43,7 @@ class TestMass2SpT:
     def test_multiple_masses_at_once(self):
         spts = cu.mass2spt([2.3, 1.02])
         assert spts[1] == "G2V"
-        assert isinstance(spts, list)
+        assert isinstance(spts, np.ndarray)
 
 
 class TestClosestPickles:

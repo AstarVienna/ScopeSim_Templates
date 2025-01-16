@@ -44,8 +44,7 @@ def mass2spt(mass):
 
     """
     if isinstance(mass, Iterable):
-        # recursive
-        return [mass2spt(m) for m in mass]
+        mass = np.asarray(mass)
 
     idx = F_MASS2IDX(mass).astype(int)
     return MAMAJEK["SpT"][idx]
@@ -71,9 +70,7 @@ def mass2absmag(mass):
 
     """
     if isinstance(mass, Iterable):
-        # recursive
-        return [mass2absmag(m) for m in mass]
-
+        return F_MASS2MV(np.asarray(mass)).round(3)
     # Round to match interpolation precision, float to not have array.
     return float(F_MASS2MV(mass).round(3))
 

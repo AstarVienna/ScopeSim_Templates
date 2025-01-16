@@ -103,7 +103,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
            for spt in spec_types]
 
     # 6. make weight list from Mv + dist_mod(distance)
-    Mvs = np.array(cu.mass2absmag(masses))
+    Mvs = cu.mass2absmag(masses)
     dist_mod = 5 * np.log10(distance) - 5
     weight = 10 ** (-0.4 * (Mvs + dist_mod))
 
