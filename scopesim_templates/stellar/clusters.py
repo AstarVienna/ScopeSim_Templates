@@ -117,9 +117,11 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     y = y << u.arcsec
 
     # 8. make table with (x,y,ref,weight)
-    tbl = Table(names=["x", "y", "ref", "weight", "masses", "spec_types"],
-                data=[x, y, ref, weight, masses, spec_types],
-                units=[u.arcsec, u.arcsec, None, None, u.solMass, None])
+    tbl = Table(
+        names=["x", "y", "ref", "weight", "mass", "spec_type"],
+        data=[x, y, ref, weight, masses, spec_types],
+        units=[u.arcsec, u.arcsec, None, None, u.solMass, None],
+    )
 
     # 9. make Source with table, spectra
     src = Source(table=tbl, spectra=spectra)
