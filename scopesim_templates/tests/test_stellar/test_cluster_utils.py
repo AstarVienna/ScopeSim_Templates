@@ -21,7 +21,7 @@ class TestCatExists:
 class TestMass2AbsMag:
     @mark.parametrize("mass, mv, atol",
                       [(2.3, 1.11, 0.1),
-                       (200, -6, 0.2)])
+                       (20, -4.2, 0.1)])
     def test_returns_correct_value(self, mass, mv, atol):
         assert cu.mass2absmag(mass) == approx(mv, abs=atol)
 
@@ -36,7 +36,7 @@ class TestMass2SpT:
                       [(250, "O5V"),
                        (2.3, "A0V"),
                        (1.02, "G2V"),
-                       (0.01, "M9.5V")])
+                       (0.01, "M6V")])
     def test_returns_correct_value(self, mass, spt):
         assert cu.mass2spt(mass) == spt
 

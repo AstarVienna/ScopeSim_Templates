@@ -5,7 +5,7 @@ from pathlib import Path
 from collections.abc import Iterable
 
 import numpy as np
-from astropy.io.ascii import read as read_ascii
+from astropy.table import Table
 # from astropy.modeling.functional_models import KingProjectedAnalytic1D
 from scipy.interpolate import interp1d
 
@@ -13,15 +13,28 @@ import pyckles
 
 
 DIRNAME = Path(__file__).parent
-MAMAJEK = read_ascii(DIRNAME / "mamajek_alt.dat", delimiter="|")
-F_MASS2MV = interp1d(MAMAJEK["Msun"], MAMAJEK["Mv"], 1)
-F_MASS2IDX = interp1d(MAMAJEK["Msun"], range(len(MAMAJEK["Msun"])), 0)
-PICKLES = pyckles.SpectralLibrary("pickles")
+MAMAJEK = Table.read(DIRNAME / "mamajek_alt.dat", format="ascii.fixed_width")
 
-tbl = PICKLES.catalog[1].data
-mask_evol = tbl["evolution"] == 5
-mask_metal = tbl["metalicity"] == "normal"
-PICKLES_MS_V = tbl["name"][mask_evol * mask_metal]
+# Catalog 2 contains only main sequence anyway
+tbl = pyckles.SpectralLibrary("pickles").catalog[2].data
+PICKLES_MS_V = tbl["name"][tbl["metalicity"] == "normal"]
+
+# Only include Spectral Types for which Pickles has an entry
+MAMAJEK_PICKLES = MAMAJEK[[spt in PICKLES_MS_V for spt in MAMAJEK["SpT"]]]
+F_MASS2MV = interp1d(
+    MAMAJEK_PICKLES["Msun"],
+    MAMAJEK_PICKLES["Mv"],
+    kind=1,
+    # bounds_error=False,
+    fill_value="extrapolate",
+)
+F_MASS2IDX = interp1d(
+    MAMAJEK_PICKLES["Msun"],
+    range(len(MAMAJEK_PICKLES)),
+    kind=0,
+    bounds_error=False,
+    fill_value=(len(MAMAJEK_PICKLES) - 1, 0),
+)
 
 
 def mass2spt(mass):
@@ -47,7 +60,7 @@ def mass2spt(mass):
         mass = np.asarray(mass)
 
     idx = F_MASS2IDX(mass).astype(int)
-    return MAMAJEK["SpT"][idx]
+    return MAMAJEK_PICKLES["SpT"][idx]
 
 
 def mass2absmag(mass):

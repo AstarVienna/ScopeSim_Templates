@@ -85,7 +85,6 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
 
     # 2. get spec_types for masses
     spec_types = cu.mass2spt(masses)
-    spec_types = cu.closest_pickles(spec_types)
 
     # 3. get spectra from pyckles
     pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
