@@ -44,5 +44,5 @@ class TestCluster:
 
     @pytest.mark.usefixtures("basic_cluster")
     def test_as_many_spectra_as_unique_sptypes(self, basic_cluster):
-        uniques = set(basic_cluster.fields[0]["spec_type"])
+        uniques = set(basic_cluster.fields[0]["spec_types"])
         assert len(uniques) == len(basic_cluster.spectra)
