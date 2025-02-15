@@ -3,7 +3,7 @@
 import numpy as np
 from astropy.io import fits
 import astropy.units as u
-
+from synphot import Empirical1D, SourceSpectrum
 from ..rc import Source
 
 
@@ -13,6 +13,7 @@ def flatlamp(
         pixel_scale=1.024,
         amplitude=1000.0,
         fraction=0.9,
+        spectrum=None,
     ):
     """
     A flatlamp.
@@ -33,6 +34,9 @@ def flatlamp(
         [None] arbitrary scale factor
     fraction : float
         [None] fraction of flux at the edge
+    spectrum : synphot.SourceSpectrum
+        [None] the spectrum emitted by the flatlamp. If `None`,
+               the function builds a flat continuum spectrum.
 
     Returns
     -------
@@ -69,18 +73,20 @@ def flatlamp(
     hdu.header["CTYPE1"] = "RA---TAN"
     hdu.header["CTYPE2"] = "DEC--TAN"
 
-    # number_of_points should be at least 200 or so
-    number_of_points = 230
-    sm = 1.2419516582773063
-    spectra = sm * np.ones(number_of_points)
+    if spectrum is None:
+        # number_of_points should be at least 200 or so
+        number_of_points = 230
+        sm = 1.2419516582773063
+        flux = sm * np.ones(number_of_points)
 
-    sa = 1.0200000e+02
-    se = 3.3502039e+05
-    lam = np.logspace(np.log(sa), np.log(se), base=np.e,
-                      num=number_of_points) * u.Angstrom
+        sa = 1.0200000e+02
+        se = 3.3502039e+05
+        lam = np.logspace(np.log(sa), np.log(se), base=np.e,
+                          num=number_of_points) * u.Angstrom
+        spectrum = SourceSpectrum(Empirical1D, points=lam,
+                                  lookup_table=flux)
 
     return Source(
             image_hdu=hdu,
-            spectra=spectra,
-            lam=lam,
+            spectra=[spectrum],
         )

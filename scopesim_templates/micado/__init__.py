@@ -1,5 +1,6 @@
 from .darkness import darkness as _darkness
-from .flatlamp import flatlamp as _flatlamp
+#from .flatlamp import flatlamp as _flatlamp
+from .flatlamp import flatlamp
 from .pinhole_masks import pinhole_mask as _pinhole_mask
 from .cluster import cluster as _cluster
 from .viking_fields import viking_fields
@@ -19,9 +20,9 @@ def empty_sky():
     return _darkness()
 
 
-@add_function_call_str
-def flatlamp():
-    return _flatlamp()
+#@add_function_call_str
+#def flatlamp():
+#    return _flatlamp()
 
 
 @add_function_call_str
