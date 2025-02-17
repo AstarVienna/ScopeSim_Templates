@@ -47,6 +47,10 @@ class TestSourceFromImageHDU:
 
         assert isinstance(src, Source)
 
+    # TODO: This test would be useful to check if supplying a filtername as a
+    #       path does actually work, which is currently not tested anywhere
+    #       else and potentially broken. Find a way to include a test file for
+    #       this and then reenable the test!
     @pytest.mark.skipif(not exists(METIS_FILTER_PATH),
                         reason="Test only works on Kieran's local machine")
     def test_is_happy_with_metis_filter_and_bunit(self):

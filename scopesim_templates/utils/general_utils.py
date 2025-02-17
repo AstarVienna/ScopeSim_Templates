@@ -78,6 +78,8 @@ def add_function_call_str(func):
     return wrapper
 
 
+# TODO: This is WET with create_wcs_from_points, try to unifiy those.
+#       Also, the whole ra_unit stuff can probably be handled by astropy...
 def make_img_wcs_header(ra, dec, pixel_scale, image_size):
     """
     Create a WCS header for an image.
