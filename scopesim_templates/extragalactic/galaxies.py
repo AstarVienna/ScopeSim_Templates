@@ -13,8 +13,9 @@ from astropy.wcs import WCS
 
 from spextra import Spextrum
 
-from ..rc import Source, im_plane_utils as ipu, \
-    ter_curve_utils as tcu
+from ..rc import Source, create_wcs_from_points
+from ..rc import ter_curve_utils as tcu
+
 from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
 from ..misc.misc import source_from_array
@@ -411,11 +412,15 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
                                    width=params["width"] / pixel_scale,
                                    height=params["height"] / pixel_scale)
 
-    h_w, h_h = 0.5 * params["width"], 0.5 * params["height"]
-    xs = (np.array([-h_w, h_w]) + params["x_offset"]) / 3600.
-    ys = (np.array([-h_h, h_h]) + params["y_offset"]) / 3600.
-    hdr = ipu.header_from_list_of_xy(xs, ys, pixel_scale / 3600.)
-    hdu = fits.ImageHDU(data=img, header=hdr)
+    # TODO: Perhaps just make "offset" a single parameter / kwarg.
+    offset = (params["x_offset"], params["y_offset"])
+    # TODO: Perhaps just make "shape" a single parameter / kwarg.
+    shape = (params["width"], params["height"])
+    points = (np.array([[-.5], [.5]]) * shape + offset) / 3600
+
+    new_wcs, naxis = create_wcs_from_points(points, pixel_scale / 3600)
+    hdu = fits.ImageHDU(data=img)
+    hdu.header.update(new_wcs.to_header())
 
     # 2 get spectrum from Brown
     if isinstance(spectrum, str):
