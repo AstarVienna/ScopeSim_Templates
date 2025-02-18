@@ -4,10 +4,6 @@ import yaml
 
 from astar_utils import NestedMapping
 
-# TODO: what's this?
-if Path("F:/Work/ScopeSim/").exists():
-    sys.path.append("F:/Work/ScopeSim/")
-
 import scopesim
 
 Source = scopesim.source.source.Source

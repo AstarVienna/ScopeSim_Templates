@@ -58,7 +58,6 @@ class TestLineList:
     #
     #     import scopesim as sim
     #
-    #     sim.rc.__config__["!SIM.file.local_packages_path"] = "F:/Work/irdb"
     #
     #     cmds = sim.UserCommands(use_instrument="MICADO",
     #                             set_modes=["SCAO", "SPEC_3000x20"])
