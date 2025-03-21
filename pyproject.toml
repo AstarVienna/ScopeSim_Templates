@@ -44,8 +44,8 @@ jupyter = "^1.0"
 jupytext = "^1.10.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.4.3"
-pytest-cov = "^4.1.0"
+pytest = "^8.3.5"
+pytest-cov = "^6.0.0"
 sphinx-rtd-theme = "^0.5.1"
 skycalc_cli = "*"  # consider removal
 
