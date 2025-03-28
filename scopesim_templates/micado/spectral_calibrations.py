@@ -69,6 +69,7 @@ def line_list(unit_flux=1*PHOTLAM,
     ksize = int(8 * sigma + 1)
 
     # import line list and pad with zeros
+    # (including smoothing kernel space at the edges)
     wave, flux = import_line_spectrum(filename, dwave, pad=ksize)
 
     if smoothing_fwhm is not None and isinstance(smoothing_fwhm, (int, float)):
@@ -105,6 +106,13 @@ def import_line_spectrum(filename, dwave=0.0001, pad=10):
     ----------
     filename : str
         Name of line list file found in ``micado/data``
+
+    dwave : float
+        Bin width in units of input file
+
+    pad : int
+        Padding in wavelength range to add to allow enough space for smoothing
+        function kernel
 
     Returns
     -------
