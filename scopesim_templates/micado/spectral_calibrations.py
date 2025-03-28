@@ -65,12 +65,14 @@ def line_list(unit_flux=1*PHOTLAM,
     if not isinstance(unit_flux, u.Quantity):
         unit_flux *= PHOTLAM
 
+    sigma = smoothing_fwhm / dwave / 2.35
+    ksize = int(8 * sigma + 1)
+
     # import line list and pad with zeros
-    wave, flux = import_line_spectrum(filename, dwave)
+    wave, flux = import_line_spectrum(filename, dwave, pad=ksize)
 
     if smoothing_fwhm is not None and isinstance(smoothing_fwhm, (int, float)):
-        sigma = smoothing_fwhm / dwave / 2.35
-        kernel = signal.windows.gaussian(M=int(8 * sigma + 1), std=sigma)
+        kernel = signal.windows.gaussian(M=ksize, std=sigma)
         kernel /= kernel.sum()
         flux = signal.convolve(flux, kernel, mode="same")
 
@@ -95,7 +97,7 @@ def line_list(unit_flux=1*PHOTLAM,
     return line_list_src
 
 
-def import_line_spectrum(filename, dwave=0.0001):
+def import_line_spectrum(filename, dwave=0.0001, pad=10):
     """
     Read in and pad the line list into a spectrum.
 
@@ -118,7 +120,7 @@ def import_line_spectrum(filename, dwave=0.0001):
     wave = line_tbl["Wavelength"].data
     wave = np.round(wave / dwave) * dwave       # round to level of dwave
     w0, w1 = wave[0], wave[-1]
-    wave_filled = np.arange(w0 - dwave, w1 + 2 * dwave, dwave)
+    wave_filled = np.arange(w0 - pad * dwave, w1 + pad * dwave, dwave)
     flux_filled = np.zeros_like(wave_filled)
 
     for w, f in zip(wave, flux):
