@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Contains an alternative function for Sersic profiles."""
+
 import numpy as np
 from astropy.modeling.models import Sersic2D
 

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 """
-Initial mass function.
+Initial mass function, used by the cluster function.
 
 KL:
    Copied (18.06.2020, vers:134c5ff) almost directly from

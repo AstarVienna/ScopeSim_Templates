@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Currently only contains a simple zero-age open cluster."""
 
 import numpy as np
@@ -23,9 +24,9 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     Generate a source object for a young cluster.
 
     The cluster distribution follows a gaussian profile with the
-    ``core_radius`` corresponding to the HWHM of the distribution. The
+    `core_radius` corresponding to the HWHM of the distribution. The
     choice of stars follows a Kroupa IMF, with no evolved stars in the mix.
-    Ergo this is more suitable for a young cluster than an evolved custer
+    Ergo this is more suitable for a young cluster than an evolved cluster
 
 
     Parameters
@@ -41,8 +42,8 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     dec : float, str
         DEC of the source
 
-    Additional parameters
-    ---------------------
+    Other Parameters
+    ----------------
     tidal_radius : float
         [pc] Not yet implemented, for later once there is a King profile
     multiplicity : Unknown
@@ -61,7 +62,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     of around 0.2 pc at the extragalactic centre and 1000 solar masses worth
     of stars:
 
-        >>> from scopesim_templates.basic.stars import cluster
+        >>> from scopesim_templates.stellar.clusters import cluster
         >>> src = cluster(mass=1000, distance=8500, core_radius=0.2, seed=9001)
 
     """
@@ -80,11 +81,12 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     # 1. sample masses from an IMF
     kroupa = imf.Kroupa_2001(params["multiplicity_object"])
     masses, _, _, _ = kroupa.generate_cluster(mass, seed=params["seed"])
-    masses.clip(max=250, out=masses)
+    # masses.clip(max=250, out=masses)
+    # Avoid unrealistic top-heavy IMF
+    masses = masses[masses < 20]
 
     # 2. get spec_types for masses
     spec_types = cu.mass2spt(masses)
-    spec_types = cu.closest_pickles(spec_types)
 
     # 3. get spectra from pyckles
     pickles = pyckles.SpectralLibrary("pickles", return_style="synphot")
@@ -102,7 +104,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
            for spt in spec_types]
 
     # 6. make weight list from Mv + dist_mod(distance)
-    Mvs = np.array(cu.mass2absmag(masses))
+    Mvs = cu.mass2absmag(masses)
     dist_mod = 5 * np.log10(distance) - 5
     weight = 10 ** (-0.4 * (Mvs + dist_mod))
 
@@ -115,9 +117,11 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     y = y << u.arcsec
 
     # 8. make table with (x,y,ref,weight)
-    tbl = Table(names=["x", "y", "ref", "weight", "masses", "spec_types"],
-                data=[x, y, ref, weight, masses, spec_types],
-                units=[u.arcsec, u.arcsec, None, None, u.solMass, None])
+    tbl = Table(
+        names=["x", "y", "ref", "weight", "mass", "spec_types"],
+        data=[x, y, ref, weight, masses, spec_types],
+        units=[u.arcsec, u.arcsec, None, None, u.solMass, None],
+    )
 
     # 9. make Source with table, spectra
     src = Source(table=tbl, spectra=spectra)

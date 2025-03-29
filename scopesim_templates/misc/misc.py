@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-"""TBA."""
+"""Templates that could be used to simulate more general sources."""
 
+from pathlib import Path
 import warnings
+
 import numpy as np
 import synphot
 
@@ -136,7 +138,7 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     Parameters
     ----------
     image_hdu : fits.ImageHDU
-    filter_name : str
+    filter_name : Path | str
         Either a standard filter name or a filter from an instrument package
     waverange: tuple
         wave_min and wave_max of the spectral range
@@ -154,27 +156,38 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     --------
     Using a generic filter curve from the Spanish VO::
 
-        >>> image_hdu = fits.ImageHDU(data=np.ones((11, 11)))
+        >>> from scopesim_templates.misc import misc
+        >>> image_hdu = fits.ImageHDU(
+        ...     data=np.ones((11, 11)),
+        ...     header=fits.Header({
+        ...         "CUNIT1": "deg",
+        ...         "CUNIT2": "deg",
+        ...         "CDELT1": 0.001,
+        ...         "CDELT2": 0.001,
+        ...     }))
         >>> # add WCS info to the header here
         >>> filter_name = "Generic/Johnson_UBVRIJHKL.N"
-        >>> src = misc.source_from_imagehdu(image_hdu=hdu,
-                                            filter_name=filter_name,
-                                            pixel_unit_amplitude=20*u.Jy)
+        >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
+        ...                                 filter_name=filter_name,
+        ...                                 pixel_unit_amplitude=20*u.Jy)
 
     Using the METIS H2O-ice filter from the METIS ScopeSim package::
 
         >>> import scopesim
-        >>> filter_name = scopesim.rc.__search_path__[0] + \
-                          "/METIS/filters/TC_filter_H2O-ice.dat"
-        >>> src = misc.source_from_imagehdu(image_hdu=hdu,
-                                            filter_name=filter_name,
-                                            pixel_unit_amplitude=20*u.Jy)
+        >>> _ = scopesim.download_packages(["METIS"])
+        >>> filter_name = scopesim.rc.__search_path__[0] / \
+        ...               "METIS/filters/TC_filter_H2O-ice.dat"
+        >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
+        ...                                 filter_name=filter_name,
+        ...                                 pixel_unit_amplitude=20*u.Jy)
 
-    TODO: Check if the image_hdu has WCS
+    .. todo:: Check if the image_hdu has WCS
     """
     if filter_name is None and waverange is None:
         raise ValueError("Wavelength information must be given with either a "
                          "filter_name or a waverange")
+    if isinstance(filter_name, Path):
+        filter_name = str(filter_name)
 
     units = image_hdu.header.get("BUNIT")
     amp = 1.
@@ -338,7 +351,7 @@ def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve,
     """
     Create a source from a fits image.
 
-    TODO: Pass the header (or the WCS) to the source object
+    .. todo:: Pass the header (or the WCS) to the source object
 
     Parameters
     ----------
@@ -375,8 +388,9 @@ def source_from_cube(cube, ext=1) -> Source:
     In the future more checks will be performed to translate most cubes into a
     suitable format.
 
-    TODO: Set the cube to a different flux level and different pixel scales.
-    Redshift the cube
+    .. todo::
+        Set the cube to a different flux level and different pixel scales.
+        Redshift the cube
 
     Parameters
     ----------

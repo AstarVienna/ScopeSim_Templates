@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""TBA."""
+"""Contains several functions for simple galaxy models."""
+
 import pathlib
 
 import numpy as np
@@ -339,8 +340,8 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
         - an EmissionCurve with a user defined spectrum
 
 
-    Optional Parameters (passed to ``sersic_profile``)
-    --------------------------------------------------
+    Other Parameters
+    ----------------
     n : float, optional
         Default = 4. Sersic index
         - n=1 for exponential (spiral),

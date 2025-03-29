@@ -11,7 +11,7 @@ def randomvariate(pdf, n, xmin, xmax):
     arbitrary probability distribution. For reference, see Bevington's book,
     page 84. Based on rejection*.py.
     Usage:
-    >>> randomvariate(P,N,xmin,xmax)
+    randomvariate(P,N,xmin,xmax)
     where
     P : probability distribution function from which you want to generate
     random numbers

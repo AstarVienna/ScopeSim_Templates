@@ -15,4 +15,4 @@ class TestFlatlamp:
         lamp = flatlamp()
         assert isinstance(lamp, Source)
         assert isinstance(lamp.spectra[0], SourceSpectrum)
-        assert isinstance(getattr(lamp.fields[0], "field", lamp.fields[0]), ImageHDU)
+        assert isinstance(lamp.fields[0].field, ImageHDU)
