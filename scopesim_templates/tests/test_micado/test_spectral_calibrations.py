@@ -45,6 +45,7 @@ class TestLineList:
         flux1 = src1.spectra[0](wave).value
         flux2 = src2.spectra[0](wave).value
 
+        assert wave[flux1.argmax()].value == approx(wave[flux2.argmax()].value, rel=1e-6)
         assert flux1.max() > flux2.max()
         assert flux1.sum() == approx(flux2.sum(), rel=2e-2)
 
