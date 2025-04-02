@@ -65,14 +65,23 @@ def line_list(unit_flux=1*PHOTLAM,
     if not isinstance(unit_flux, u.Quantity):
         unit_flux *= PHOTLAM
 
-    sigma = smoothing_fwhm / dwave / 2.35
-    ksize = int(8 * sigma + 1)
+    do_smoothing = False
+    ksize = 2
+    sigma = 1
+
+    if smoothing_fwhm is not None and isinstance(smoothing_fwhm, (int, float)):
+        do_smoothing = True
+
+    # calculate smoothing kernel size
+    if do_smoothing:
+        sigma = smoothing_fwhm / dwave / 2.35
+        ksize = int(8 * sigma + 1)
 
     # import line list and pad with zeros
     # (including smoothing kernel space at the edges)
     wave, flux = import_line_spectrum(filename, dwave, pad=ksize)
 
-    if smoothing_fwhm is not None and isinstance(smoothing_fwhm, (int, float)):
+    if do_smoothing:
         kernel = signal.windows.gaussian(M=ksize, std=sigma)
         kernel /= kernel.sum()
         flux = signal.convolve(flux, kernel, mode="same")
