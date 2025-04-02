@@ -69,7 +69,7 @@ def line_list(unit_flux=1*PHOTLAM,
     ksize = 2
     sigma = 1
 
-    if smoothing_fwhm is not None and isinstance(smoothing_fwhm, (int, float)):
+    if smoothing_fwhm is not None:
         do_smoothing = True
 
     # calculate smoothing kernel size
