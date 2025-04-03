@@ -8,8 +8,8 @@ from ..rc import Source
 
 
 def flatlamp(
-        width=16.384,
-        height=16.384,
+        width=21.0,
+        height=21.0,
         pixel_scale=1.024,
         amplitude=1000.0,
         fraction=0.9,
