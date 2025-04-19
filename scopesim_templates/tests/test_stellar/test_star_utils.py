@@ -10,6 +10,7 @@ def pickles():
     return pyckles.SpectralLibrary("pickles")
 
 
+@pytest.mark.webtest
 @pytest.mark.usefixtures("pickles")
 class TestNearestSpecType:
     @pytest.mark.parametrize("spec_types", ("A0V", "G2V",

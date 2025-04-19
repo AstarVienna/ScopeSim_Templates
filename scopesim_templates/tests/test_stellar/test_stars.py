@@ -1,3 +1,4 @@
+import pytest
 from pytest import approx
 import numpy as np
 
@@ -18,6 +19,7 @@ def source_eq(source_lhs: Source, source_rhs: Source):
 
 
 class TestStar:
+    @pytest.mark.webtest
     def test_star_stars_equivalent(self):
         """verify that star and stars yield the same object and have compatible interfaces"""
         src_from_star = star("Generic/Johnson.V", 0, "A0V", 0, 0)
@@ -31,6 +33,7 @@ class TestStar:
         assert source_eq(src_from_star, src_from_stars_unit)
 
 
+@pytest.mark.webtest
 class TestStars:
     def test_returns_correct_photon_counts_when_scaled_to_vega_zero(self):
         src = stars("Generic/Johnson.V", [0]*u.mag, ["A0V"], [0], [0])
@@ -64,12 +67,14 @@ class TestStars:
         assert np.all(src.fields[0]["weight"] == 1)
 
 
+@pytest.mark.webtest
 class TestStarField:
     def test_returns_source_object_with_minimal_input(self):
         src = star_field(n=2, mmin=0, mmax=5, width=1)
         assert isinstance(src, Source)
 
 
+@pytest.mark.webtest
 class TestStarGrid:
     def test_returns_source_object_with_correct_weighting_without_unit(self):
         src = star_grid(n=3, mmin=0, mmax=5)

@@ -4,20 +4,23 @@ import numpy as np
 from astropy.table import Table
 
 import scopesim_templates.stellar.cluster_utils as cu
+from scopesim_templates.stellar.cluster_utils import CLUSTER_UTIL_SINGLETONS as cus
 
 from matplotlib import pyplot as plt
 
 PLOTS = False
 
 
+@mark.webtest
 class TestCatExists:
     def test_cat_is_table(self):
-        assert isinstance(cu.MAMAJEK, Table)
+        assert isinstance(cus.mamajek, Table)
 
     def test_cat_is_nonempty(self):
-        assert len(cu.MAMAJEK) > 0
+        assert len(cus.mamajek) > 0
 
 
+@mark.webtest
 class TestMass2AbsMag:
     @mark.parametrize("mass, mv, atol",
                       [(2.3, 1.11, 0.1),
@@ -31,6 +34,7 @@ class TestMass2AbsMag:
         assert mvs[1] == approx(4.79, rel=0.01)
 
 
+@mark.webtest
 class TestMass2SpT:
     @mark.parametrize("mass, spt",
                       [(250, "O5V"),
@@ -46,6 +50,7 @@ class TestMass2SpT:
         assert isinstance(spts, np.ndarray)
 
 
+@mark.webtest
 class TestClosestPickles:
     @mark.parametrize("spt_in, spt_out",
                       [("O1V", "O5V"),

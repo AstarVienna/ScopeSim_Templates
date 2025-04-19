@@ -1,3 +1,4 @@
+import pytest
 from astropy.io.fits import ImageHDU
 from astropy.table import Table
 from astropy import units as u
@@ -18,6 +19,7 @@ class TestEmptySky:
 
 
 class TestFlatField:
+    @pytest.mark.webtest
     def test_flat_field_returns_source_object(self):
         flatfield = calibration.calibration.flat_field()
         assert isinstance(flatfield, Source)
