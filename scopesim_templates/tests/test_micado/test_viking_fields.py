@@ -12,6 +12,7 @@ PLOTS = False
 
 
 class TestVikingCatalogues:
+    @pytest.mark.webtest
     @pytest.mark.parametrize("cat_id", [("1"), ("2"), ("3")])
     def test_load_galaxies_source(self, cat_id):
         gal_src = vf.load_galaxies_source(cat_id)
@@ -27,6 +28,7 @@ class TestVikingCatalogues:
         assert len(gal_src.fields) > 1
         assert len(gal_src.spectra) == 1
 
+    @pytest.mark.webtest
     @pytest.mark.parametrize("cat_id",
                              [("stdstar"),
                               ("illum"),
@@ -46,6 +48,7 @@ class TestVikingCatalogues:
         assert len(star_src.fields[0]) > 1
         assert len(star_src.spectra) == 1
 
+    @pytest.mark.webtest
     def test_load_viking_field(self):
         viking_src = vf.viking_field()
 
@@ -67,6 +70,7 @@ class TestVikingCatalogues:
 
 
 class TestWithScopeSim:
+    @pytest.mark.webtest
     def test_runs_through_scopesim_basic_instrument(self):
         # configure basic_instrument to MICADO specs
         opt = load_example_optical_train()

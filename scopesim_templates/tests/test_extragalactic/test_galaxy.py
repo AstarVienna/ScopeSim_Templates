@@ -13,6 +13,7 @@ PLOTS = False
 
 
 class TestGalaxy:
+    @pytest.mark.webtest
     def test_redshift(self):
         sp0 = galaxies.galaxy("kc96/s0", z=0, amplitude=10*u.ABmag,
                               filter_curve="g", pixel_scale=0.05, r_eff=2.5,
@@ -24,6 +25,7 @@ class TestGalaxy:
         kwargs = {"filter_curve": "g", "system_name": "AB"}
         assert sp0.get_magnitude(**kwargs) == sp1.get_magnitude(**kwargs)
 
+    @pytest.mark.webtest
     @pytest.mark.parametrize("amp", [10*u.ABmag, 15*u.ABmag, 20*u.ABmag])
     def test_scaling(self, amp):
         gal = galaxies.galaxy("kc96/s0", z=0, amplitude=amp,
@@ -34,6 +36,7 @@ class TestGalaxy:
 
 
 class TestElliptical:
+    @pytest.mark.webtest
     def test_it_works(self):
         gal = galaxies.elliptical(125, 1, "V", 10 * u.ABmag, n=1,
                                   spectrum="NGC_0584")
