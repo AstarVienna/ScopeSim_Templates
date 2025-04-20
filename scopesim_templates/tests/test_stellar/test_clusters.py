@@ -18,15 +18,18 @@ def basic_cluster():
 
 
 class TestCluster:
+    @pytest.mark.webtest
     @pytest.mark.usefixtures("basic_cluster")
     def test_it_works(self, basic_cluster):
         assert isinstance(basic_cluster, Source)
 
+    @pytest.mark.webtest
     @pytest.mark.usefixtures("basic_cluster")
     def test_spectra_are_correct_type(self, basic_cluster):
         assert all(isinstance(spec, Spextrum)
                    for spec in basic_cluster.spectra.values())
 
+    @pytest.mark.webtest
     @pytest.mark.usefixtures("basic_cluster")
     def test_spectra_waverange(self, basic_cluster):
         # TODO: don't know if it makes sense to test like this
@@ -37,11 +40,13 @@ class TestCluster:
         assert all(wave == approx(0.115) for wave in wvrng_min)
         assert all(wave == approx(2.5) for wave in wvrng_max)
 
+    @pytest.mark.webtest
     @pytest.mark.usefixtures("basic_cluster")
     def test_field_is_correct_type(self, basic_cluster):
         assert isinstance(basic_cluster.fields[0].field, Table)
         assert len(basic_cluster.fields[0]) > 0
 
+    @pytest.mark.webtest
     @pytest.mark.usefixtures("basic_cluster")
     def test_as_many_spectra_as_unique_sptypes(self, basic_cluster):
         uniques = set(basic_cluster.fields[0]["spec_types"])

@@ -145,6 +145,7 @@ class TestSourceFromImageHDU:
 
 
 class TestPointSource:
+    @pytest.mark.webtest
     def test_initialize_from_spextra(self):
         src = misc.point_source("pickles/a0v", amplitude=16)
 
@@ -157,6 +158,7 @@ class TestPointSource:
 
 
 class TestUniformSource:
+    @pytest.mark.webtest
     def test_initialize_from_spextra(self):
         src = misc.uniform_source("pickles/a0v", amplitude=16)
 

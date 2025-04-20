@@ -1,6 +1,7 @@
 """Test cluster."""
 
 from astropy.table import Table
+import pytest
 from synphot import SourceSpectrum
 
 from scopesim_templates.micado import cluster
@@ -10,6 +11,7 @@ from scopesim_templates.rc import Source
 class TestCluster:
     """Test cluster."""
 
+    @pytest.mark.webtest
     def test_cluster_returns_source_object(self):
         """Test cluster."""
         sky = cluster()
