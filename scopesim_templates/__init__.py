@@ -15,6 +15,7 @@ from . import metis
 #               "Always use this syntax: from module.submodule import function",
 #               DeprecationWarning, stacklevel=2)
 from .misc.misc import source_from_image, source_from_file, source_from_cube
+from .misc.donut import donut
 from .stellar.stars import star, stars, star_grid, star_field
 from .stellar.clusters import cluster
 from .extragalactic.galaxies import galaxy, galaxy3d, elliptical
