@@ -2,4 +2,4 @@
 """Templates to simulate stellar sources."""
 
 from .clusters import *
-from .stars import *
+from .stellar import *
