@@ -59,7 +59,7 @@ def viking_field(star_cat_id="illum", gal_cat_id="1", pixel_scale=0.004,
 
     Examples
     --------
-    >>> from scopesim_templates.calibration.micado import viking_fields as vf
+    >>> from scopesim_templates.micado import viking_fields as vf
     >>>
     >>> # Standard random star and galaxy generation at 0.004" resolution
     >>> src = vf.viking_field(star_cat_id="illum", gal_cat_id="1")

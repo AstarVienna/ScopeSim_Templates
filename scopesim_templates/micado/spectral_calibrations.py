@@ -54,7 +54,7 @@ def line_list(unit_flux=1*PHOTLAM,
     >>> # Make line list brighter
     >>> src = mic_spec.line_list(unit_flux=2000)        # [PHOTLAM] by default
     >>> src = mic_spec.line_list(unit_flux=5*PHOTLAM)
-    >>> src = mic_spec.line_list(unit_flux=300*u.Unit("ph s-1 m-2 um-1))
+    >>> src = mic_spec.line_list(unit_flux=300*u.Unit("ph s-1 m-2 um-1"))
     >>>
     >>> # Smooth with a gaussian kernel where FWHM is 3 bins wide
     >>> src = mic_spec.line_list(smoothing_fwhm=3)
