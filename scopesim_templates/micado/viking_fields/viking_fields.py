@@ -66,7 +66,7 @@ def viking_field(star_cat_id="illum", gal_cat_id="1", pixel_scale=0.004,
     >>>
     >>> # For oversampling the galaxies and fixing their positions:
     >>> src = vf.viking_field(star_cat_id="science", gal_cat_id="2",
-    ...s                       pixel_scale=0.002, random_seed=9001)
+    ...                       pixel_scale=0.002, random_seed=9001)
 
     """
     star_src = load_stars_source(cat_id=star_cat_id, ra=ra, dec=dec)
