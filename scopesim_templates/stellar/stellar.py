@@ -175,24 +175,24 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     --------
     Create a ``Source`` object for a random group of stars::
 
-        >>> import numpy as np
-        >>> import astropy.units as u
-        >>> from scopesim_templates.stellar import stars
-        >>>
-        >>> n = 100
-        >>> spec_types = ["A0V", "G2V", "K0III", "M5III", "O8I"] * (n // 5)
-        >>> ids = np.random.randint(0, 5, size=n)
-        >>> star_list = [spec_types[i] for i in ids]
-        >>> mags = np.random.normal(loc=20, scale=3, size=n) * u.mag
-        >>> x, y = np.random.random(size=(2, n))
-        >>>
-        >>> src = stars("Ks", mags, spec_types, x, y)
+    >>> import numpy as np
+    >>> import astropy.units as u
+    >>> from scopesim_templates.stellar import stars
+    >>>
+    >>> n = 100
+    >>> spec_types = ["A0V", "G2V", "K0III", "M5III", "O8I"] * (n // 5)
+    >>> ids = np.random.randint(0, 5, size=n)
+    >>> star_list = [spec_types[i] for i in ids]
+    >>> mags = np.random.normal(loc=20, scale=3, size=n) * u.mag
+    >>> x, y = np.random.random(size=(2, n))
+    >>>
+    >>> src = stars("Ks", mags, spec_types, x, y)
 
     .. note: All positions are in arcsec.
 
     The final positions table is kept in the ``<Source>.fields`` attribute::
 
-        >>> my_pos_table = src.fields[0]
+    >>> my_pos_table = src.fields[0]
 
     Each star in this table has an associated spectrum kept in the
     ``<Source>.spectra`` attribute. These stars are connected to the spectra in
@@ -206,9 +206,9 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     (``http://svo2.cab.inta-csic.es/theory/fps/``). SVO filter names need to be
     in the following format ``observatory/instrument.filter``::
 
-        >>> amplitudes = np.linspace(1, 3631, n) * u.Jansky
-        >>> filter_name = "Paranal/HAWKI.Ks"
-        >>> my_source = stars(filter_name, amplitudes, spec_types, x=x, y=y)
+    >>> amplitudes = np.linspace(1, 3631, n) * u.Jansky
+    >>> filter_name = "Paranal/HAWKI.Ks"
+    >>> my_source = stars(filter_name, amplitudes, spec_types, x=x, y=y)
 
     """
     if not isinstance(spec_types, (list, tuple, np.ndarray)):

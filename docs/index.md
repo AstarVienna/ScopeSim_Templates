@@ -65,6 +65,11 @@ notebooks/extragalactic.md
 source_object
 ```
 
+## TODO list
+```{eval-rst}
+.. todolist::
+```
+
 ## API reference
 
 ```{eval-rst}

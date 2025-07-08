@@ -156,30 +156,30 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     --------
     Using a generic filter curve from the Spanish VO::
 
-        >>> from scopesim_templates.misc import misc
-        >>> image_hdu = fits.ImageHDU(
-        ...     data=np.ones((11, 11)),
-        ...     header=fits.Header({
-        ...         "CUNIT1": "deg",
-        ...         "CUNIT2": "deg",
-        ...         "CDELT1": 0.001,
-        ...         "CDELT2": 0.001,
-        ...     }))
-        >>> # add WCS info to the header here
-        >>> filter_name = "Generic/Johnson_UBVRIJHKL.N"
-        >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
-        ...                                 filter_name=filter_name,
-        ...                                 pixel_unit_amplitude=20*u.Jy)
+    >>> from scopesim_templates.misc import misc
+    >>> image_hdu = fits.ImageHDU(
+    ...     data=np.ones((11, 11)),
+    ...     header=fits.Header({
+    ...         "CUNIT1": "deg",
+    ...         "CUNIT2": "deg",
+    ...         "CDELT1": 0.001,
+    ...         "CDELT2": 0.001,
+    ...     }))
+    >>> # add WCS info to the header here
+    >>> filter_name = "Generic/Johnson_UBVRIJHKL.N"
+    >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
+    ...                                 filter_name=filter_name,
+    ...                                 pixel_unit_amplitude=20*u.Jy)
 
     Using the METIS H2O-ice filter from the METIS ScopeSim package::
 
-        >>> import scopesim
-        >>> _ = scopesim.download_packages(["METIS"])
-        >>> filter_name = scopesim.rc.__search_path__[0] / \
-        ...               "METIS/filters/TC_filter_H2O-ice.dat"
-        >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
-        ...                                 filter_name=filter_name,
-        ...                                 pixel_unit_amplitude=20*u.Jy)
+    >>> import scopesim
+    >>> _ = scopesim.download_packages(["METIS"])
+    >>> filter_name = scopesim.rc.__search_path__[0] / \
+    ...               "METIS/filters/TC_filter_H2O-ice.dat"
+    >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
+    ...                                 filter_name=filter_name,
+    ...                                 pixel_unit_amplitude=20*u.Jy)
 
     .. todo:: Check if the image_hdu has WCS
     """
