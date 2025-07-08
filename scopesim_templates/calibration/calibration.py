@@ -47,16 +47,16 @@ def lamp(waves, fwhm, fluxes) -> Source:
     --------
     Create a ``Source`` lamp::
 
-        >>> import numpy as np
-        >>> import astropy.units as u
-        >>> from scopesim_templates.calibration import lamp
-        >>>
-        >>> R = 20000   # Resolution of the instrument
-        >>> waves = np.arange(1e4, 2.7e4, 100)
-        >>> fwhm = 2.6*(waves/R)*np.ones(shape=waves.shape)  # Nyquist sampled
-        >>> flux = 1e-10*np.ones(waves.shape)
-        >>>
-        >>> src = lamp(waves=waves, fwhm=fwhm, fluxes=flux)
+    >>> import numpy as np
+    >>> import astropy.units as u
+    >>> from scopesim_templates.calibration import lamp
+    >>>
+    >>> R = 20000   # Resolution of the instrument
+    >>> waves = np.arange(1e4, 2.7e4, 100)
+    >>> fwhm = 2.6*(waves/R)*np.ones(shape=waves.shape)  # Nyquist sampled
+    >>> flux = 1e-10*np.ones(waves.shape)
+    >>>
+    >>> src = lamp(waves=waves, fwhm=fwhm, fluxes=flux)
 
     """
     # I don't understand this warning but it probably has a reason...

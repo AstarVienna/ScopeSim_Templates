@@ -62,8 +62,8 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     of around 0.2 pc at the extragalactic centre and 1000 solar masses worth
     of stars:
 
-        >>> from scopesim_templates.stellar.clusters import cluster
-        >>> src = cluster(mass=1000, distance=8500, core_radius=0.2, seed=9001)
+    >>> from scopesim_templates.stellar.clusters import cluster
+    >>> src = cluster(mass=1000, distance=8500, core_radius=0.2, seed=9001)
 
     """
     params = {"mass": mass,
