@@ -1,40 +1,45 @@
-[tool.poetry]
+[project]
 name = "ScopeSim_Templates"
 version = "0.6.3a0"
 description = "On-sky source templates for ScopeSim"
-authors = ["Astar Vienna <astar.astro@univie.ac.at>"]
-license = "GPL-3.0-or-later"
+authors = [
+    {name = "Astar Vienna", email = "astar.astro@univie.ac.at"}
+]
+license = {text = "GPL-3.0-or-later"}
 readme = "README.md"
 maintainers = [
-    "Kieran Leschinski <kieran.leschinski@unive.ac.at>",
-    "Hugo Buddelmeijer <hugo@buddelmeijer.nl>",
-    "Fabian Haberhauer <fabian.haberhauer@univie.ac.at>",
+    { name = "Kieran Leschinski", email = "kieran.leschinski@unive.ac.at" },
+    { name = "Hugo Buddelmeijer", email = "hugo@buddelmeijer.nl" },
+    { name = "Fabian Haberhauer", email = "fabian.haberhauer@univie.ac.at" },
 ]
 classifiers = [
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
+requires-python = ">=3.10, <3.13"
+dependencies = [
+    "numpy (>=1.26.4,<2.0.0)",
+    "scipy (>=1.14.1,<2.0.0)",
+    "astropy (>=6.1.5,<7.0.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "docutils (>=0.19)",
+    "beautifulsoup4 (>=4.13.3,<5.0.0)",
+    "lxml (>=5.2.2,<6.0.0)",
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "synphot (>=1.5.0,<2.0.0)",
+    "scopesim (>=0.9.3,<0.11.0)",
+    "pyckles (>=0.4.1,<1.0)",
+    "spextra (>=0.41.4,<1.0)",
+    "astar-utils (>=0.3.3,<1.0)"
+]
+
+[project.urls]
 repository = "https://github.com/AstarVienna/ScopeSim_Templates/"
 documentation = "https://scopesim-templates.readthedocs.io/"
+"Bug Tracker" = "https://github.com/AstarVienna/ScopeSim_Templates/issues"
 
-[tool.poetry.dependencies]
-python = ">=3.10, <3.13"
-numpy = "^1.26.4"
-scipy = "^1.14.1"
-astropy = "^6.1.5"
-matplotlib = "^3.10.1"
-
-docutils = "^0.19"
-beautifulsoup4 = "^4.13.3"
-lxml = "^5.2.2"
-pyyaml = "^6.0.1"
-synphot = "^1.5.0"
-
-scopesim = ">=0.9.1"
-pyckles = ">=0.4.1"
-spextra = ">=0.41.4"
-astar-utils = ">=0.3.2"
+[tool.poetry]
 
 [tool.poetry.group.dev]
 optional = true
@@ -56,11 +61,8 @@ sphinx-book-theme = "^1.1.3"
 sphinx-copybutton = "^0.5.2"
 myst-nb = "^1.2.0"
 
-[tool.poetry.urls]
-"Bug Tracker" = "https://github.com/AstarVienna/ScopeSim_Templates/issues"
-
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
