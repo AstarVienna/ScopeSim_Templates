@@ -8,6 +8,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/ScopeSim-Templates)](https://pypi.org/project/ScopeSim-Templates/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/ScopeSim-Templates)
 ![GitHub Release Date](https://img.shields.io/github/release-date/AstarVienna/ScopeSim_Templates)
+![dev version](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2FAstarVienna%2FScopeSim_Templates%2Fmain%2Fpyproject.toml&query=%24.project.version&label=dev%20version&color=teal)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -57,13 +58,13 @@ Currently, the package covers the most typical sources used in astronomy:
   - `star_grid`: Creates a field of stars with regular positions
   - `cluster`: Creates an age=0 cluster with a user selected mass
 
-- `extragalactic`  
+- `extragalactic`
   - `galaxy`: A simple sersic model with a user selected SED from the `speXtra` database
   - `galaxy3D`: A more complex model that includes a velocity field and velocity dispersion field
   - `spiral_two_component`: Simple two component model with an outer spiral young SED and an old SED bulge
   - `elliptical`: Another sersic model using the Brown SEDs
 
-- `misc`  
+- `misc`
   - `point_source`: similar to `star` but using any SED from the `speXtra` database
   - `uniform_source`: Creates a uniform source with any SED from `speXtra`
   - `source_from_file`: Load the source from a fits file. Depending on the characteristics othe functions may be more suitable
@@ -72,7 +73,7 @@ Currently, the package covers the most typical sources used in astronomy:
   - `source_from_array`: General function to create a source from a 2D `numpy` array
   - `source_from_cube`: Wrapper to create a source from a 3D datacube
 
-- `calibration`  
+- `calibration`
   - `lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
   - `flat_field`: Simulates a flat field
   - `empty_sky`: To simulate a sky without no other sources
