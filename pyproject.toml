@@ -1,6 +1,6 @@
 [project]
 name = "ScopeSim_Templates"
-version = "0.6.3a0"
+version = "0.7.0a0"
 description = "On-sky source templates for ScopeSim"
 authors = [
     {name = "Astar Vienna", email = "astar.astro@univie.ac.at"}
@@ -12,34 +12,40 @@ maintainers = [
     { name = "Hugo Buddelmeijer", email = "hugo@buddelmeijer.nl" },
     { name = "Fabian Haberhauer", email = "fabian.haberhauer@univie.ac.at" },
 ]
-classifiers = [
-    "Operating System :: OS Independent",
-    "Intended Audience :: Science/Research",
-    "Topic :: Scientific/Engineering :: Astronomy",
-]
-requires-python = ">=3.10, <3.13"
+keywords = [ "astronomy" ]
+dynamic = [ "classifiers" ]
+requires-python = ">=3.10,<3.14"
 dependencies = [
     "numpy (>=1.26.4,<2.3.0)",
     "scipy (>=1.14.1,<2.0.0)",
     "astropy (>=6.1.5,<7.0.0)",
     "matplotlib (>=3.10.1,<4.0.0)",
+
     "docutils (>=0.19)",
     "beautifulsoup4 (>=4.13.3,<5.0.0)",
     "lxml (>=5.2.2,<6.0.0)",
     "pyyaml (>=6.0.2,<7.0.0)",
     "synphot (>=1.5.0,<2.0.0)",
-    "scopesim (>=0.9.3,<0.11.0)",
-    "pyckles (>=0.4.1,<1.0)",
-    "spextra (>=0.41.4,<1.0)",
-    "astar-utils (>=0.3.3,<1.0)"
+
+    "scopesim (>=0.10.0,<0.12.0)",
+    "pyckles (>=0.5.0,<1.0)",
+    "spextra (>=0.42.0,<1.0)",
+    "astar-utils (>=0.4.0,<1.0)"
 ]
 
 [project.urls]
-repository = "https://github.com/AstarVienna/ScopeSim_Templates/"
-documentation = "https://scopesim-templates.readthedocs.io/"
+Repository = "https://github.com/AstarVienna/ScopeSim_Templates/"
+Documentation = "https://scopesim-templates.readthedocs.io/"
 "Bug Tracker" = "https://github.com/AstarVienna/ScopeSim_Templates/issues"
+Changelog = "https://github.com/AstarVienna/ScopeSim_Templates/releases"
+
 
 [tool.poetry]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
 
 [tool.poetry.group.dev]
 optional = true

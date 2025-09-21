@@ -215,12 +215,11 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         spec_types = [spec_types]
 
     if not isinstance(amplitudes, u.Quantity):
-        amplitudes = u.Quantity(amplitudes, u.mag, copy=False)
+        # Don't attempt to convert e.g. Jy to mag
+        amplitudes <<= u.mag
 
-    if not isinstance(x, u.Quantity):
-        x = u.Quantity(x, u.arcsec, copy=False)
-    if not isinstance(y, u.Quantity):
-        y = u.Quantity(y, u.arcsec, copy=False)
+    x <<= u.arcsec
+    y <<= u.arcsec
 
     unique_types = list(set(spec_types))
     if library == "pyckles":
