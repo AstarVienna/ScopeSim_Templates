@@ -307,7 +307,7 @@ class GalaxyBase:
                               dispfield.max()) * offset
         total_field = vel_grid + sigma_grid
         _, sectors = np.unique(total_field, return_inverse=True)
-        uniques = set(sectors)
+        uniques = set(sectors.flatten())
         # logger.debug("%d sectors", len(uniques))
 
         return sectors.reshape(total_field.shape), uniques
