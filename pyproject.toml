@@ -1,6 +1,6 @@
 [project]
 name = "ScopeSim_Templates"
-version = "0.7.0a0"
+version = "0.7.0"
 description = "On-sky source templates for ScopeSim"
 authors = [
     {name = "Astar Vienna", email = "astar.astro@univie.ac.at"}
