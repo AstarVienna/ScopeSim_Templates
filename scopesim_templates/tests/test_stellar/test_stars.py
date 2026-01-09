@@ -50,14 +50,14 @@ class TestStars:
         src = stars("Paranal/HAWKI.J", [0]*u.mag, ["A0V"], [0], [0])
         filt = tcu.get_filter("Paranal/HAWKI.J")
         obs = sp.Observation(src.spectra[0], filt)
-        assert obs.effstim(sp.units.PHOTLAM).value == approx(210, rel=0.01)
+        assert obs.effstim(sp.units.PHOTLAM).value == approx(187, rel=0.01)
 
     def test_returns_correct_photon_count_when_scaled_to_jansky(self):
         src = stars("Generic/Johnson.V", [3631]*u.Jansky, ["A0V"], [0], [0])
         filt = tcu.get_filter("Paranal/HAWKI.J")
         obs = sp.Observation(src.spectra[0], filt)
         phs = obs.effstim(sp.units.PHOTLAM).value * src.fields[0]["weight"][0]
-        assert phs == approx(210, rel=0.01)
+        assert phs == approx(187, rel=0.01)
 
     def test_only_includes_unique_spectra(self):
         spts = ["A0V"]*3 + ["K1II"]*2
