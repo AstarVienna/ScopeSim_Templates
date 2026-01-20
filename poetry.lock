@@ -2989,19 +2989,23 @@ tests = ["pytest"]
 
 [[package]]
 name = "pyckles"
-version = "0.5.0"
+version = "0.6.0"
 description = "Simple interface to the Pickles 1998 stellar spectra catalogue."
 optional = false
-python-versions = "<3.14,>=3.10"
+python-versions = "<3.15,>=3.10"
 groups = ["main"]
 files = [
-    {file = "pyckles-0.5.0-py3-none-any.whl", hash = "sha256:2d6258bcbddb57ef97120b7b926a8717d5bc92f47332afd0c44214c01e7bd667"},
-    {file = "pyckles-0.5.0.tar.gz", hash = "sha256:d3c8108b08fe46e49e74d538bf6a305f8bec4e2087a483fc450089827bb3fd37"},
+    {file = "pyckles-0.6.0-py3-none-any.whl", hash = "sha256:1bdead4945e3e779ba2246003668590e70f72c4f95ef5543e0ce136aa84ac0df"},
+    {file = "pyckles-0.6.0.tar.gz", hash = "sha256:ac5931534b7c1bedd9c29660bae18e54e60fc67ce1663beacc67ce5befb98111"},
 ]
 
 [package.dependencies]
 astropy = ">=6.1.7,<8.0.0"
 pooch = ">=1.8.2,<2.0.0"
+scipy = [
+    {version = ">=1.15.3,<1.16.0", markers = "python_version == \"3.10\""},
+    {version = ">=1.17.0,<1.18.0", markers = "python_version >= \"3.11\""},
+]
 
 [package.extras]
 syn = ["synphot (>=1.5.0,<2.0.0)"]
@@ -4633,5 +4637,5 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.10,<3.14"
-content-hash = "8d50f8fbcdaf611070ea6d721e39044ebca0db8020ec6dfe79a838c48ffcaef4"
+python-versions = ">=3.10,<3.15"
+content-hash = "5644366ef7a32e652c4be67133d9468f81c0e18a8d9092a32cbfa61fa046987d"
