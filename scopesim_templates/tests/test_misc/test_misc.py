@@ -10,12 +10,41 @@ from scopesim.utils import figure_factory
 
 from scopesim_templates.misc import misc
 from scopesim_templates.tests.pyobjects import source_objects as so
-from scopesim_templates.tests.pyobjects.source_objects import starting_star_imagehdu
 from scopesim_templates.rc import Source, load_example_optical_train
 
 METIS_FILTER_PATH = r"F:/Work/irdb/METIS/filters/TC_filter_H2O-ice.dat"
 
 PLOTS = False
+
+
+@pytest.fixture(scope="module")
+def starting_star_imagehdu():
+    """Create the same star as in starting.ipynb"""
+    n = 100
+    sigma = 5
+    x, y = np.meshgrid(np.arange(n), np.arange(n))
+    img = np.exp(-1 * (((x - n / 2) / sigma) ** 2 + ((y - n / 2) / sigma) ** 2))
+
+    # Fits headers of the image. Yes it needs a WCS
+    hdr = fits.Header({
+        "NAXIS": 2,
+        "NAXIS1": n,
+        "NAXIS2": n,
+        "CRPIX1": (n + 1) / 2,
+        "CRPIX2": (n + 1) / 2,
+        "CRVAL1": 0,
+        "CRVAL2": 0,
+        "CDELT1": 0.2 / 3600,
+        "CDELT2": 0.2 / 3600,
+        "CUNIT1": "DEG",
+        "CUNIT2": "DEG",
+        "CTYPE1": "RA---TAN",
+        "CTYPE2": "DEC--TAN",
+    })
+
+    # Creating an ImageHDU object
+    hdu = fits.ImageHDU(data=img, header=hdr)
+    return hdu
 
 
 class TestSourceFromImageHDU:
@@ -29,8 +58,8 @@ class TestSourceFromImageHDU:
     def test_raises_error_with_no_units_provided(self):
         hdu = so._basic_imagehdu()
         with raises(ValueError):
-            src = misc.source_from_imagehdu(image_hdu=hdu, filter_name="J",
-                                            pixel_unit_amplitude=20)
+            misc.source_from_imagehdu(image_hdu=hdu, filter_name="J",
+                                      pixel_unit_amplitude=20)
 
     def test_is_happy_with_only_bunit(self):
         hdu = so._basic_imagehdu()
@@ -47,6 +76,10 @@ class TestSourceFromImageHDU:
 
         assert isinstance(src, Source)
 
+    # TODO: This test would be useful to check if supplying a filtername as a
+    #       path does actually work, which is currently not tested anywhere
+    #       else and potentially broken. Find a way to include a test file for
+    #       this and then reenable the test!
     @pytest.mark.skipif(not exists(METIS_FILTER_PATH),
                         reason="Test only works on Kieran's local machine")
     def test_is_happy_with_metis_filter_and_bunit(self):
@@ -152,7 +185,8 @@ class TestPointSource:
         assert isinstance(src, Source)
 
     def test_initialize_from_synphot(self):
-        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000] * 4, lookup_table=[1] * 4)
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000] * 4,
+                                    lookup_table=[1] * 4)
         src = misc.point_source(sed=sp)
         assert isinstance(src, Source)
 
@@ -165,17 +199,18 @@ class TestUniformSource:
         assert isinstance(src, Source)
 
     def test_initialize_from_synphot(self):
-        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000] * 4, lookup_table=[1] * 4)
+        sp = synphot.SourceSpectrum(synphot.Empirical1D, points=[1000] * 4,
+                                    lookup_table=[1] * 4)
         src = misc.uniform_source(sed=sp)
         assert isinstance(src, Source)
 
 
 def test_poorman_cube_source_is_working():
     cube = so._make_dummy_cube(scale=0.2, wave_unit=u.AA, ref_wave=5000,
-                            wave_step=1, wave_type="WAVE", bunit="erg / (s cm2 Angstrom)")
+                               wave_step=1, wave_type="WAVE",
+                               bunit="erg / (s cm2 Angstrom)")
 
     hdul = fits.HDUList(cube)
     cube_source = misc.poorman_cube_source(hdu=hdul, ext=0)
 
     assert isinstance(cube_source, Source)
-

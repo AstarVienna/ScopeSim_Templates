@@ -1,6 +1,0 @@
-spectral :
-  wave_min : 0.3
-  wave_max : 3.0
-
-random :
-  seed : 9001
