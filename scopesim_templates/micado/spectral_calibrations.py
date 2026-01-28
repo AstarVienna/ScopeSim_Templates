@@ -8,7 +8,7 @@ from astropy import units as u
 from synphot import SourceSpectrum, Empirical1D
 from synphot.units import PHOTLAM
 
-from ..rc import Source, im_plane_utils
+from ..rc import Source, create_wcs_from_points
 
 DATA_DIR = Path(__file__).parent / "data"
 
@@ -85,12 +85,18 @@ def line_list(unit_flux=1*PHOTLAM,
                           lookup_table=flux * unit_flux)
 
     # make unity image that covers MICADO FOV of +/- 30" arcsec
-    dw = 0.5 * width / 3600         # input needed in [deg]
-    dh = 0.5 * height / 3600         # input needed in [deg]
-    pixel_scale = 0.1 * dw
+    shape = (width, height)
+    points = (np.array([[-.5], [.5]]) * shape) / 3600
+    pixel_scale = 0.05 * width / 3600
 
-    hdr = im_plane_utils.header_from_list_of_xy([-dw, dw], [-dh, dh],
-                                                pixel_scale)  # [deg]
+    new_wcs, naxis = create_wcs_from_points(points, pixel_scale)
+
+    hdr = fits.Header()
+    hdr["NAXIS"] = 2
+    hdr["NAXIS1"] = int(naxis[0])
+    hdr["NAXIS2"] = int(naxis[1])
+    hdr.update(new_wcs.to_header())
+
     hdr["SPEC_REF"] = 0
     im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
     field = fits.ImageHDU(header=hdr, data=im)

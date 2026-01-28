@@ -8,7 +8,7 @@ from astropy.io import fits
 from spextra import Spextrum
 
 from ..utils.general_utils import add_function_call_str
-from ..rc import Source, im_plane_utils
+from ..rc import Source, create_wcs_from_points
 
 
 @add_function_call_str
@@ -57,15 +57,21 @@ def laser_spectrum(
         ) * u.Unit(specdict["wave_unit"])
 
     # Taken from micado.spectral_calibration.line_list:
-    dw = 0.5 * img_size[0] / 3600         # input needed in [deg]
-    dh = 0.5 * img_size[1] / 3600         # input needed in [deg]
-    pixel_scale = 0.1 * dw
+    points = (np.array([[-.5], [.5]]) * img_size) / 3600
+    pixel_scale = 0.05 * img_size[0] / 3600
 
-    hdr = im_plane_utils.header_from_list_of_xy(
-        [-dw, dw], [-dh, dh], pixel_scale)  # [deg]
+    new_wcs, naxis = create_wcs_from_points(points, pixel_scale)
+
+    hdr = fits.Header()
+    hdr["NAXIS"] = 2
+    hdr["NAXIS1"] = int(naxis[0])
+    hdr["NAXIS2"] = int(naxis[1])
+    hdr.update(new_wcs.to_header())
+
     hdr["SPEC_REF"] = 0
     im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
     field = fits.ImageHDU(header=hdr, data=im)
+
     spec = Spextrum.emission_line_spectrum(centers.round(5), fwhms, fluxes,
                                            waves=waves)
     src = Source(image_hdu=field, spectra=spec)
