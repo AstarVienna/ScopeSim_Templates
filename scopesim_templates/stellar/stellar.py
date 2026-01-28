@@ -236,8 +236,6 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
         weight = amplitudes.value
 
     if library == "pyckles":
-        # spectra = [tcu.scale_spectrum(pickles_lib[spt], filter_name, zero)
-        #            for spt in zip(cat_spec_types)]
         spectra = [Spextrum(modelclass=pickles_lib[spt]).scale_to_magnitude(
             filter_curve=filter_name, amplitude=zero)
                    for spt in cat_spec_types]

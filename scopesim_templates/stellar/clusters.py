@@ -94,7 +94,6 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     spectra = [pickles[spt] for spt in unique_spts]
 
     # 4. scale all spectra to V=0
-    # spectra = [tcu.scale_spectrum(spec, "V", 0*u.mag) for spec in spectra]
     spectra = [Spextrum(modelclass=spec).scale_to_magnitude(filter_curve="V",
                                                             amplitude=0*u.mag)
                for spec in spectra]

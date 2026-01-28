@@ -1,12 +1,15 @@
-import pytest
-from pytest import approx
-import numpy as np
+# -*- coding: utf-8 -*-
 
-import astropy.units as u
+import pytest
+import numpy as np
+from numpy import testing as npt
+from astropy import units as u
 import synphot as sp
 
+from spextra import Passband
+
 from scopesim_templates.stellar import star, stars, star_field, star_grid
-from scopesim_templates.rc import Source, ter_curve_utils as tcu
+from scopesim_templates.rc import Source
 
 
 def source_eq(source_lhs: Source, source_rhs: Source):
@@ -35,29 +38,25 @@ class TestStar:
 
 @pytest.mark.webtest
 class TestStars:
-    def test_returns_correct_photon_counts_when_scaled_to_vega_zero(self):
-        src = stars("Generic/Johnson.V", [0]*u.mag, ["A0V"], [0], [0])
-
-        filt = tcu.get_filter("Generic/Johnson.J")
+    @pytest.mark.parametrize(
+        ("filter_src", "filter_obs", "unit", "expected"),
+        [("Generic/Johnson.V", "Generic/Johnson.J", sp.units.PHOTLAM, 193),
+         ("Generic/Johnson.V", "Generic/Johnson.I", u.Jansky, 2367),
+         ("Paranal/HAWKI.J", "Paranal/HAWKI.J", sp.units.PHOTLAM, 187)]
+    )
+    def test_returns_correct_photon_counts_when_scaled_to_vega_zero(
+            self, filter_src, filter_obs, unit, expected):
+        src = stars(filter_src, [0]*u.mag, ["A0V"], [0], [0])
+        filt = Passband(filter_obs)
         obs = sp.Observation(src.spectra[0], filt)
-        assert obs.effstim(sp.units.PHOTLAM).value == approx(193, rel=0.01)
-
-        filt = tcu.get_filter("Generic/Johnson.I")
-        obs = sp.Observation(src.spectra[0], filt)
-        assert obs.effstim(u.Jansky).value == approx(2367, rel=0.01)
-
-    def test_returns_correct_photon_count_when_initialised_in_hawki_j(self):
-        src = stars("Paranal/HAWKI.J", [0]*u.mag, ["A0V"], [0], [0])
-        filt = tcu.get_filter("Paranal/HAWKI.J")
-        obs = sp.Observation(src.spectra[0], filt)
-        assert obs.effstim(sp.units.PHOTLAM).value == approx(187, rel=0.01)
+        npt.assert_allclose(obs.effstim(unit).value, expected, rtol=.01)
 
     def test_returns_correct_photon_count_when_scaled_to_jansky(self):
         src = stars("Generic/Johnson.V", [3631]*u.Jansky, ["A0V"], [0], [0])
-        filt = tcu.get_filter("Paranal/HAWKI.J")
+        filt = Passband("Paranal/HAWKI.J")
         obs = sp.Observation(src.spectra[0], filt)
         phs = obs.effstim(sp.units.PHOTLAM).value * src.fields[0]["weight"][0]
-        assert phs == approx(187, rel=0.01)
+        npt.assert_allclose(phs, 187, rtol=.01)
 
     def test_only_includes_unique_spectra(self):
         spts = ["A0V"]*3 + ["K1II"]*2

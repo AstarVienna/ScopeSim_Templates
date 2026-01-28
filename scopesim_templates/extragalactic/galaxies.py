@@ -14,8 +14,6 @@ from astropy.wcs import WCS
 from spextra import Spextrum
 
 from ..rc import Source, create_wcs_from_points
-from ..rc import ter_curve_utils as tcu
-
 from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
 from ..misc.misc import source_from_array
@@ -432,7 +430,8 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
     if params["rescale_spectrum"]:
         if not isinstance(amplitude, u.Quantity):
             amplitude <<= u.ABmag
-        spectrum = tcu.scale_spectrum(spectrum, filter_name, amplitude)
+        spectrum = Spextrum(modelclass=spectrum).scale_to_magnitude(
+            filter_curve=filter_name, amplitude=amplitude)
 
     # 4 make Source object
     src = Source(spectra=[spectrum], image_hdu=hdu)

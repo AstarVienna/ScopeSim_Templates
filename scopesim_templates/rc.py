@@ -6,7 +6,6 @@ from astar_utils import NestedMapping
 import scopesim
 
 Source = scopesim.source.source.Source
-ter_curve_utils = scopesim.effects.ter_curves_utils
 
 create_wcs_from_points = scopesim.optics.image_plane_utils.create_wcs_from_points
 load_example_optical_train = scopesim.load_example_optical_train

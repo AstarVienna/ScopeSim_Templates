@@ -5,11 +5,10 @@ from astropy.io import ascii
 from astropy import units as u
 import yaml
 
-import pyckles
+from spextra import Spextrum
 
 from ...stellar import stars
 from ...extragalactic import elliptical
-from ...rc import ter_curve_utils as tcu
 from ...rc import Source
 
 
@@ -188,9 +187,8 @@ def load_galaxies_source(cat_id="1", pixel_scale=0.004, xs=None, ys=None,
     if ys is None:
         ys = np.random.random(n_gals) * box_size - 0.5 * box_size   # [arcsec]
 
-    brown_lib = pyckles.SpectralLibrary("brown", return_style="synphot")
-    spectrum = brown_lib["NGC_0584"]
-    spectrum = tcu.scale_spectrum(spectrum, filter_name="H", amplitude=0*u.mag)
+    spectrum = Spextrum("brown/NGC0584").scale_to_magnitude(
+        filter_curve="H", amplitude=0*u.mag)
 
     srcs = []
     for i in range(n_gals):
