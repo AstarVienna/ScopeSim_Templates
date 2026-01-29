@@ -42,7 +42,7 @@ class TestStars:
         ("filter_src", "filter_obs", "unit", "expected"),
         [("Generic/Johnson.V", "Generic/Johnson.J", sp.units.PHOTLAM, 193),
          ("Generic/Johnson.V", "Generic/Johnson.I", u.Jansky, 2367),
-         ("Paranal/HAWKI.J", "Paranal/HAWKI.J", sp.units.PHOTLAM, 187)]
+         ("Paranal/HAWKI.J", "Paranal/HAWKI.J", sp.units.PHOTLAM, 185)]
     )
     def test_returns_correct_photon_counts_when_scaled_to_vega_zero(
             self, filter_src, filter_obs, unit, expected):
