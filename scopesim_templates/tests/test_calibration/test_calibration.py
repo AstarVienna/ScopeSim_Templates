@@ -1,7 +1,6 @@
 import pytest
 from astropy.io.fits import ImageHDU
 from astropy.table import Table
-from astropy import units as u
 import numpy as np
 from synphot import SourceSpectrum
 
@@ -15,7 +14,7 @@ class TestEmptySky:
         assert isinstance(sky, Source)
         assert isinstance(sky.spectra[0], SourceSpectrum)
         assert isinstance(sky.fields[0].field, Table)
-        assert sky.fields[0]["ref"][0] == 0
+        assert sky.fields[0].field["ref"][0] == 0
 
 
 class TestFlatField:
