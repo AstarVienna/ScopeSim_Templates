@@ -53,7 +53,7 @@ def pinhole_mask(x, y, waves, temperature=1500*u.K, sum_factor=1):
 
     blackbody_spectrum = BlackBody1D(temperature=temperature)
     flux = blackbody_spectrum(waves.to(u.AA))
-    flux *= sum_factor / np.trapz(flux)
+    flux *= sum_factor / np.trapezoid(flux)
     spec = SourceSpectrum(Empirical1D, points=waves, lookup_table=flux)
     src = Source(x=x, y=y, ref=np.zeros_like(x), weight=np.ones_like(x),
                  spectra=[spec])
