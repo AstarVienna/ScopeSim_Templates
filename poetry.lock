@@ -3957,14 +3957,14 @@ files = [
 
 [[package]]
 name = "spextra"
-version = "0.43.0"
+version = "0.43.1"
 description = "Tool to manage and manipulate astronomical spectra."
 optional = false
 python-versions = "<3.15,>=3.10"
 groups = ["main"]
 files = [
-    {file = "spextra-0.43.0-py3-none-any.whl", hash = "sha256:84d6ecddc4d6f4e325c062e608442c633f51343c0a47d90a63d9acf272c08f70"},
-    {file = "spextra-0.43.0.tar.gz", hash = "sha256:5e4c2e07db82448750c635f1fd46c83308389881e5712aeca157edb0d74f6c9a"},
+    {file = "spextra-0.43.1-py3-none-any.whl", hash = "sha256:27f708ac5fe96e9a6fd38ee006780a951afb7e3fad773f36c6f55cc14b54a1e2"},
+    {file = "spextra-0.43.1.tar.gz", hash = "sha256:ab53600902f37c85231be5013f1a5e4a44be2956e3142df6a977a4627414c349"},
 ]
 
 [package.dependencies]
@@ -3982,7 +3982,7 @@ scipy = [
     {version = ">=1.17.0,<1.18.0", markers = "python_version >= \"3.11\""},
 ]
 synphot = ">=1.6.1,<2.0.0"
-tqdm = ">=4.66.3,<5.0.0"
+tqdm = ">=4.67.1,<5.0.0"
 
 [[package]]
 name = "sphinx"
@@ -4638,4 +4638,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.15"
-content-hash = "5644366ef7a32e652c4be67133d9468f81c0e18a8d9092a32cbfa61fa046987d"
+content-hash = "2acf8b990591bfbc7e35db5bb4ff4dd58b783c41d5749646693a145dfdb0147d"
