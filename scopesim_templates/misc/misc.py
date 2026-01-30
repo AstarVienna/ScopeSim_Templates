@@ -15,6 +15,7 @@ from astropy.utils.decorators import deprecated_renamed_argument
 from synphot import SourceSpectrum, Empirical1D
 
 from spextra import Spextrum, Passband
+from spextra.exceptions import ConstructorError
 
 from ..rc import Source
 from ..utils.general_utils import (add_function_call_str, make_img_wcs_header,
@@ -206,7 +207,11 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     amp_unit = amp * u.Unit(units)
 
     if filter_name is not None and isinstance(filter_name, str):
-        waverange = Passband(filter_name).waverange
+        try:
+            passband = Passband(filter_name)
+        except ConstructorError:  # might be local file name
+            passband = Passband.from_file(filter_name)
+        waverange = passband.waverange
 
     waves = np.linspace(waverange[0], waverange[1], num=10)
     lookup_table = [1,] * len(waves)
