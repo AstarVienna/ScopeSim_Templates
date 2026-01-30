@@ -14,10 +14,12 @@ from astropy.utils.decorators import deprecated_renamed_argument
 
 from synphot import SourceSpectrum, Empirical1D
 
-from spextra import Spextrum
-from ..rc import Source, ter_curve_utils as tu
-from ..utils.general_utils import add_function_call_str, make_img_wcs_header,\
-    RA0, DEC0
+from spextra import Spextrum, Passband
+from spextra.exceptions import ConstructorError
+
+from ..rc import Source
+from ..utils.general_utils import (add_function_call_str, make_img_wcs_header,
+                                   RA0, DEC0)
 
 
 __all__ = ["point_source",
@@ -205,13 +207,17 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     amp_unit = amp * u.Unit(units)
 
     if filter_name is not None and isinstance(filter_name, str):
-        filter_curve = tu.get_filter(filter_name)
-        waverange = filter_curve.waverange
+        try:
+            passband = Passband(filter_name)
+        except ConstructorError:  # might be local file name
+            passband = Passband.from_file(filter_name)
+        waverange = passband.waverange
 
     waves = np.linspace(waverange[0], waverange[1], num=10)
     lookup_table = [1,] * len(waves)
     spec = SourceSpectrum(Empirical1D, points=waves, lookup_table=lookup_table)
-    spec = tu.scale_spectrum(spec, filter_name=filter_name, amplitude=amp_unit)
+    spec = Spextrum(modelclass=spec).scale_to_magnitude(
+        filter_curve=filter_name, amplitude=amp_unit)
 
     if image_hdu.header.get("SPEC_REF") is None:
         image_hdu.header["SPEC_REF"] = 0
