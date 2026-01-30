@@ -57,7 +57,7 @@ class TestVikingCatalogues:
         gal_y = [gal.header["CRVAL2"] * 3600 for gal in gals]
 
         stars = viking_src.table_fields
-        star_x, star_y = stars[0]["x"].data, stars[0]["y"].data
+        star_x, star_y = stars[0].field["x"].data, stars[0]["y"].data
 
         if PLOTS:
             plt.figure(figsize=(10, 10))

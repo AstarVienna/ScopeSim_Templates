@@ -88,7 +88,7 @@ class TestConnectionBetweenFieldsAndSpectra:
         for src in source_list:
             for field in src.fields:
                 if isinstance(field.field, Table):
-                    for ref in field["ref"]:
+                    for ref in field.field["ref"]:
                         assert isinstance(src.spectra[ref], SourceSpectrum)
 
     def test_all_spectra_refereced_in_imagehdu_header_exist(self, source_list):
