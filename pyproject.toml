@@ -5,7 +5,7 @@ description = "On-sky source templates for ScopeSim"
 authors = [
     {name = "Astar Vienna", email = "astar.astro@univie.ac.at"}
 ]
-license = {text = "GPL-3.0-or-later"}
+license = "GPL-3.0-or-later"
 readme = "README.md"
 maintainers = [
     { name = "Kieran Leschinski", email = "kieran.leschinski@unive.ac.at" },
