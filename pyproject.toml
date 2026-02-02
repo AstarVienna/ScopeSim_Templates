@@ -10,6 +10,7 @@ readme = "README.md"
 maintainers = [
     { name = "Kieran Leschinski", email = "kieran.leschinski@unive.ac.at" },
     { name = "Hugo Buddelmeijer", email = "hugo@buddelmeijer.nl" },
+    { name = "Oliver Czoske", email = "oliver.czoske@univie.ac.at" },
     { name = "Fabian Haberhauer", email = "fabian.haberhauer@univie.ac.at" },
 ]
 keywords = [ "astronomy" ]
