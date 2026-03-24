@@ -4087,14 +4087,14 @@ files = [
 
 [[package]]
 name = "spextra"
-version = "0.43.3"
+version = "0.43.5"
 description = "Tool to manage and manipulate astronomical spectra."
 optional = false
 python-versions = "<3.15,>=3.10"
 groups = ["main"]
 files = [
-    {file = "spextra-0.43.3-py3-none-any.whl", hash = "sha256:f513a1d226e7eeb42fe82d5b4c2a0d3bc1482407123154daa6cff44e0823ab0b"},
-    {file = "spextra-0.43.3.tar.gz", hash = "sha256:e13ea7d27f07c252880a2bca80de39b77f423c9b57fc25869fd0a24b1e503270"},
+    {file = "spextra-0.43.5-py3-none-any.whl", hash = "sha256:4601d51b54eb89d4978558fd1e41c8f7c0b2bbc7bf4922a21eb478d9a1720cdd"},
+    {file = "spextra-0.43.5.tar.gz", hash = "sha256:878361d1b96d60d68554b35f2e5a71ea09f706897f8256f74a61c2ef92124fed"},
 ]
 
 [package.dependencies]
@@ -4769,4 +4769,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.15"
-content-hash = "68acfcf75b09b3e55c9188fe654a126c819e1809f82b29ebf5e175d3217aba56"
+content-hash = "3257132ea2c7039cb8aca1343c810c87dc6ff50db74f31a53ddfebd7568ed298"
