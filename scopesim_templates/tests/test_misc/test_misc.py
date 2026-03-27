@@ -68,6 +68,7 @@ class TestSourceFromImageHDU:
 
         assert isinstance(src, Source)
 
+    @pytest.mark.webtest
     def test_is_happy_with_spanish_vo_filter_name(self):
         hdu = so._basic_imagehdu()
         filter_name = "Generic/Johnson_UBVRIJHKL.N"
