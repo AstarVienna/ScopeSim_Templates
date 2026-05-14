@@ -80,6 +80,19 @@ class TestGalacticCentre:
             src.fields[0].field["weight"], expected, rtol=1e-6
         )
 
+    def test_rv_column_in_fields(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            src = galactic_centre(EPOCH)
+            ref_tbl = _gillessen.stars_at_time(EPOCH)
+        field = src.fields[0].field
+        assert "rv" in field.colnames
+        npt.assert_allclose(
+            np.asarray(field["rv"]),
+            ref_tbl["RV"].to(u.km / u.s).value,
+            rtol=1e-9,
+        )
+
     def test_positions_are_arcsec(self):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)

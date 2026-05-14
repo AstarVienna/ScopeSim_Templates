@@ -101,11 +101,12 @@ def galactic_centre(time,
     ref = np.arange(n_stars, dtype=int)
 
     field = Table(
-        names=["x", "y", "ref", "weight", "spec_types"],
+        names=["x", "y", "ref", "weight", "rv", "spec_types"],
         data=[tbl["d_ra"].to(u.arcsec),
               tbl["d_dec"].to(u.arcsec),
               ref,
               weight,
+              rv_kms * (u.km / u.s),
               spec_types],
     )
 

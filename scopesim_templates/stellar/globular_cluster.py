@@ -25,7 +25,7 @@ def _sample_salpeter_masses(n_stars, mass_limits, seed):
         powers=np.array([-2.3]),
     )
     rng = np.random.default_rng(seed)
-    mean_m = float(np.mean(mass_limits))  # rough; just to seed total_mass
+    mean_m = float(np.mean(mass_limits))
     total = max(n_stars * mean_m, mass_limits[1] * 2.0)
     # generate_cluster uses np.random; reseed legacy global RNG for determinism
     if seed is not None:
@@ -35,14 +35,21 @@ def _sample_salpeter_masses(n_stars, mass_limits, seed):
         new, _, _, _ = salpeter.generate_cluster(total, seed=None)
         masses = np.concatenate([masses, new])
         total *= 1.5
-    # Permute then trim to exactly n_stars, so the kept sample is unbiased.
     masses = masses[rng.permutation(masses.size)][:n_stars]
     return masses
 
 
-def _draw_orbits(n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
-                 rng):
-    """Sample random closed orbits and return per-star line-of-sight RV in km/s."""
+def _evaluate_orbits(n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
+                     distance_pc, time_years, rng):
+    """Sample random closed orbits and project to sky at ``time_years``.
+
+    Returns
+    -------
+    x_arcsec, y_arcsec : ndarray
+        Projected sky offsets in arcsec. ``x`` is east (RA), ``y`` is north (Dec).
+    rv_kms : ndarray
+        Line-of-sight radial velocity in km/s (positive = receding).
+    """
     log_a = rng.uniform(np.log(a_min_au), np.log(a_max_au), n_stars)
     a_au = np.exp(log_a)
 
@@ -53,24 +60,35 @@ def _draw_orbits(n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
     inc = np.arccos(rng.uniform(-1.0, 1.0, n_stars))
     Omega = rng.uniform(0.0, 2.0 * np.pi, n_stars)
     omega = rng.uniform(0.0, 2.0 * np.pi, n_stars)
-    M_anom = rng.uniform(0.0, 2.0 * np.pi, n_stars)
+    M0 = rng.uniform(0.0, 2.0 * np.pi, n_stars)
 
     # Mean motion in rad / yr (Kepler 3rd law in solar/AU/yr units:
-    # 4 pi^2 a^3 = G M T^2  =>  n^2 = G M / a^3  =>  n = 2 pi sqrt(M / a^3))
+    # 4 pi^2 a^3 = G M T^2  =>  n = 2 pi sqrt(M / a^3)).
     n_rad_yr = 2.0 * np.pi * np.sqrt(imbh_mass / a_au ** 3)
+    M_now = M0 + n_rad_yr * float(time_years)
 
-    E = _gillessen._solve_kepler(M_anom, e)
-    _, _, vx_orb, vy_orb = _gillessen._orbital_state(a_au, e, n_rad_yr, E)
-    _, _, _, _, C, H = _gillessen._thiele_innes(Omega, inc, omega)
+    E = _gillessen._solve_kepler(M_now, e)
+    x_orb, y_orb, vx_orb, vy_orb = _gillessen._orbital_state(a_au, e, n_rad_yr, E)
+    A, B, F, G, C, H = _gillessen._thiele_innes(Omega, inc, omega)
+
+    # Sky offsets in AU, then convert to arcsec via the parallax relation
+    # (1 pc * 1 arcsec == 1 AU exactly).
+    d_dec_au = A * x_orb + F * y_orb
+    d_ra_au = B * x_orb + G * y_orb
+    x_arcsec = d_ra_au / distance_pc
+    y_arcsec = d_dec_au / distance_pc
+
     vz_au_yr = C * vx_orb + H * vy_orb
-    rv = (vz_au_yr * u.AU / u.yr).to(u.km / u.s).value
-    return rv
+    rv_kms = (vz_au_yr * u.AU / u.yr).to(u.km / u.s).value
+
+    return x_arcsec, y_arcsec, rv_kms
 
 
 @add_function_call_str
 def globular_cluster(density,
                      fov,
                      distance_modulus,
+                     time=0.0,
                      imbh_mass=1e4,
                      filter_name="Generic/Johnson.V",
                      mass_limits=(0.1, 8.0),
@@ -80,11 +98,12 @@ def globular_cluster(density,
     """
     Source of a fictional globular cluster with a central IMBH.
 
-    Stars are drawn from a Salpeter IMF, placed uniformly at random in
-    a square field of view, and assigned a closed orbit around the
-    IMBH at the centre. The line-of-sight velocity of each star at a
-    random orbital phase is used to RV-shift its spectrum. Omega
-    Centauri is the rough prototype.
+    Stars are drawn from a Salpeter IMF and placed on randomly-oriented
+    closed orbits around a central IMBH. Each star's projected sky
+    position and line-of-sight velocity at the user-supplied ``time``
+    are read off the orbit. Spectra are scaled to apparent V mag from
+    the Salpeter mass and shifted by the per-star RV. Omega Centauri
+    is the rough prototype.
 
     Parameters
     ----------
@@ -96,8 +115,12 @@ def globular_cluster(density,
     distance_modulus : float
         Apparent magnitudes are computed as ``m = M + distance_modulus``.
         Also implicitly sets the cluster distance
-        (``d_pc = 10 ** ((distance_modulus + 5) / 5)``), which scales
-        the default outer semi-major axis to the projected field of view.
+        (``d_pc = 10 ** ((distance_modulus + 5) / 5)``), used both for
+        the default outer semi-major axis and to convert orbital
+        positions from AU to arcsec.
+    time : float
+        Elapsed years since the seed-determined initial orbital phase.
+        Default 0.0. Pass increasing values for animations.
     imbh_mass : float
         Mass of the central intermediate-mass black hole [solar masses].
         Default 1e4 (Omega Cen-like).
@@ -108,13 +131,15 @@ def globular_cluster(density,
         ``(m_min, m_max)`` in solar masses for the Salpeter sampler.
     a_range : tuple
         ``(a_min, a_max)`` in AU for the log-uniform semi-major axis
-        distribution. If ``a_max`` is ``None``, it defaults to half the
-        projected field of view at the cluster distance, in AU.
+        distribution. If ``a_max`` is ``None``, it defaults to
+        ``0.25 * fov * distance_pc`` AU so that typical orbital
+        projections stay inside the FOV.
     eccentricity_cap : float
         Upper bound on the (thermal-distribution) eccentricities, kept
         below 1 so all orbits are closed.
     seed : int, optional
-        Reproducibility seed.
+        Reproducibility seed. Required if you want successive calls at
+        different ``time`` values to produce a coherent animation.
 
     Returns
     -------
@@ -152,39 +177,44 @@ def globular_cluster(density,
         for spt in unique_spts
     }
 
-    # 5. Random closed orbits around the IMBH; line-of-sight velocity
+    # 5. Cluster distance + orbit semi-major-axis bounds
     distance_pc = 10.0 ** ((float(distance_modulus) + 5.0) / 5.0)
     a_min_au = float(a_range[0])
     a_max_au = (float(a_range[1])
                 if a_range[1] is not None
-                else 0.5 * float(fov) * distance_pc)  # arcsec * pc == AU
+                else 0.25 * float(fov) * distance_pc)  # arcsec * pc == AU
     if a_max_au <= a_min_au:
         raise ValueError(
             f"globular_cluster: a_max ({a_max_au}) must exceed a_min "
             f"({a_min_au}). Increase fov, distance_modulus, or a_range[1]."
         )
 
-    rv_kms = _draw_orbits(n_stars, imbh_mass, a_min_au, a_max_au,
-                          eccentricity_cap, rng)
+    # 6. Random closed orbits -> projected sky positions + RVs at `time`
+    x_arcsec, y_arcsec, rv_kms = _evaluate_orbits(
+        n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
+        distance_pc, time, rng,
+    )
 
-    # 6. Per-star unique RV-shifted spectra
+    # 7. Per-star unique RV-shifted spectra
     spectra = [base[spec_types[i]].redshift(vel=float(rv_kms[i]))
                for i in range(n_stars)]
 
-    # 7. Apparent magnitudes -> weights
+    # 8. Apparent magnitudes -> weights
     apparent_V = Mv + float(distance_modulus)
     weight = 10.0 ** (-0.4 * apparent_V)
-
-    # 8. Uniform positions inside the square FOV (orbits decoupled from x/y)
-    x = rng.uniform(-fov / 2.0, fov / 2.0, n_stars) * u.arcsec
-    y = rng.uniform(-fov / 2.0, fov / 2.0, n_stars) * u.arcsec
 
     # 9. Assemble Source
     ref = np.arange(n_stars, dtype=int)
     tbl = Table(
-        names=["x", "y", "ref", "weight", "mass", "spec_types"],
-        data=[x, y, ref, weight, masses, spec_types],
-        units=[u.arcsec, u.arcsec, None, None, u.solMass, None],
+        names=["x", "y", "ref", "weight", "rv", "mass", "spec_types"],
+        data=[x_arcsec * u.arcsec,
+              y_arcsec * u.arcsec,
+              ref,
+              weight,
+              rv_kms * (u.km / u.s),
+              masses,
+              spec_types],
+        units=[u.arcsec, u.arcsec, None, None, u.km / u.s, u.solMass, None],
     )
     src = Source(spectra=spectra, table=tbl)
     src.meta.update({
@@ -193,5 +223,6 @@ def globular_cluster(density,
         "distance_modulus": distance_modulus,
         "distance_pc": distance_pc,
         "filter_name": filter_name,
+        "time": float(time),
     })
     return src

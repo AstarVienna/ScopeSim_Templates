@@ -40,13 +40,44 @@ class TestGlobularCluster:
         src = _build(density=1.0, fov=8.0)
         assert len(src.fields[0].field) == 64
 
-    def test_positions_within_fov(self):
+    def test_positions_mostly_within_fov(self):
+        """Positions are orbital projections, not strictly bounded; the
+        bulk should still sit inside the FOV with the default a_max."""
         src = _build()
         field = src.fields[0].field
         x = np.asarray(field["x"])
         y = np.asarray(field["y"])
-        assert np.all(np.abs(x) <= FOV / 2.0 + 1e-9)
-        assert np.all(np.abs(y) <= FOV / 2.0 + 1e-9)
+        inside = (np.abs(x) <= FOV / 2.0) & (np.abs(y) <= FOV / 2.0)
+        assert inside.mean() > 0.7
+        # No star should be wildly outside the FOV either
+        assert np.abs(x).max() <= FOV
+        assert np.abs(y).max() <= FOV
+
+    def test_rv_column_in_fields(self):
+        src = _build()
+        field = src.fields[0].field
+        assert "rv" in field.colnames
+        # rv column is finite km/s
+        assert np.all(np.isfinite(np.asarray(field["rv"])))
+
+    def test_time_advances_state(self):
+        """Same seed at different times => same masses/weights/spec_types,
+        different positions and rv for the fast-orbit (small-a) stars."""
+        src_t0 = _build(time=0.0)
+        src_t10 = _build(time=10.0)
+        f0 = src_t0.fields[0].field
+        f10 = src_t10.fields[0].field
+        # Invariants under time advance
+        npt.assert_array_equal(np.asarray(f0["mass"]), np.asarray(f10["mass"]))
+        npt.assert_array_equal(np.asarray(f0["spec_types"]),
+                               np.asarray(f10["spec_types"]))
+        npt.assert_array_equal(np.asarray(f0["weight"]),
+                               np.asarray(f10["weight"]))
+        # State has actually changed for at least some stars
+        x0 = np.asarray(f0["x"]); x10 = np.asarray(f10["x"])
+        rv0 = np.asarray(f0["rv"]); rv10 = np.asarray(f10["rv"])
+        assert not np.allclose(x0, x10)
+        assert not np.allclose(rv0, rv10)
 
     def test_unique_spectrum_per_star(self):
         src = _build()
