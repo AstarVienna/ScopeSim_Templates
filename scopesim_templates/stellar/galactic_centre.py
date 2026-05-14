@@ -28,10 +28,7 @@ DEC_SGR_A_STAR = -29.00781  # deg
 def galactic_centre(time,
                     filter_name="Paranal/NACO.Ks",
                     early_type_spec="B0V",
-                    late_type_spec="M8III",
-                    library="pyckles",
-                    catalogue=None,
-                    R0=None):
+                    late_type_spec="M8III"):
     """
     Source of the Sgr A* star field at a user-specified epoch.
 
@@ -51,14 +48,6 @@ def galactic_centre(time,
     early_type_spec, late_type_spec : str
         Spectral types assigned to early-type (``SpT == "e"``) and
         late-type (``SpT == "l"``) stars respectively.
-    library : str
-        Spectral library passed to the underlying spectrum loader. Only
-        ``"pyckles"`` is currently supported.
-    catalogue : path-like, optional
-        Override the vendored FITS catalogue path.
-    R0 : astropy.units.Quantity, optional
-        Override the Sgr A* distance used to convert orbital angular
-        velocity to km/s.
 
     Returns
     -------
@@ -70,16 +59,7 @@ def galactic_centre(time,
     >>> from scopesim_templates.stellar import galactic_centre
     >>> src = galactic_centre(Time("2024-01-01"))
     """
-    if library != "pyckles":
-        raise ValueError(
-            f"galactic_centre: only library='pyckles' is supported, got {library!r}"
-        )
-
-    tbl = _gillessen.stars_at_time(
-        time,
-        catalogue=catalogue,
-        R0=(R0 if R0 is not None else _gillessen.DEFAULT_R0),
-    )
+    tbl = _gillessen.stars_at_time(time)
     n_stars = len(tbl)
 
     # Map SpT codes to user-supplied spectral types.
