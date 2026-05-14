@@ -5,14 +5,17 @@ Each frame is built from a fresh scopesim.Source produced by
 ``galactic_centre(time)`` and reads positions, RVs and weights from
 the Source.fields table.
 
-Run from the repo root::
+Run from anywhere::
 
-    python plot_galactic_centre_cluster.py
+    python scopesim_templates/tests/visual_inspection/plot_galactic_centre_cluster.py
+
+The output GIF is written next to this script.
 """
 
 from __future__ import annotations
 
 import warnings
+from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,7 +26,10 @@ from astropy.time import Time
 from scopesim_templates.stellar import galactic_centre
 
 
-def main(output: str = "galactic_centre_evolution.gif",
+HERE = Path(__file__).resolve().parent
+
+
+def main(output: str = str(HERE / "galactic_centre_evolution.gif"),
          start: str = "2024-01-01",
          duration_years: float = 20.0,
          n_frames: int = 41,

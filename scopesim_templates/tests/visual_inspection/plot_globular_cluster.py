@@ -5,14 +5,17 @@ Each frame is built from a fresh scopesim.Source produced by
 ``globular_cluster(..., time=t, seed=fixed)`` and reads positions, RVs
 and weights from the Source.fields table.
 
-Run from the repo root::
+Run from anywhere::
 
-    python plot_globular_cluster.py
+    python scopesim_templates/tests/visual_inspection/plot_globular_cluster.py
+
+The output GIF is written next to this script.
 """
 
 from __future__ import annotations
 
 import warnings
+from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,7 +24,10 @@ from matplotlib.animation import FuncAnimation, PillowWriter
 from scopesim_templates.stellar import globular_cluster
 
 
-def main(output: str = "globular_cluster_evolution.gif",
+HERE = Path(__file__).resolve().parent
+
+
+def main(output: str = str(HERE / "globular_cluster_evolution.gif"),
          density: float = 750.0,
          fov: float = 2.0,
          distance_modulus: float = 13.6,
