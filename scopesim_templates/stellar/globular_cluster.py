@@ -47,8 +47,8 @@ def _evaluate_orbits(n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
     -------
     x_arcsec, y_arcsec : ndarray
         Projected sky offsets in arcsec. ``x`` is east (RA), ``y`` is north (Dec).
-    rv_kms : ndarray
-        Line-of-sight radial velocity in km/s (positive = receding).
+    rv : astropy.units.Quantity
+        Line-of-sight radial velocity (km/s, positive = receding).
     """
     log_a = rng.uniform(np.log(a_min_au), np.log(a_max_au), n_stars)
     a_au = np.exp(log_a)
@@ -79,9 +79,9 @@ def _evaluate_orbits(n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
     y_arcsec = d_dec_au / distance_pc
 
     vz_au_yr = C * vx_orb + H * vy_orb
-    rv_kms = (vz_au_yr * u.AU / u.yr).to(u.km / u.s).value
+    rv = (vz_au_yr * u.AU / u.yr).to(u.km / u.s)
 
-    return x_arcsec, y_arcsec, rv_kms
+    return x_arcsec, y_arcsec, rv
 
 
 @add_function_call_str
@@ -190,13 +190,13 @@ def globular_cluster(density,
         )
 
     # 6. Random closed orbits -> projected sky positions + RVs at `time`
-    x_arcsec, y_arcsec, rv_kms = _evaluate_orbits(
+    x_arcsec, y_arcsec, rv = _evaluate_orbits(
         n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
         distance_pc, time, rng,
     )
 
     # 7. Per-star unique RV-shifted spectra
-    spectra = [base[spec_types[i]].redshift(vel=float(rv_kms[i]))
+    spectra = [base[spec_types[i]].redshift(vel=float(rv[i].value))
                for i in range(n_stars)]
 
     # 8. Apparent magnitudes -> weights
@@ -211,7 +211,7 @@ def globular_cluster(density,
               y_arcsec * u.arcsec,
               ref,
               weight,
-              rv_kms * (u.km / u.s),
+              rv,
               masses,
               spec_types],
         units=[u.arcsec, u.arcsec, None, None, u.km / u.s, u.solMass, None],

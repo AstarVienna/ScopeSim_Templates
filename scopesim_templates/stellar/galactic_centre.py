@@ -62,22 +62,23 @@ def galactic_centre(time,
     tbl = _gillessen.stars_at_time(time)
     n_stars = len(tbl)
 
-    # Map SpT codes to user-supplied spectral types.
+    # Map SpT codes to user-supplied spectral types. The Gillessen catalogue
+    # has empty SpT cells for a small number of stars (e.g. S39, S55) that
+    # are otherwise valid; warn and treat those as early-type.
+    spt_map = {"e": early_type_spec, "l": late_type_spec}
     spec_types = []
     for code in tbl["SpT"]:
-        code_norm = str(code).strip().lower()
-        if code_norm == "e":
-            spec_types.append(early_type_spec)
-        elif code_norm == "l":
-            spec_types.append(late_type_spec)
-        else:
+        key = str(code).strip().lower()
+        spt = spt_map.get(key)
+        if spt is None:
             warnings.warn(
-                f"galactic_centre: unknown SpT code {code!r}; "
+                f"galactic_centre: missing or unrecognised SpT {code!r}; "
                 f"defaulting to early-type {early_type_spec!r}",
                 UserWarning,
                 stacklevel=2,
             )
-            spec_types.append(early_type_spec)
+            spt = early_type_spec
+        spec_types.append(spt)
 
     # Base spectrum per unique user-supplied spectral type, scaled to 0 mag.
     unique_user_types = [early_type_spec, late_type_spec]
@@ -90,8 +91,8 @@ def galactic_centre(time,
     }
 
     # Per-star spectra: each gets its own RV-shifted copy of the base.
-    rv_kms = tbl["RV"].to(u.km / u.s).value
-    spectra = [base[spec_types[i]].redshift(vel=float(rv_kms[i]))
+    rv = tbl["RV"].to(u.km / u.s)
+    spectra = [base[spec_types[i]].redshift(vel=float(rv[i].value))
                for i in range(n_stars)]
 
     # Weights bake in the K-band magnitude (base is at 0 mag).
@@ -106,7 +107,7 @@ def galactic_centre(time,
               tbl["d_dec"].to(u.arcsec),
               ref,
               weight,
-              rv_kms * (u.km / u.s),
+              rv,
               spec_types],
     )
 

@@ -105,8 +105,8 @@ class TestGalacticCentre:
         assert np.max(np.abs(y)) < 30.0
 
     def test_unknown_spt_warns_and_defaults_to_early(self, monkeypatch):
-        """Inject a star with an unrecognised SpT and confirm the warning + fallback."""
-        # Real run for one row, then mutate.
+        """Inject an unrecognised SpT (or empty, as the catalogue actually
+        does for S39/S55) and confirm the warning + early-type fallback."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
             real_tbl = _gillessen.stars_at_time(EPOCH)
@@ -118,6 +118,6 @@ class TestGalacticCentre:
 
         monkeypatch.setattr(_gillessen, "stars_at_time", fake_stars_at_time)
 
-        with pytest.warns(UserWarning, match="unknown SpT"):
+        with pytest.warns(UserWarning, match="unrecognised SpT"):
             src = galactic_centre(EPOCH)
         assert src.fields[0].field["spec_types"][0] == "B0V"
