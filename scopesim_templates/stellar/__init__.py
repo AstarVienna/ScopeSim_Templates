@@ -3,3 +3,4 @@
 
 from .clusters import *
 from .stellar import *
+from .galactic_centre import galactic_centre
