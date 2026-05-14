@@ -17,6 +17,7 @@ from . import metis
 from .misc.misc import source_from_image, source_from_file, source_from_cube
 from .stellar.stellar import star, stars, star_grid, star_field
 from .stellar.clusters import cluster
+from .stellar.galactic_centre import galactic_centre
 from .extragalactic.galaxies import galaxy, galaxy3d, elliptical
 from .calibration.calibration import empty_sky
 from .micado import darkness, flatlamp
