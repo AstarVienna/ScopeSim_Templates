@@ -22,15 +22,16 @@ from scopesim_templates.stellar import globular_cluster
 
 
 def main(output: str = "globular_cluster_evolution.gif",
-         density: float = 0.3,
-         fov: float = 12.0,
+         density: float = 750.0,
+         fov: float = 2.0,
          distance_modulus: float = 13.6,
-         imbh_mass: float = 1e4,
+         imbh_mass: float = 1e5,
          seed: int = 42,
          duration_years: float = 20.0,
          n_frames: int = 41,
          fps: int = 8,
-         rv_clip_kms: float = 200.0):
+         rv_clip_kms: float = 500.0,
+         axis_limit_arcsec: float = 1.0):
 
     times_yr = np.linspace(0.0, duration_years, n_frames)
 
@@ -47,9 +48,9 @@ def main(output: str = "globular_cluster_evolution.gif",
     f0 = src0.fields[0].field
     weight = np.asarray(f0["weight"])
     # Brightness-scaled marker sizes; clip extremes for legibility
-    sizes = np.clip(60.0 * weight / weight.max(), 6.0, 120.0)
+    sizes = np.clip(15.0 * weight / weight.max(), 1.5, 30.0)
 
-    half = 0.6 * fov   # axes slightly wider than FOV so apo-orbit stars stay in view
+    half = float(axis_limit_arcsec)
     fig, ax = plt.subplots(figsize=(7.5, 7.0))
     ax.set_facecolor("black")
     ax.set_aspect("equal")
@@ -72,7 +73,7 @@ def main(output: str = "globular_cluster_evolution.gif",
         np.asarray(f0["x"]), np.asarray(f0["y"]),
         s=sizes, c=np.asarray(f0["rv"]),
         cmap="RdBu_r", vmin=-rv_clip_kms, vmax=rv_clip_kms,
-        edgecolors="white", linewidths=0.3, zorder=4,
+        edgecolors="none", zorder=4,
     )
     cbar = fig.colorbar(sc, ax=ax, fraction=0.04, pad=0.02)
     cbar.set_label("Radial velocity [km/s]")
