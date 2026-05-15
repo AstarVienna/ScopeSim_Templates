@@ -19,7 +19,7 @@ __all__ = ["globular_cluster"]
 
 
 def _sample_salpeter_masses(n_stars, mass_limits, seed):
-    """Sample exactly ``n_stars`` masses from a Salpeter (alpha=2.3) IMF."""
+    """Sample exactly `n_stars` masses from a Salpeter (alpha=2.3) IMF."""
     salpeter = _imf.IMF_broken_powerlaw(
         mass_limits=np.array(mass_limits, dtype=float),
         powers=np.array([-2.3]),
@@ -41,7 +41,7 @@ def _sample_salpeter_masses(n_stars, mass_limits, seed):
 
 def _evaluate_orbits(n_stars, imbh_mass, a_min_au, a_max_au, eccentricity_cap,
                      distance_pc, time_years, rng):
-    """Sample random closed orbits and project to sky at ``time_years``.
+    """Sample random closed orbits and project to sky at `time_years`.
 
     Returns
     -------
@@ -152,7 +152,7 @@ def globular_cluster(density,
     ...                        distance_modulus=13.6, seed=42)
     """
     # 1. N stars from density and FOV
-    n_stars = int(round(float(density) * float(fov) ** 2))
+    n_stars = round(float(density) * float(fov) ** 2)
     if n_stars < 1:
         raise ValueError(
             f"globular_cluster: density * fov**2 = {density * fov**2} "
@@ -195,8 +195,10 @@ def globular_cluster(density,
         distance_pc, time, rng,
     )
 
-    # 7. Per-star unique RV-shifted spectra
-    spectra = [base[spec_types[i]].redshift(vel=float(rv[i].value))
+    # 7. Per-star unique RV-shifted spectra. Pass rv as a Quantity:
+    # Spextrum.redshift(vel=...) assumes m/s for bare floats, which would
+    # silently under-apply the km/s shifts by 1000.
+    spectra = [base[spec_types[i]].redshift(vel=rv[i])
                for i in range(n_stars)]
 
     # 8. Apparent magnitudes -> weights
@@ -206,15 +208,14 @@ def globular_cluster(density,
     # 9. Assemble Source
     ref = np.arange(n_stars, dtype=int)
     tbl = Table(
-        names=["x", "y", "ref", "weight", "rv", "mass", "spec_types"],
+        names=["x", "y", "ref", "weight", "rv", "spec_types"],
         data=[x_arcsec * u.arcsec,
               y_arcsec * u.arcsec,
               ref,
               weight,
               rv,
-              masses,
               spec_types],
-        units=[u.arcsec, u.arcsec, None, None, u.km / u.s, u.solMass, None],
+        units=[u.arcsec, u.arcsec, None, None, u.km / u.s, None],
     )
     src = Source(spectra=spectra, table=tbl)
     src.meta.update({

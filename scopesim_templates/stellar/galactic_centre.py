@@ -91,8 +91,10 @@ def galactic_centre(time,
     }
 
     # Per-star spectra: each gets its own RV-shifted copy of the base.
+    # Pass rv as a Quantity: Spextrum.redshift(vel=...) assumes m/s for
+    # bare floats, which would silently under-apply the km/s shifts by 1000.
     rv = tbl["RV"].to(u.km / u.s)
-    spectra = [base[spec_types[i]].redshift(vel=float(rv[i].value))
+    spectra = [base[spec_types[i]].redshift(vel=rv[i])
                for i in range(n_stars)]
 
     # Weights bake in the K-band magnitude (base is at 0 mag).

@@ -10,6 +10,7 @@ from astropy import units as u
 from scopesim_templates.rc import Source
 from scopesim_templates.stellar import globular_cluster
 from scopesim_templates.stellar import cluster_utils as cu
+from scopesim_templates.stellar.globular_cluster import _sample_salpeter_masses
 
 
 # Small-enough draws to keep webtest runtime bounded but with enough
@@ -61,14 +62,13 @@ class TestGlobularCluster:
         assert np.all(np.isfinite(np.asarray(field["rv"])))
 
     def test_time_advances_state(self):
-        """Same seed at different times => same masses/weights/spec_types,
+        """Same seed at different times => same spec_types/weights,
         different positions and rv for the fast-orbit (small-a) stars."""
         src_t0 = _build(time=0.0)
         src_t10 = _build(time=10.0)
         f0 = src_t0.fields[0].field
         f10 = src_t10.fields[0].field
         # Invariants under time advance
-        npt.assert_array_equal(np.asarray(f0["mass"]), np.asarray(f10["mass"]))
         npt.assert_array_equal(np.asarray(f0["spec_types"]),
                                np.asarray(f10["spec_types"]))
         npt.assert_array_equal(np.asarray(f0["weight"]),
@@ -87,9 +87,11 @@ class TestGlobularCluster:
         npt.assert_array_equal(field["ref"], np.arange(n, dtype=int))
 
     def test_weights_match_apparent_mag(self):
+        """Weights = 10^(-0.4 * (Mv + DM)) for masses drawn with this seed."""
         src = _build()
         field = src.fields[0].field
-        masses = np.asarray(field["mass"])
+        n_stars = round(DENSITY * FOV ** 2)
+        masses = _sample_salpeter_masses(n_stars, (0.1, 8.0), SEED)
         Mv = np.asarray(cu.mass2absmag(masses), dtype=float)
         expected = 10.0 ** (-0.4 * (Mv + DM))
         npt.assert_allclose(np.asarray(field["weight"]), expected, rtol=1e-6)
@@ -114,7 +116,8 @@ class TestGlobularCluster:
         src2 = _build(seed=99)
         f1 = src1.fields[0].field
         f2 = src2.fields[0].field
-        npt.assert_array_equal(np.asarray(f1["mass"]), np.asarray(f2["mass"]))
+        npt.assert_array_equal(np.asarray(f1["spec_types"]),
+                               np.asarray(f2["spec_types"]))
         npt.assert_array_equal(np.asarray(f1["x"]), np.asarray(f2["x"]))
         npt.assert_array_equal(np.asarray(f1["weight"]), np.asarray(f2["weight"]))
 
@@ -124,13 +127,11 @@ class TestGlobularCluster:
 
     def test_salpeter_slope_sanity(self):
         """Rough check: alpha = 2.3 +- 0.3 on the high-mass end of a large draw."""
-        src = _build(density=4.0, fov=15.0, seed=7)  # ~900 stars
-        masses = np.asarray(src.fields[0].field["mass"])
+        masses = _sample_salpeter_masses(900, (0.1, 8.0), seed=7)
         # Salpeter alpha on dN/dM; we fit log10(N) vs log10(M) above 1 Msun
         m_hi = masses[masses > 1.0]
         if len(m_hi) < 30:
             pytest.skip("not enough high-mass stars to fit slope reliably")
-        # Histogram in log mass
         bins = np.logspace(0.0, np.log10(m_hi.max() * 1.01), 8)
         hist, edges = np.histogram(m_hi, bins=bins)
         keep = hist > 0
