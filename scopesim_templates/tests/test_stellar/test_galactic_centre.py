@@ -80,6 +80,19 @@ class TestGalacticCentre:
             src.fields[0].field["weight"], expected, rtol=1e-6
         )
 
+    def test_rv_column_in_fields(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            src = galactic_centre(EPOCH)
+            ref_tbl = _gillessen.stars_at_time(EPOCH)
+        field = src.fields[0].field
+        assert "rv" in field.colnames
+        npt.assert_allclose(
+            np.asarray(field["rv"]),
+            ref_tbl["RV"].to(u.km / u.s).value,
+            rtol=1e-9,
+        )
+
     def test_positions_are_arcsec(self):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
@@ -92,8 +105,8 @@ class TestGalacticCentre:
         assert np.max(np.abs(y)) < 30.0
 
     def test_unknown_spt_warns_and_defaults_to_early(self, monkeypatch):
-        """Inject a star with an unrecognised SpT and confirm the warning + fallback."""
-        # Real run for one row, then mutate.
+        """Inject an unrecognised SpT (or empty, as the catalogue actually
+        does for S39/S55) and confirm the warning + early-type fallback."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
             real_tbl = _gillessen.stars_at_time(EPOCH)
@@ -105,6 +118,6 @@ class TestGalacticCentre:
 
         monkeypatch.setattr(_gillessen, "stars_at_time", fake_stars_at_time)
 
-        with pytest.warns(UserWarning, match="unknown SpT"):
+        with pytest.warns(UserWarning, match="unrecognised SpT"):
             src = galactic_centre(EPOCH)
         assert src.fields[0].field["spec_types"][0] == "B0V"
