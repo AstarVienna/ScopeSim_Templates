@@ -19,6 +19,7 @@ from .stellar.stellar import star, stars, star_grid, star_field
 from .stellar.clusters import cluster
 from .stellar.galactic_centre import galactic_centre
 from .extragalactic.galaxies import galaxy, galaxy3d, elliptical
+from .extragalactic.deep_field import hubble_ultra_deep_field
 from .calibration.calibration import empty_sky
 from .micado import darkness, flatlamp
 from . import micado
