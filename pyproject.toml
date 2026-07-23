@@ -49,13 +49,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
 
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-jupyter = "^1.1.1"
-jupytext = "^1.19.5"
-
 
 [tool.poetry.group.test.dependencies]
 pytest = "^9.1.1"
