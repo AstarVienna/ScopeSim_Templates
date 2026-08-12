@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 from scopesim_templates.extragalactic import galaxy
 ```
 
-The function `galaxy` will generate a sersic profile with user provided parameters. The function can accept any sed in the [speXtra](https://spextra.readthedocs.io/en/latest/) package.
+The function `galaxy` will generate a sersic profile with user provided parameters. The function can accept any sed in the [speXtra](https://spextra.readthedocs.io) package.
 
 It must be noted that the pixel scale is not related to the pixel scale of the final simulation but to the pixel scale (in arcsec) of the generated image. It is recommended to be fine enough to well sample the profile of the galaxy.
 
@@ -47,4 +47,4 @@ Finally there is much that can be done with the spectrum itself, like for exampl
 sp.get_magnitude(filter_curve="u", system_name="AB")
 ```
 
-More can be found in the [speXtra](https://spextra.readthedocs.io/en/latest/) package.
+More can be found in the [speXtra](https://spextra.readthedocs.io) package.
