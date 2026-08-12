@@ -2,7 +2,7 @@
 
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 [![Build Status](https://github.com/AstarVienna/ScopeSim_Templates/actions/workflows/tests.yml/badge.svg)](https://github.com/AstarVienna/ScopeSim_Templates/actions/workflows/tests.yml/badge.svg)
-[![Documentation Status](https://readthedocs.org/projects/scopesim-templates/badge/?version=latest)](https://scopesim-templates.readthedocs.io/en/latest)
+[![Documentation Status](https://readthedocs.org/projects/scopesim-templates/badge/?version=latest)](https://scopesim-templates.readthedocs.io)
 [![Codecov](https://img.shields.io/codecov/c/github/AstarVienna/ScopeSim_Templates/branch/main?logo=codecov)](https://app.codecov.io/gh/AstarVienna/ScopeSim_Templates/tree/main)
 
 [![PyPI - Version](https://img.shields.io/pypi/v/ScopeSim-Templates)](https://pypi.org/project/ScopeSim-Templates/)
@@ -37,9 +37,9 @@ pip install -e .
 - numpy
 - astropy
 - [synphot](https://synphot.readthedocs.io/en/latest/index.html)
-- [ScopeSim](https://scopesim.readthedocs.io/en/latest/)
-- [speXtra](https://spextra.readthedocs.io/en/latest/)
-- [pyckles](https://pyckles.readthedocs.io/en/latest/)
+- [ScopeSim](https://scopesim.readthedocs.io)
+- [speXtra](https://spextra.readthedocs.io)
+- [pyckles](https://pyckles.readthedocs.io)
 
 ## The `Source` object
 
