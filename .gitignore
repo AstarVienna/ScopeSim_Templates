@@ -5,6 +5,10 @@ __pycache__/
 *.pyc
 .idea/
 data
+!scopesim_templates/extragalactic/data/
+!scopesim_templates/extragalactic/data/*.fits
+!scopesim_templates/tests/test_extragalactic/data/
+!scopesim_templates/tests/test_extragalactic/data/*.fits
 *.tar.gz
 build/
 dist/
