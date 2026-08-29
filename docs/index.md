@@ -61,6 +61,8 @@ If you find an issue with ScopeSim Templates, please let us know via the
 
 notebooks/starting.md
 notebooks/stellar.md
+notebooks/galactic_centre.md
+notebooks/globular_cluster.md
 notebooks/extragalactic.md
 source_object
 ```
