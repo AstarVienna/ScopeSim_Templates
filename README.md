@@ -12,7 +12,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-This packages contain a number of templates to generate `Source` objects to be used in simulations with the [ScopeSim Simulator](https://scopesim.readthedocs.io/en/latest/)
+This package contains a number of templates to generate `Source` objects to be used in simulations with the [ScopeSim Simulator](https://scopesim.readthedocs.io/en/latest/)
 
 The Documentation can be found here: https://scopesim-templates.readthedocs.io/en/latest
 
@@ -43,9 +43,9 @@ pip install -e .
 
 ## The `Source` object
 
-The above functions are created to easy the creation of standard sources but the power of the `Source` object doesn't end there and can be used to create endless sources possibilities.
+The above functions are created to ease the creation of standard sources but the power of the `Source` object doesn't end there and can be used to create endless source possibilities.
 
-In a nutshell a `Source` object contains a spacial and spectral description of the sources. The spectral description are in the form of `synphot` spectra and the spacial description can be an `astropy` table referencing the spectra or a fits image. `Source` can also accept datacubes. The `speXtra` package contains an extensive library of spectral templates that can be used with the sources. Please check the relevant documentation.
+In a nutshell a `Source` object contains a spatial and spectral description of the sources. The spectral description is in the form of `synphot` spectra and the spatial description can be an `astropy` table referencing the spectra or a fits image. `Source` can also accept data cubes. The `speXtra` package contains an extensive library of spectral templates that can be used with the sources. Please check the relevant documentation.
 
 ## `Source` templates included
 
