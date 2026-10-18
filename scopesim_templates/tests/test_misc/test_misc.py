@@ -24,6 +24,7 @@ def starting_star_imagehdu():
     sigma = 5
     x, y = np.meshgrid(np.arange(n), np.arange(n))
     img = np.exp(-1 * (((x - n / 2) / sigma) ** 2 + ((y - n / 2) / sigma) ** 2))
+    img /= img.sum()  # norm to 1
 
     # Fits headers of the image. Yes it needs a WCS
     hdr = fits.Header({
@@ -97,7 +98,7 @@ class TestSourceFromImageHDU:
             filter_name="J",
             pixel_unit_amplitude=10e12 * u.Jy)
 
-        width_height = 4096
+        width_height = 1024
         opt = load_example_optical_train()
         opt['psf'].include = False
         opt.cmds["!OBS.psf_fwhm"] = 0.01
@@ -116,15 +117,13 @@ class TestSourceFromImageHDU:
 
         data = hdul[1].data
         # Is the background okay?
-        assert 500 < np.median(data) < 5000
+        assert 1e6 < np.median(data) < 1e7
         # Is there a bright source?
-        assert data.max() > 10000000
+        assert data.max() > 1e7
         # Is the bright source approximately in the center.
         x_cen, y_cen = np.unravel_index(data.argmax(), data.shape)
-        # TODO: Figure out why source is not in the center!
-        fudge = 100
-        assert width_height / 2 - fudge < x_cen < width_height / 2 + fudge
-        assert width_height / 2 - fudge < y_cen < width_height / 2 + fudge
+        assert x_cen == width_height / 2
+        assert y_cen == width_height / 2
 
         if PLOTS:
             fig, ax = figure_factory(3, 1)
@@ -146,26 +145,24 @@ class TestSourceFromImageHDU:
             filter_name="J",
             pixel_unit_amplitude=flux1 * 10)
 
-        width_height = 4096
         opt = load_example_optical_train()
         opt['psf'].include = False
-        opt.cmds["!OBS.psf_fwhm"] = 0.01
+        opt["source_fits_keywords"].include = False
+
         opt.cmds["!TEL.area"] = 1000 * u.m**2
         opt.cmds["!INST.pixel_scale"] = 0.004
         opt.cmds["!INST.plate_scale"] = 0.4
-        opt.cmds["!DET.width"] = width_height
-        opt.cmds["!DET.height"] = width_height
-        opt.cmds["!DET.dit"] = 30
-        opt.cmds["!DET.ndit"] = 120
 
-        opt["source_fits_keywords"].include = False
-
-        opt.observe(src1)
-        hdul1 = opt.readout()[0]
+        opt.observe(src1, update=True)
+        hdul1 = opt.readout(dit=30, ndit=120)[0]
         data1 = hdul1[1].data
 
+        opt.cmds["!TEL.area"] = 1000 * u.m**2
+        opt.cmds["!INST.pixel_scale"] = 0.004
+        opt.cmds["!INST.plate_scale"] = 0.4
+
         opt.observe(src2, update=True)
-        hdul2 = opt.readout()[0]
+        hdul2 = opt.readout(dit=30, ndit=120)[0]
         data2 = hdul2[1].data
 
         if PLOTS:
@@ -173,9 +170,7 @@ class TestSourceFromImageHDU:
             ax.imshow(data2 / data1)
             fig.show()
 
-        max1 = data1.max()
-        max2 = data2.max()
-        assert 9 < max2 / max1 < 11
+        assert 9 < (data2.max() / data1.max()) < 11
 
 
 class TestPointSource:
