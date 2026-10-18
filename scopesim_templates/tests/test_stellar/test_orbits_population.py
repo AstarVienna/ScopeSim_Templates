@@ -11,7 +11,6 @@ from astropy.time import Time
 from scopesim_templates.stellar import _orbits as orb
 from scopesim_templates.stellar import _population as pop
 
-from ._rng_guard import global_rng_untouched  # noqa: F401
 
 
 class TestToJyear:

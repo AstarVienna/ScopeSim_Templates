@@ -71,6 +71,7 @@ class TestVikingCatalogues:
 
 
 class TestWithScopeSim:
+    @pytest.mark.slow
     @pytest.mark.webtest
     def test_runs_through_scopesim_basic_instrument(self):
         # configure basic_instrument to MICADO specs

@@ -119,6 +119,8 @@ def add_function_call_str(func):
         call_str = function_call_str(func, args, kwargs)
         logger.debug("Calling %s ...", call_str)
         src = func(*args, **kwargs)
+        # The outermost decorated call wins (e.g. star() wrapping stars());
+        # templates put descriptive labels in meta["description"].
         src.meta["object"] = func.__name__
         src.meta["function_call"] = call_str
         return src

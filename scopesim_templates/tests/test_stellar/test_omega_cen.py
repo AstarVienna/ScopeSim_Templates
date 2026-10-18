@@ -13,7 +13,6 @@ from scopesim_templates.stellar.omega_centauri import (
     TURNOFF_MASS, TURNOFF_ABSMAG)
 from scopesim_templates.stellar._orbits import to_jyear
 
-from ._rng_guard import global_rng_untouched  # noqa: F401
 
 
 # A small, concentrated cluster keeps the offline tests fast (~1e5 draws)

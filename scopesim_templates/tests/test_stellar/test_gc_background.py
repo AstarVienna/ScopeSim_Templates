@@ -13,7 +13,6 @@ from scopesim_templates.stellar import (galactic_centre,
 from scopesim_templates.stellar.gc_background import (
     _background_catalogue, GRAVITY_2022_MASS_LIMIT)
 
-from ._rng_guard import global_rng_untouched  # noqa: F401
 
 
 EPOCH = "2031-10-22"

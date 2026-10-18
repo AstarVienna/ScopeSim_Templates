@@ -12,7 +12,6 @@ from scopesim_templates.stellar import s301, s301_orbit
 from scopesim_templates.stellar.s301_star import (BRACKETT_GAMMA,
                                                   S301_SOLUTIONS)
 
-from ._rng_guard import global_rng_untouched  # noqa: F401
 
 
 C_KMS = 299792.458
