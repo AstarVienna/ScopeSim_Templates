@@ -8,7 +8,7 @@ authors = [
 license = "GPL-3.0-or-later"
 readme = "README.md"
 maintainers = [
-    { name = "Kieran Leschinski", email = "kieran.leschinski@unive.ac.at" },
+    { name = "Kieran Leschinski", email = "kieran.leschinski@univie.ac.at" },
     { name = "Hugo Buddelmeijer", email = "hugo@buddelmeijer.nl" },
     { name = "Oliver Czoske", email = "oliver.czoske@univie.ac.at" },
     { name = "Fabian Haberhauer", email = "fabian.haberhauer@univie.ac.at" },
@@ -21,7 +21,6 @@ dependencies = [
     "scipy (>=1.17.1,<1.19.0)",
 
     "astropy (>=7.2.2,<9.0.0)",
-    "matplotlib (>=3.10.9,<4.0.0)",
 
     "pyyaml (>=6.0.3,<7.0.0)",
     "synphot (>=1.7.0,<2.0.0)",
@@ -45,11 +44,22 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Astronomy",
 ]
+# Keep the wheel lean: tests, their data and documentation figures are not
+# needed at runtime.
+exclude = [
+    "scopesim_templates/tests",
+    "scopesim_templates/**/*.eps",
+]
+# ...but ship the tests in the sdist, so downstream packagers can run them.
+include = [
+    { path = "scopesim_templates/tests", format = "sdist" },
+]
 
 
 [tool.poetry.group.test.dependencies]
 pytest = "^9.1.1"
 pytest-cov = "^7.1.0"
+matplotlib = ">=3.10.9,<4.0.0"
 
 
 [tool.poetry.group.docs]
@@ -60,6 +70,7 @@ sphinx = "^9.1.0"
 sphinx-book-theme = "^1.4.0"
 sphinx-copybutton = ">=0.5.2,<1.0"
 myst-nb = "^1.4.0"
+matplotlib = ">=3.10.9,<4.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -67,8 +78,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 addopts = "--strict-markers"
+testpaths = ["scopesim_templates"]
 markers = [
     "webtest: marks tests as requiring network (deselect with '-m \"not webtest\"')",
+    "slow: marks tests that take more than ~30 s (deselect with '-m \"not slow\"')",
 ]
 
 [tool.coverage.report]

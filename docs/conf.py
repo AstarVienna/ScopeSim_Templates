@@ -26,10 +26,10 @@ project = 'ScopeSim_templates'
 copyright = '2024, A* Vienna'
 author = 'A* Vienna'
 
-# The short X.Y version
-version = '0.4'
-# The full version, including alpha/beta/rc tags
-release = ''
+# The full version, including alpha/beta/rc tags, and the short X.Y version
+from importlib.metadata import version as _get_version
+release = _get_version("ScopeSim_Templates")
+version = ".".join(release.split(".")[:2])
 
 
 # -- General configuration ---------------------------------------------------

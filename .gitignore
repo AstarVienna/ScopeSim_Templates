@@ -79,3 +79,4 @@ MANIFEST
 # Local virtual environments
 .venv/
 venv/
+.claude/

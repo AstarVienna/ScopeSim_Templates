@@ -81,7 +81,7 @@ def np_rvs(pdf, n, xmin, xmax, sampling=10000):
     pmin = y.min()
     pmax = y.max()
 
-    rel_area = (xmax - xmin) * (pmax - pmin) / np.trapz(y, x)
+    rel_area = (xmax - xmin) * (pmax - pmin) / np.trapezoid(y, x)
     m = int(n * rel_area) * 2
     ran = np.array([])
 
