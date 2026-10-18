@@ -75,3 +75,7 @@ MANIFEST
 
 # Pylint
 .pylint.d/
+
+# Local virtual environments
+.venv/
+venv/
