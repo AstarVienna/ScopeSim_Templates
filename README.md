@@ -49,33 +49,51 @@ In a nutshell a `Source` object contains a spatial and spectral description of t
 
 ## `Source` templates included
 
-Currently, the package covers the most typical sources used in astronomy:
+All templates return a `scopesim.Source`. Positions are offsets in arcsec from
+the field centre. Stochastic templates take a `seed` argument (an `int` or a
+`numpy.random.Generator`); without it every call gives a new realisation (see
+[Units and conventions](https://scopesim-templates.readthedocs.io/en/latest/conventions.html)).
 
 - `stellar`
-  - `star`: Places a single star on the field
-  - `stars`: Places a list of stars on the field
-  - `star_field`: Creates field of stars with random positions
-  - `star_grid`: Creates a field of stars with regular positions
-  - `cluster`: Creates an age=0 cluster with a user selected mass
+  - `star`, `stars`: one or more stars with given spectral types and magnitudes
+  - `star_field`: a field of stars at random positions
+  - `star_grid`: a field of stars on a regular grid
+  - `cluster`: a young (age = 0) cluster of a given mass
+  - `globular_cluster`: a globular cluster around a central IMBH, with time evolution
+  - `omega_cen`, `evolve_omega_cen`: an ω Centauri model (King profile, Jeans
+    velocities, IMBH, RGB stars) and its Keplerian time evolution
+  - `galactic_centre`: the Gillessen+2017 S-stars around Sgr A* at any epoch,
+    optionally with a background population (`background_mass=`)
+  - `galactic_centre_background`: a hypothetical unseen main-sequence population
+    around Sgr A* (up to the GRAVITY 2022 limit of ~3000 Msun)
+  - `s301`, `s301_orbit`: the S301 star (Mang et al. 2026) at any epoch, for either
+    orbit solution
 
 - `extragalactic`
-  - `galaxy`: A simple sersic model with a user selected SED from the `speXtra` database
-  - `galaxy3D`: A more complex model that includes a velocity field and velocity dispersion field
-  - `spiral_two_component`: Simple two component model with an outer spiral young SED and an old SED bulge
-  - `elliptical`: Another sersic model using the Brown SEDs
+  - `galaxy`: a Sérsic model with a user-selected SED from the `speXtra` database
+  - `galaxy3d`: like `galaxy`, plus a velocity field and velocity dispersion field
+  - `spiral_two_component`: a two-component spiral with a young disk SED and an old bulge SED
+  - `elliptical`: a Sérsic model using the Brown et al. (2014) SEDs
+  - `hubble_ultra_deep_field`: the HUDF from published catalogues as Sérsic
+    profiles, optionally with star-forming clumps
 
 - `misc`
-  - `point_source`: similar to `star` but using any SED from the `speXtra` database
-  - `uniform_source`: Creates a uniform source with any SED from `speXtra`
-  - `source_from_file`: Load the source from a fits file. Depending on the characteristics othe functions may be more suitable
-  - `source_from_imagehdu`: creates a source from an `ImageHDU` with an arbitrary flux and scale
-  - `source_from_imagehdu_with_flux`: creates a source from an `ImageHDU` where the flux/pixel is known
-  - `source_from_array`: General function to create a source from a 2D `numpy` array
-  - `source_from_cube`: Wrapper to create a source from a 3D datacube
+  - `point_source`: like `star`, but using any SED from the `speXtra` database
+  - `uniform_source`: a uniform source with any SED from `speXtra`
+  - `source_from_array`: a source from a 2D `numpy` array
+  - `source_from_file`: a source from an image in a FITS file
+  - `source_from_imagehdu`: a source from an `ImageHDU` with an arbitrary flux and scale
+  - `source_from_imagehdu_with_flux`: a source from an `ImageHDU` whose flux per pixel is known
+  - `source_from_cube`: a source from a 3D datacube
+  - `nebulosity`: a procedural, semi-realistic nebula image (use with `source_from_array`)
 
 - `calibration`
-  - `lamp`: Simulates a calibration lamp, i.e. a homogenous source with emissions lines
-  - `flat_field`: Simulates a flat field
-  - `empty_sky`: To simulate a sky without no other sources
+  - `lamp`: a calibration lamp, i.e. a homogeneous source with emission lines
+  - `flat_field`: a flat field
+  - `empty_sky`: an empty sky with no sources
 
-Please see the documentation how to use each particular source and contact us (raise an issue or submit a pull request) if more specialized sources are needed.
+- `micado`, `metis`: instrument-specific calibration sources and test fields
+  (flat lamps, pinhole masks, line lists, lasers, VIKING fields)
+
+Please see the documentation for how to use each source, and contact us (raise
+an issue or submit a pull request) if more specialized sources are needed.

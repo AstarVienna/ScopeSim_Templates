@@ -80,3 +80,4 @@ MANIFEST
 .venv/
 venv/
 .claude/
+docs/_autosummary/

@@ -30,6 +30,10 @@ def pinhole_mask(x, y, waves, temperature=1500*u.K, sum_factor=1):
     --------
     Pin-holes every 0.5 arcsec along the MICADO long-slit
 
+    >>> import numpy as np
+    >>> from astropy import units as u
+    >>> from scopesim_templates.micado.pinhole_masks import pinhole_mask
+    >>>
     >>> x = np.arange(-1.5, 13.51, 0.5)
     >>> y = np.zeros_like(x)
     >>> waves = np.arange(0.7, 2.5, 0.001) * u.um

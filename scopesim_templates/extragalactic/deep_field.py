@@ -758,7 +758,7 @@ def hubble_ultra_deep_field(pixel_scale=0.06,
         src.fields.append(fld)
 
     src.meta.update({
-        "object": "Hubble Ultra Deep Field",
+        "description": "Hubble Ultra Deep Field",
         "ra_center": float(ra_center),
         "dec_center": float(dec_center),
         "fov": fov,

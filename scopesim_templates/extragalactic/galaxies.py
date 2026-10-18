@@ -302,30 +302,28 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=None, offset=(0, 0)):
 def elliptical(r_eff, pixel_scale, filter_name, amplitude,
                spectrum="NGC_0584", **kwargs):
     """
-    Create a extended :class:`.Source` object for an elliptical galaxy.
-
-    .. note:: This docstring is from simcado, needs to be updated
+    Create an extended :class:`.Source` object for an elliptical galaxy.
 
     Parameters
     ----------
     r_eff : float
-        [arcsec]
+        [arcsec] Effective (half-light) radius.
 
     pixel_scale : float
-        [arcsec]
+        [arcsec] Pixel scale of the generated image.
 
-    filter_name : str, TransmissionCurve, optional
-        Default is "Ks". Values can be either:
-        - the name of a SimCADO filter : see optics.get_filter_set()
-        - or a TransmissionCurve containing a user-defined filter
+    filter_name : str
+        Filter in which ``amplitude`` is given: a speXtra filter name or an
+        SVO filter ID.
 
-    amplitude : float
-        [mag, mag/arcsec2]
+    amplitude : float, u.Quantity
+        [mag, mag/arcsec2] Brightness, see ``normalization``. Floats are
+        taken as AB magnitudes.
 
-    spectrum : str, optional
-        The spectrum to be associated with the galaxy. Values can either be:
-        - the name of a SimCADO SED spectrum : see get_SED_names()
-        - an EmissionCurve with a user defined spectrum
+    spectrum : str, synphot.SourceSpectrum, optional
+        The spectrum of the galaxy: either the name of a spectrum in the
+        Brown et al. (2014) library as served by pyckles (default
+        "NGC_0584"), or a spectrum object.
 
 
     Other Parameters
@@ -349,13 +347,15 @@ def elliptical(r_eff, pixel_scale, filter_name, amplitude,
         of the image. Default: (dx,dy) = (0,0)
 
     normalization : str, optional
-        ["total", "half-light", "centre"] Where the profile equals unity
+        ["total", "half-light", "centre"] Where the profile equals unity.
         If normalization equals:
-        - "total" : [Default] whole image has brightness of ``amplitude`` [mag]
+
+        - "total" : [Default] whole image has brightness of ``amplitude``
+          [mag]
         - "half-light" : the pixels at the half-light radius have a surface
-                         brightness of ``magnitude`` [mag/arcsec2]
+          brightness of ``amplitude`` [mag/arcsec2]
         - "centre" : the maximum pixels have a surface brightness of
-                     ``magnitude`` [mag/arcsec2]
+          ``amplitude`` [mag/arcsec2]
 
 
     Returns

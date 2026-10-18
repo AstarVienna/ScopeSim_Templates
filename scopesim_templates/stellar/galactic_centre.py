@@ -137,7 +137,7 @@ def galactic_centre(time,
 
     src = Source(spectra=spectra, table=field)
     src.meta.update({
-        "object": "Galactic Centre (Gillessen+2017)",
+        "description": "Galactic Centre (Gillessen+2017)",
         "epoch": str(time),
         "ra": RA_SGR_A_STAR,
         "dec": DEC_SGR_A_STAR,

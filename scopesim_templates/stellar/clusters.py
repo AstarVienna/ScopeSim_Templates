@@ -32,11 +32,14 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     Parameters
     ----------
     mass : float
-        [Msun] Mass of the cluster (not number of stars). Max = 1E5 Msun
+        [Msun] Total mass of the cluster (not number of stars). Stars above
+        20 Msun are dropped after sampling, to avoid an unrealistically
+        top-heavy population, so the returned mass is slightly lower.
     distance : float
         [pc] distance to the cluster
     core_radius : float
-        [pc] half light radius of the cluster
+        [pc] Half width at half maximum of the Gaussian distribution of
+        stellar positions.
     ra : float, str
         RA of the source
     dec : float, str
@@ -46,8 +49,10 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     ----------------
     tidal_radius : float
         [pc] Not yet implemented, for later once there is a King profile
-    multiplicity : Unknown
-        A multiplicity object from the imf.py package. Not sure what it does.
+    multiplicity_object : object, optional
+        A SPISEA-style multiplicity object passed to the IMF sampler
+        (``stellar.imf``), used to generate companions. Default None, i.e.
+        single stars only.
     seed : int, np.random.Generator, optional
         Seed or generator for both masses and positions. Default None, i.e.
         a new realisation on every call (see ``rc.__config__["!random.seed"]``).

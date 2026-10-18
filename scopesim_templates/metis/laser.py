@@ -25,17 +25,18 @@ def laser_spectrum(
 
     Parameters
     ----------
-    centers : TYPE
-        Emission line centers.
-    fwhms : TYPE
-        Emission line FWHMs.
-    fluxes : TYPE
+    centers : u.Quantity
+        Emission line centers (array with a length unit).
+    fwhms : u.Quantity
+        Emission line FWHMs (array with a length unit).
+    fluxes : array-like
         Emission line total fluxes.
-    img_size : TYPE, optional
-        FOV size in arcsec, plus a little extra. The default is (12, 12).
+    img_size : tuple of float, optional
+        (width, height) of the FOV in arcsec, plus a little extra.
+        The default is (12, 12).
     waves : array-like, optional
         Input wavelength axis. Either `waves` or `specdict` must be given. If
-        both are given, `waves` takes precedence.The default is None.
+        both are given, `waves` takes precedence. The default is None.
     specdict : Mapping, optional
         Dict-like structure containing the keys "wave_min", "wave_max",
         "spectral_bin_width" and "wave_unit", which is used to construct the
@@ -95,7 +96,7 @@ def laser_spectrum_lm(specdict, n_tunable: int = 20, **kwargs):
         Number of emission lines created for the tunable laser between 4.68 and
         4.78 um. Passing 1 will create a single line at 4.73 um.
         The default is 20.
-    **kwargs : TYPE
+    **kwargs
         Any other keyword arguments passed to ``laser_spectrum``.
         In particular, `centers`, `fwhms` and `fluxes` will override the
         default values and any lines created by `n_tunable`. If those are
@@ -139,7 +140,7 @@ def laser_spectrum_n(specdict, **kwargs):
         Dict-like structure containing the keys "wave_min", "wave_max",
         "spectral_bin_width" and "wave_unit", which is used to construct the
         wavelength axis. Usually this means ``cmd["!SIM.spectral"]``.
-    **kwargs : TYPE
+    **kwargs
         Any other keyword arguments passed to ``laser_spectrum``.
 
     Returns

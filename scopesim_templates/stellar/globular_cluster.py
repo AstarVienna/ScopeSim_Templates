@@ -222,7 +222,7 @@ def globular_cluster(density,
     )
     src = Source(spectra=spectra, table=tbl)
     src.meta.update({
-        "object": "Globular cluster + IMBH (Omega Cen-like)",
+        "description": "Globular cluster + IMBH (Omega Cen-like)",
         "imbh_mass": imbh_mass,
         "distance_modulus": distance_modulus,
         "distance_pc": distance_pc,

@@ -37,13 +37,16 @@ def pinhole_mask(
         (Half) extension in y direction. The default is 0.27945.
     waves : array-like, optional
         Wavelength axis. The default is np.arange(3, 6, .001)*u.um.
+    temperature : float, u.Quantity, optional
+        [K] Temperature of the blackbody illuminating the mask.
+        The default is 1500 K.
     **kwargs
         Any other kwargs passed to micado.pinhole_mask.
 
     Returns
     -------
-    TYPE
-        DESCRIPTION.
+    src : scopesim.Source
+        A table Source with one point source per pinhole.
 
     """
     x, y = zip(*product(np.linspace(-dx, dx, nx), np.linspace(-dy, dy, ny)))

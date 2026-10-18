@@ -38,9 +38,8 @@ class IMF():
     Code author: J. Lu.
 
     Original code was taken from libimf package written by Jan Pflamm-Altenburg
-    (`Pflamm-Altenburg & Kroupa 2006
-     <https://ui.adsabs.harvard.edu/abs/2006MNRAS.373..295P/abstract>`_)
-    and has been modified only marginally, though more convinient and general
+    (`Pflamm-Altenburg & Kroupa 2006 <https://ui.adsabs.harvard.edu/abs/2006MNRAS.373..295P/abstract>`_)
+    and has been modified only marginally, though more convenient and general
     purpose functions have been added. The libimf code was licensed under
     a GNU General Public License.
 

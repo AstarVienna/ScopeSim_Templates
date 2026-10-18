@@ -1,10 +1,11 @@
 ---
-substitutions:
-  logo: |-
-    ```{image} https://raw.githubusercontent.com/AstarVienna/astarvienna.github.io/main/logos/star_small_t.png
-    :align: middle
-    :height: 30px
-    ```
+myst:
+  substitutions:
+    logo: |-
+      ```{image} https://raw.githubusercontent.com/AstarVienna/astarvienna.github.io/main/logos/star_small_t.png
+      :align: middle
+      :height: 30px
+      ```
 ---
 
 ```{raw} html
@@ -67,6 +68,7 @@ notebooks/science_cases.md
 notebooks/extragalactic.md
 notebooks/hubble_ultra_deep_field.md
 source_object
+conventions
 ```
 
 ## TODO list

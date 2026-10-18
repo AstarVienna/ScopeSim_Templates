@@ -156,7 +156,7 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
 
     Examples
     --------
-    Using a generic filter curve from the Spanish VO::
+    Using a generic filter curve from the Spanish VO:
 
     >>> from scopesim_templates.misc import misc
     >>> image_hdu = fits.ImageHDU(
@@ -173,15 +173,15 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
     ...                                 filter_name=filter_name,
     ...                                 pixel_unit_amplitude=20*u.Jy)
 
-    Using the METIS H2O-ice filter from the METIS ScopeSim package::
+    Using the METIS H2O-ice filter from the METIS ScopeSim package:
 
     >>> import scopesim
-    >>> _ = scopesim.download_packages(["METIS"])
+    >>> _ = scopesim.download_packages(["METIS"])  # doctest: +SKIP
     >>> filter_name = scopesim.rc.__search_path__[0] / \
-    ...               "METIS/filters/TC_filter_H2O-ice.dat"
+    ...               "METIS/filters/TC_filter_H2O-ice.dat"  # doctest: +SKIP
     >>> src = misc.source_from_imagehdu(image_hdu=image_hdu,
     ...                                 filter_name=filter_name,
-    ...                                 pixel_unit_amplitude=20*u.Jy)
+    ...                                 pixel_unit_amplitude=20*u.Jy)  # doctest: +SKIP
 
     .. todo:: Check if the image_hdu has WCS
     """
