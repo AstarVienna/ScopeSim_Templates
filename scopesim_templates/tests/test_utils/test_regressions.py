@@ -250,3 +250,20 @@ def test_star_records_its_own_call():
     src = star("V", 10)
     assert src.meta["object"] == "star"
     assert ".star(" in src.meta["function_call"]
+
+
+class TestGalaxyPositionAngle:
+    @pytest.mark.parametrize("theta", [0, 45, 90])
+    def test_theta_is_in_degrees(self, theta):
+        """Sersic2D got theta in radians while the velocity field used deg."""
+        from scopesim_templates.extragalactic.galaxies import _galaxy_setup
+        gal = _galaxy_setup(1 * u.arcsec, 10, 3, n=1, ellip=0.6, theta=theta)
+        img = gal.intensity
+        y, x = np.indices(img.shape)
+        w = img / img.sum()
+        dx, dy = x - (w * x).sum(), y - (w * y).sum()
+        # orientation of the major axis from the second moments
+        angle = 0.5 * np.degrees(np.arctan2(2 * (w * dx * dy).sum(),
+                                            (w * dx**2).sum()
+                                            - (w * dy**2).sum()))
+        assert angle % 180 == pytest.approx(theta % 180, abs=1)

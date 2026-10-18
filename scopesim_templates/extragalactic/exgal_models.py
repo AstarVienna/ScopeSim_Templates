@@ -218,7 +218,7 @@ class GalaxyBase:
     amplitude: float
     r_eff: float
     ellip: float
-    theta: float
+    theta: float    # [deg] counter-clockwise from the +x axis
     n: int = 4
     vmax: float = 0.0
     sigma: float = 0.0
@@ -243,7 +243,9 @@ class GalaxyBase:
                        r_eff=self.r_eff,
                        n=self.n,
                        ellip=self.ellip,
-                       theta=self.theta)
+                       # theta is in degrees, as for the velocity and
+                       # dispersion fields; Sersic2D wants radians.
+                       theta=(self.theta << u.deg).to_value(u.rad))
         return mod(self.x, self.y)
 
     @property

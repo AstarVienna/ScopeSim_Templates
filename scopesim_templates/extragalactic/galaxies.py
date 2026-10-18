@@ -81,8 +81,9 @@ def galaxy(sed,           # The SED of the galaxy
         Sersic index of the galaxy
     ellip : float
         ellipticity of the galaxy
-    theta : float
-        position angle of the galaxy
+    theta : float, u.Quantity
+        [deg] position angle of the major axis, counter-clockwise from the
+        +x axis
     extend : float
         Size of the image in units of r_eff
     ra : float, str
@@ -175,8 +176,9 @@ def galaxy3d(sed,           # The SED of the galaxy,
         Sersic index of the galaxy.
     ellip : float
         Ellipticity of the galaxy.
-    theta : float
-        Position angle of the galaxy.
+    theta : float, u.Quantity
+        [deg] Position angle of the major axis, counter-clockwise from the
+        +x axis. Applies to the light, velocity and dispersion maps alike.
     vmax : float
         Maximum rotation velocity of the galaxy.
     sigma : float
