@@ -59,7 +59,9 @@ def lamp(waves, fwhm, fluxes) -> Source:
     >>> src = lamp(waves=waves, fwhm=fwhm, fluxes=flux)
 
     """
-    # I don't understand this warning but it probably has a reason...
+    # A calibration source sits inside the instrument, so effects that act
+    # on light from the sky (atmosphere, sky background, telescope mirrors)
+    # should not be applied to it.
     warnings.warn("Make sure to turn off the appropriate ScopeSim effects "
                   "during the simulation", RuntimeWarning)
 
@@ -74,7 +76,6 @@ def lamp(waves, fwhm, fluxes) -> Source:
     )
     spec = spec.add_emi_lines(center=waves, fwhm=fwhm, flux=fluxes)
     src = uniform_source(sed=spec)
-    # src.meta.update({"object": "lamp"})
 
     return src
 
@@ -112,7 +113,7 @@ def flat_field(
     -------
     src: Source
     """
-    # I don't understand this warning but it probably has a reason...
+    # See lamp(): sky/atmosphere effects should not apply to a flat lamp.
     warnings.warn("Make sure to turn off the appropriate ScopeSim effects "
                   "during the simulation", RuntimeWarning)
 
@@ -127,7 +128,6 @@ def flat_field(
         filter_curve=filter_curve,
         extend=extend,
     )
-    # src.meta.update({"object": "flat_field"})
 
     return src
 
@@ -145,6 +145,5 @@ def empty_sky() -> Source:
     sky = Source(lam=np.array([__config__["!spectral.wave_min"],
                                __config__["!spectral.wave_max"]]),
                  spectra=np.array([0, 0]), x=[0], y=[0], ref=[0], weight=[0])
-    # src.meta.update({"object": "empty_sky"})
 
     return sky

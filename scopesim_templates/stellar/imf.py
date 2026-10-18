@@ -24,8 +24,7 @@ import logging
 
 import numpy as np
 
-# TODO: standardize logging
-log = logging.getLogger("imf")
+log = logging.getLogger(__name__)
 
 
 class IMF():

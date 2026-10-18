@@ -225,3 +225,28 @@ class TestGalaxySed:
         mag = Spextrum(modelclass=spec).get_magnitude("V", system_name="AB")
         # sub-sources are smoothed/shifted copies; the scale must be ~12 mag
         assert abs(mag.value - 12) < 0.5
+
+
+class TestDeprecations:
+    def test_micado_empty_sky_is_deprecated_but_works(self):
+        from astropy.utils.exceptions import AstropyDeprecationWarning
+        from scopesim_templates import micado
+        with pytest.warns(AstropyDeprecationWarning, match="darkness"):
+            src = micado.empty_sky()
+        assert isinstance(src, Source)
+
+    def test_source_from_image_is_deprecated_but_works(self):
+        from scopesim_templates.misc.misc import source_from_image
+        with pytest.warns(DeprecationWarning, match="source_from_array"):
+            src = source_from_image(arr=np.ones((3, 3)), sed=FLAT_SED,
+                                    pixel_scale=1., amplitude=None,
+                                    filter_curve="V")
+        assert isinstance(src, Source)
+
+
+@pytest.mark.webtest
+def test_star_records_its_own_call():
+    from scopesim_templates.stellar import star
+    src = star("V", 10)
+    assert src.meta["object"] == "star"
+    assert ".star(" in src.meta["function_call"]

@@ -309,18 +309,26 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve,
     """
     Create a source from an image (numpy 2D array).
 
+    The image is normalised to sum to 1, so ``amplitude`` is the brightness
+    of the whole image. The image centre is placed at the field centre.
+
     Parameters
     ----------
     arr : np.ndarray
-      a 2D numpy array
-    sed : basestring
-       any sed available in the spextra library or a Spextrum object
+        A 2D numpy array, indexed ``arr[y, x]``.
+    sed : str, Spextrum or synphot.SourceSpectrum
+        Any SED available in the speXtra library, or a spectrum object.
     pixel_scale : float, u.Quantity
-        pixel scale on the sky (u.arcsec, u.arcmin, u.deg).
-    amplitude : float, u.Quantity
-       magnitude of the spectra in a filter_curve
-    filter_curve : basestring
-        a filter in the speXtra database or the SVO
+        Pixel scale on the sky. Floats are taken as arcsec.
+    amplitude : float, u.Quantity, None
+        Magnitude or flux of the whole image in ``filter_curve``. Floats are
+        taken as AB magnitudes. If None, the SED is not rescaled.
+    filter_curve : str
+        A filter in the speXtra database or the SVO.
+    ra, dec : float, str
+        Coordinates of the image centre. Note that ScopeSim interprets image
+        coordinates as offsets from the field centre, so these should
+        normally be left at 0.
 
     Returns
     -------
@@ -343,9 +351,10 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve,
 @deprecated_renamed_argument(old_name="image", new_name="arr", since="0.3.0",
                              arg_in_kwargs=True)
 def source_from_image(**kwargs):
-    warnings.warn("source_from_image has been replaced by source_from_array."
-                  "This is to avoid confusion with source_from_imagehdu",
-                  PendingDeprecationWarning)
+    warnings.warn("source_from_image has been replaced by source_from_array, "
+                  "to avoid confusion with source_from_imagehdu. It may be "
+                  "removed in a future version.",
+                  DeprecationWarning, stacklevel=2)
     return source_from_array(**kwargs)
 
 
@@ -449,7 +458,6 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None,
     wcs = WCS(header)
 
     celwcs = wcs.celestial
-#    celwcs.wcs.cd = np.array([[-1*pixel_scale, 0], [0, pixel_scale]])  # needs more thought
 
     celhdr = celwcs.to_header()
 
@@ -462,9 +470,6 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None,
         raise ValueError("At least 4 wavelength points are required.")
     zero_spec = np.zeros(shape=zpix.shape) * bunit
 
-    hdus = []
-    specs = []
-
     src = Source()
     for i in zpix:
         imgdata = data[i]
@@ -472,20 +477,15 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None,
         imgdata = imgdata / flux
 
         celhdr.update({"SPEC_REF": i})
-        hdus.append(fits.ImageHDU(data=imgdata, header=celhdr))
 
         zero_spec[i] = flux * bunit
         spec = synphot.SourceSpectrum(synphot.Empirical1D, points=waves,
                                       lookup_table=zero_spec)
-        specs.append(spec)
         zero_spec[i] = 0
 
         src = src + Source(image_hdu=fits.ImageHDU(data=imgdata,
                                                    header=celhdr),
                            spectra=spec)
-
-
-#    src = Source(image_hdu=hdul, spectra=specs)
 
     return src
 

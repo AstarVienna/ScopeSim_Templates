@@ -264,7 +264,41 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     return src
 
 
+@add_function_call_str
 def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
+    """
+    Create a scopesim.Source object for a single star.
+
+    Convenience wrapper around :func:`stars`.
+
+    .. note:: If amplitude has no unit, Vega magnitudes are assumed
+
+    Parameters
+    ----------
+    filter_name : str
+        For scaling the star. Use either common names or Spanish-VO
+        identifiers.
+    amplitude : float, Quantity
+        [mag, Jy] Brightness of the star. Acceptable astropy.units:
+        [u.mag, u.ABmag, u.Jansky].
+    spec_type : str
+        Spectral type, e.g. "A0V", "G5III". Default "A0V".
+    x, y : float
+        [arcsec] Position of the star on the focal plane. Default 0, 0.
+    library : str
+        Spectral library, see :func:`stars`. Default "pyckles".
+
+    Returns
+    -------
+    src : ``scopesim.Source``
+
+    Examples
+    --------
+    >>> from astropy import units as u
+    >>> from scopesim_templates.stellar import star
+    >>> src = star("Ks", 15 * u.mag, "G2V", x=1.5, y=-0.5)
+
+    """
     if isinstance(amplitude, u.Quantity) is False:
         amplitude = amplitude * u.mag
 
@@ -272,6 +306,3 @@ def star(filter_name, amplitude, spec_type="A0V", x=0, y=0, library="pyckles"):
                 [spec_type], [x], [y], library=library)
 
     return src
-
-
-star.__doc__ = stars.__doc__

@@ -1,2 +1,2 @@
 # -*- coding: utf-8 -*-
-"""Placeolder, currently empty."""
+"""Placeholder, currently empty."""

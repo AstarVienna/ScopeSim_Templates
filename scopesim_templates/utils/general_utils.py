@@ -13,6 +13,8 @@ from astropy.coordinates import SkyCoord
 
 from synphot import SourceSpectrum, Empirical1D, ConstFlux1D
 
+logger = logging.getLogger(__name__)
+
 # TODO: Change this when scopesim is ready RA0, DEC0 = -10, 10
 RA0, DEC0 = 0, 0
 
@@ -115,7 +117,7 @@ def add_function_call_str(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         call_str = function_call_str(func, args, kwargs)
-        logging.debug("Calling %s ...", call_str)
+        logger.debug("Calling %s ...", call_str)
         src = func(*args, **kwargs)
         src.meta["object"] = func.__name__
         src.meta["function_call"] = call_str

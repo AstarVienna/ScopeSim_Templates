@@ -115,7 +115,6 @@ def _get_masked_subsources(gal, ngrid, scaled_sp, header):
     dispersion = gal.dispersion
 
     for i, mask in enumerate(masks):
-        # logger.debug("creating subsource %d", i)
         data = mask * intensity  # 0 ... 1
 
         med_vel = velocity[mask].mean()
