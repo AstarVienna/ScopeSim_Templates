@@ -1,0 +1,6 @@
+# FITS headers are pure ASCII, so git may mistake FITS files for text and
+# rewrite LF bytes in the binary data on Windows checkouts. Never do that.
+*.fits binary
+*.fits.bz2 binary
+*.fits.gz binary
+*.eps binary
