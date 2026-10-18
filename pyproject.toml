@@ -82,6 +82,7 @@ testpaths = ["scopesim_templates"]
 markers = [
     "webtest: marks tests as requiring network (deselect with '-m \"not webtest\"')",
     "slow: marks tests that take more than ~30 s (deselect with '-m \"not slow\"')",
+    "allow_global_rng: test may consume NumPy's global random state (e.g. ScopeSim detector noise)",
 ]
 
 [tool.coverage.report]

@@ -127,7 +127,8 @@ class TestGlobularCluster:
 
     def test_salpeter_slope_sanity(self):
         """Rough check: alpha = 2.3 +- 0.3 on the high-mass end of a large draw."""
-        masses = _sample_salpeter_masses(900, (0.1, 8.0), seed=7)
+        masses = _sample_salpeter_masses(900, (0.1, 8.0),
+                                         np.random.default_rng(7))
         # Salpeter alpha on dN/dM; we fit log10(N) vs log10(M) above 1 Msun
         m_hi = masses[masses > 1.0]
         if len(m_hi) < 30:

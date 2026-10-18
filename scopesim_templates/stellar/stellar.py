@@ -9,9 +9,9 @@ from astropy.utils.decorators import deprecated_renamed_argument
 import pyckles
 from spextra import Spextrum
 
-from ..rc import __config__, Source
+from ..rc import Source
 from ..utils.general_utils import RA0, DEC0, add_function_call_str,\
-    function_call_str
+    function_call_str, get_rng
 from . import stars_utils as su
 
 
@@ -23,7 +23,7 @@ __all__ = ["star",
 
 
 def star_field(n, mmin, mmax, width, height=None, filter_name="V",
-               ra=RA0, dec=DEC0, **kwargs):
+               ra=RA0, dec=DEC0, seed=None, **kwargs):
     """
     Create a super basic field of stars with random positions and brightnesses.
 
@@ -44,12 +44,17 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
         RA of the center of the field (not used at the moment).
     dec : float or str
         DEC of the center of the field (not used at the moment).
+    seed : int, np.random.Generator, optional
+        Seed or generator for the random positions. Default None, i.e. a new
+        realisation on every call (see ``rc.__config__["!random.seed"]``).
 
-    Additional parameters
-    ---------------------
+    Other Parameters
+    ----------------
     x, y : lists, arrays
         [arcsec] The positions of the stars can be overridden by specifying the
         coordinates. The lists must contain N values
+    library : str
+        Passed on to :func:`stars`.
 
     Returns
     -------
@@ -63,8 +68,8 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
               "mmax": mmax,
               "width": width,
               "height": height,
-              "filter_name": "V",
-              "seed": __config__["!random.seed"],
+              "filter_name": filter_name,
+              "seed": seed,
               "ra": ra,
               "dec": dec}
     params.update(kwargs)
@@ -74,16 +79,13 @@ def star_field(n, mmin, mmax, width, height=None, filter_name="V",
     if height is None:
         height = width
 
-    if isinstance(params["seed"], int):
-        np.random.seed(params["seed"])
-
     if not isinstance(mmin, u.Quantity) and not isinstance(mmax, u.Quantity):
         mmin, mmax = u.Quantity(mmin, u.mag), u.Quantity(mmax, u.mag)
 
     if "x" in kwargs and "y" in kwargs:
         x, y = kwargs.pop("x"), kwargs.pop("y")
     else:
-        rands = np.random.random(size=(2, n)) - 0.5
+        rands = get_rng(seed).random(size=(2, n)) - 0.5
         x, y = width * rands[0], height * rands[1]
 
     # amplitudes = np.random.random(size=n) * (mmax - mmin) + mmin

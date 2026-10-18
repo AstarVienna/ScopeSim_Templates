@@ -9,8 +9,8 @@ from astropy.utils import deprecated_renamed_argument
 
 from spextra import Spextrum
 
-from ..rc import __config__, Source
-from ..utils.general_utils import function_call_str, RA0, DEC0
+from ..rc import Source
+from ..utils.general_utils import function_call_str, get_rng, RA0, DEC0
 from . import imf, cluster_utils as cu
 
 
@@ -48,8 +48,9 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
         [pc] Not yet implemented, for later once there is a King profile
     multiplicity : Unknown
         A multiplicity object from the imf.py package. Not sure what it does.
-    seed: float
-        For setting the random seed for both masses and positions
+    seed : int, np.random.Generator, optional
+        Seed or generator for both masses and positions. Default None, i.e.
+        a new realisation on every call (see ``rc.__config__["!random.seed"]``).
 
     Returns
     -------
@@ -71,16 +72,18 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
               "core_radius": core_radius,
               "tidal_radius": None,
               "multiplicity_object": None,
-              "seed": __config__["!random.seed"],
+              "seed": None,
               "ra": ra,
               "dec": dec}
     params.update(kwargs)
     params["function_call"] = function_call_str(cluster, kwargs=params)
     params["object"] = "cluster"
 
+    rng = get_rng(params["seed"])
+
     # 1. sample masses from an IMF
     kroupa = imf.Kroupa_2001(params["multiplicity_object"])
-    masses, _, _, _ = kroupa.generate_cluster(mass, seed=params["seed"])
+    masses, _, _, _ = kroupa.generate_cluster(mass, seed=rng)
     # masses.clip(max=250, out=masses)
     # Avoid unrealistic top-heavy IMF
     masses = masses[masses < 20]
@@ -110,8 +113,7 @@ def cluster(mass=1E3, distance=50000, core_radius=1, ra=RA0, dec=DEC0,
     # 7. make x,y from half_light_radius and distance
     rad2arcsec = 206264.80624709636
     fwhm = 2 * core_radius / distance * rad2arcsec
-    x, y = cu.gaussian_distribution(len(masses), fwhm=fwhm,
-                                    seed=params["seed"])
+    x, y = cu.gaussian_distribution(len(masses), fwhm=fwhm, seed=rng)
     x = x << u.arcsec
     y = y << u.arcsec
 

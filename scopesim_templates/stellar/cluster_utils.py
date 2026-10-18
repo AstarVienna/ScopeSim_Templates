@@ -11,6 +11,8 @@ from scipy.interpolate import interp1d
 
 import pyckles
 
+from ..utils.general_utils import get_rng
+
 
 DIRNAME = Path(__file__).parent
 
@@ -175,7 +177,22 @@ def closest_pickles(spt):
 
 
 def gaussian_distribution(n, fwhm, seed=None):
-    if isinstance(seed, int):
-        np.random.seed(seed)
-    x, y = np.random.normal(loc=0, scale=fwhm/2.35, size=(2, n))
+    """
+    Draw ``n`` (x, y) positions from a circular 2D Gaussian.
+
+    Parameters
+    ----------
+    n : int
+        Number of positions.
+    fwhm : float
+        Full width at half maximum of the distribution.
+    seed : int, np.random.Generator, optional
+        Seed or generator for reproducible positions. Default None.
+
+    Returns
+    -------
+    x, y : np.ndarray
+    """
+    rng = get_rng(seed)
+    x, y = rng.normal(loc=0, scale=fwhm/2.35, size=(2, n))
     return x, y

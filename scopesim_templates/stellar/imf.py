@@ -62,7 +62,7 @@ class IMF():
         if mass_limits is None:
             mass_limits = np.array([0.1, 150])
         self._multi_props = multiplicity
-        self._mass_limits = mass_limits
+        self._mass_limits = np.array(mass_limits, dtype=float, ndmin=1)
 
         if multiplicity is None:
             self.make_multiples = False
@@ -90,10 +90,10 @@ class IMF():
             The total mass of the cluster (including companions) in solar
             masses.
 
-        seed: int
-            If set to non-None, all random sampling will be seeded with the
-            specified seed, forcing identical output.
-            Default None
+        seed : int, np.random.Generator, optional
+            Seed or random number generator used for all sampling. Passing
+            the same int gives identical output. Default None, i.e. not
+            reproducible. The global NumPy random state is never touched.
 
         Returns
         -------
@@ -130,13 +130,11 @@ class IMF():
         totalMassTally = 0
         loopCnt = 0
 
-        # Set the random seed, if desired
-        if seed:
-            np.random.seed(seed=seed)
+        rng = np.random.default_rng(seed)
 
         while totalMassTally < totalMass:
             # Generate a random number array.
-            uniX = np.random.rand(int(newStarCount))
+            uniX = rng.random(int(newStarCount))
 
             # Convert into the IMF from the inverted CDF
             newMasses = self.dice_star_cl(uniX)
@@ -149,14 +147,14 @@ class IMF():
             # Dealing with multiplicity
             if self._multi_props is not None:
                 # compMasses = [[] for newMass in newMasses]
-                compMasses = np.empty((len(newMasses),), dtype=np.object)
+                compMasses = np.empty((len(newMasses),), dtype=object)
                 compMasses.fill([])
 
                 # Determine the multiplicity of every star
                 MF = self._multi_props.multiplicity_fraction(newMasses)
                 CSF = self._multi_props.companion_star_fraction(newMasses)
 
-                newIsMultiple = np.random.rand(int(newStarCount)) < MF
+                newIsMultiple = rng.random(int(newStarCount)) < MF
 
                 # Copy over the primary masses. Eventually add the companions.
                 newSystemMasses = newMasses.copy()
@@ -168,7 +166,7 @@ class IMF():
                     #t1 = time.time()
                     compMasses, newSystemMasses, newIsMultiple = self.calc_multi(newMasses, compMasses,
                                                                                  newSystemMasses, newIsMultiple,
-                                                                                    CSF, MF)
+                                                                                    CSF, MF, rng)
 
                     newTotalMassTally = newSystemMasses.sum()
                     isMultiple = np.append(isMultiple, newIsMultiple)
@@ -183,10 +181,10 @@ class IMF():
                     for ii in range(len(newMasses)):
                         if newIsMultiple[ii]:
                             # determine number of companions
-                            n_comp = 1 + np.random.poisson((CSF[ii]/MF[ii]) - 1)
+                            n_comp = 1 + rng.poisson((CSF[ii]/MF[ii]) - 1)
 
                             # Determine the mass ratios of the companions
-                            q_values = self._multi_props.random_q(np.random.rand(n_comp))
+                            q_values = self._multi_props.random_q(rng.random(n_comp))
 
                             # Determine the masses of the companions
                             m_comp = q_values * newMasses[ii]
@@ -245,7 +243,7 @@ class IMF():
         return (masses, isMultiple, compMasses, systemMasses)
 
     def calc_multi(self, newMasses, compMasses, newSystemMasses, newIsMultiple,
-                   CSF, MF):
+                   CSF, MF, rng=None):
         """
         Calculate multiples more efficiently.
 
@@ -253,8 +251,9 @@ class IMF():
         """
         # Identify multiple systems, calculate number of companions for
         # each
+        rng = np.random.default_rng(rng)
         idx = np.where(newIsMultiple == True)[0]
-        n_comp_arr = 1 + np.random.poisson((CSF[idx] / MF[idx]) - 1)
+        n_comp_arr = 1 + rng.poisson((CSF[idx] / MF[idx]) - 1)
         primary = newMasses[idx]
 
         # We will deal with each number of multiple system independently. This
@@ -265,7 +264,7 @@ class IMF():
 
             if ii == 1:
                 # Single companion case
-                q_values = self._multi_props.random_q(np.random.rand(len(tmp)))
+                q_values = self._multi_props.random_q(rng.random(len(tmp)))
 
                 # Calculate mass of companion
                 m_comp = q_values * primary[tmp]
@@ -281,8 +280,8 @@ class IMF():
                 newIsMultiple[idx[tmp[bad]]] = False
             else:
                 # Multple companion case
-                q_values = self._multi_props.random_q(np.random.rand(len(tmp),
-                                                                     ii))
+                q_values = self._multi_props.random_q(rng.random((len(tmp),
+                                                                  ii)))
 
                 # Calculate masses of companions
                 m_comp = np.multiply(q_values, np.transpose([primary[tmp]]))
@@ -334,7 +333,12 @@ class IMF_broken_powerlaw(IMF):
                    f"    {len(powers) = }\n")
             raise ValueError(msg)
 
-        self._mass_limits = np.atleast_1d(mass_limits)
+        # Copy once so generate_cluster() can't mutate the caller's array.
+        # The low/high limits below are deliberately *views* of
+        # self._mass_limits: generate_cluster() truncates the top limit in
+        # place and relies on that propagating to _m_limits_high.
+        mass_limits = np.array(mass_limits, dtype=float, ndmin=1)
+        self._mass_limits = mass_limits
         self._m_limits_low = mass_limits[0:-1]
         self._m_limits_high = mass_limits[1:]
         self._powers = powers

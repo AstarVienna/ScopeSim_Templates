@@ -16,6 +16,9 @@ __config__ = NestedMapping({
         "wave_max": 3.0,
     },
     "random": {
-        "seed": 9001,
+        # Default seed for all stochastic templates. None means a fresh,
+        # non-reproducible realisation on every call. Set an int here to
+        # make every template reproducible without passing ``seed=``.
+        "seed": None,
     },
 })

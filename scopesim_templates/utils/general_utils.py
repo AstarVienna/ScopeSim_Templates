@@ -17,6 +17,32 @@ from synphot import SourceSpectrum, Empirical1D, ConstFlux1D
 RA0, DEC0 = 0, 0
 
 
+def get_rng(seed=None) -> np.random.Generator:
+    """
+    Return a NumPy random generator for the given seed.
+
+    All stochastic templates draw their random numbers from the generator
+    returned here and never touch NumPy's global random state.
+
+    Parameters
+    ----------
+    seed : None, int, array_like[int], np.random.SeedSequence or np.random.Generator
+        Anything accepted by ``np.random.default_rng``. A ``Generator`` is
+        returned unchanged, so a caller can share one stream between several
+        calls. If None, ``rc.__config__["!random.seed"]`` is used, which is
+        itself None by default (i.e. a fresh realisation on every call).
+
+    Returns
+    -------
+    rng : np.random.Generator
+
+    """
+    if seed is None:
+        from ..rc import __config__
+        seed = __config__["!random.seed"]
+    return np.random.default_rng(seed)
+
+
 def hdu_to_synphot(hdu):
 
     wave = hdu.data["wavelength"]

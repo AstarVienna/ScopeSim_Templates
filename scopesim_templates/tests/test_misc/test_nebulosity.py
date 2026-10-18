@@ -48,8 +48,17 @@ class TestNebulosity:
         img2 = nebulosity((128, 128), seed=np.random.default_rng(7))
         assert np.array_equal(img1, img2)
 
-    def test_default_seed_is_reproducible(self):
-        assert np.array_equal(nebulosity((64, 64)), nebulosity((64, 64)))
+    def test_default_is_a_new_realisation(self):
+        assert not np.array_equal(nebulosity((64, 64)), nebulosity((64, 64)))
+
+    def test_config_seed_makes_default_reproducible(self):
+        from scopesim_templates.rc import __config__
+        old = __config__["!random.seed"]
+        try:
+            __config__["!random.seed"] = 9001
+            assert np.array_equal(nebulosity((64, 64)), nebulosity((64, 64)))
+        finally:
+            __config__["!random.seed"] = old
 
     def test_brightness_distribution_is_skewed(self):
         img = nebulosity((512, 512), seed=3).ravel()

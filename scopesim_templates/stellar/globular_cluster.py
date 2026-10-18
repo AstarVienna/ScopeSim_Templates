@@ -9,7 +9,7 @@ import pyckles
 from spextra import Spextrum
 
 from ..rc import Source
-from ..utils.general_utils import add_function_call_str
+from ..utils.general_utils import add_function_call_str, get_rng
 from . import _gillessen
 from . import cluster_utils as cu
 from . import imf as _imf
@@ -18,21 +18,18 @@ from . import imf as _imf
 __all__ = ["globular_cluster"]
 
 
-def _sample_salpeter_masses(n_stars, mass_limits, seed):
+def _sample_salpeter_masses(n_stars, mass_limits, seed=None):
     """Sample exactly `n_stars` masses from a Salpeter (alpha=2.3) IMF."""
+    rng = get_rng(seed)
     salpeter = _imf.IMF_broken_powerlaw(
         mass_limits=np.array(mass_limits, dtype=float),
         powers=np.array([-2.3]),
     )
-    rng = np.random.default_rng(seed)
     mean_m = float(np.mean(mass_limits))
     total = max(n_stars * mean_m, mass_limits[1] * 2.0)
-    # generate_cluster uses np.random; reseed legacy global RNG for determinism
-    if seed is not None:
-        np.random.seed(int(seed))
     masses = np.array([], dtype=float)
     while masses.size < n_stars:
-        new, _, _, _ = salpeter.generate_cluster(total, seed=None)
+        new, _, _, _ = salpeter.generate_cluster(total, seed=rng)
         masses = np.concatenate([masses, new])
         total *= 1.5
     masses = masses[rng.permutation(masses.size)][:n_stars]
@@ -137,7 +134,7 @@ def globular_cluster(density,
     eccentricity_cap : float
         Upper bound on the (thermal-distribution) eccentricities, kept
         below 1 so all orbits are closed.
-    seed : int, optional
+    seed : int, np.random.Generator, optional
         Reproducibility seed. Required if you want successive calls at
         different ``time`` values to produce a coherent animation.
 
@@ -159,10 +156,10 @@ def globular_cluster(density,
             "yields zero stars."
         )
 
-    rng = np.random.default_rng(seed)
+    rng = get_rng(seed)
 
     # 2. Salpeter masses
-    masses = _sample_salpeter_masses(n_stars, mass_limits, seed)
+    masses = _sample_salpeter_masses(n_stars, mass_limits, rng)
 
     # 3. spec_types and absolute V mag from mamajek
     spec_types = list(cu.mass2spt(masses))

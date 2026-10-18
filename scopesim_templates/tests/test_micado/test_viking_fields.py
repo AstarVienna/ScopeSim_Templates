@@ -20,7 +20,8 @@ class TestVikingCatalogues:
         if PLOTS:
             plt.figure(figsize=(20, 20))
             n = 10
-            for i, r in enumerate(np.random.randint(0, 1131, n*n)):
+            rng = np.random.default_rng()
+            for i, r in enumerate(rng.integers(0, 1131, n*n)):
                 plt.subplot(n, n, i+1)
                 plt.imshow(gal_src.fields[r].data, norm=LogNorm())
             plt.show()

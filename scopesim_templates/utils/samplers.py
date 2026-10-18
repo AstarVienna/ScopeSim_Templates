@@ -2,8 +2,10 @@
 
 import numpy as np
 
+from .general_utils import get_rng
 
-def randomvariate(pdf, n, xmin, xmax):
+
+def randomvariate(pdf, n, xmin, xmax, seed=None):
     """
     Create random numbers according to an arbitrary PDF.
 
@@ -28,8 +30,9 @@ def randomvariate(pdf, n, xmin, xmax):
     - repeat until desired number is achieved
     Rodrigo Nemmen
     Nov. 2011
-    TODO: Do optimization, e.g. using yield, etc
+    seed : optional seed or np.random.Generator
     """
+    rng = get_rng(seed)
     x = np.linspace(xmin, xmax, 10000)
     y = pdf(x)
     pmin = y.min()
@@ -38,19 +41,18 @@ def randomvariate(pdf, n, xmin, xmax):
     ntrial = 0
     ran = []
     while naccept < n:
-        x = np.random.uniform(xmin, xmax)
-        y = np.random.uniform(pmin, pmax)
+        x = rng.uniform(xmin, xmax)
+        y = rng.uniform(pmin, pmax)
+        ntrial = ntrial + 1
         if y <= pdf(x):
             ran.append(x)
             naccept = naccept + 1
-            #  print pdf(x)
-            ntrial = ntrial + 1
 
     ran = np.asarray(ran)
     return ran, ntrial
 
 
-def np_rvs(pdf, n, xmin, xmax, sampling=10000):
+def np_rvs(pdf, n, xmin, xmax, sampling=10000, seed=None):
     """
     Numpy adaptation of randomvariate.
 
@@ -69,6 +71,8 @@ def np_rvs(pdf, n, xmin, xmax, sampling=10000):
     sampling : TYPE, optional
         Initial sampling of the parameter space. Increase for complex
         distributions. The default is 10000.
+    seed : int, np.random.Generator, optional
+        Seed or generator for reproducible samples. Default None.
 
     Returns
     -------
@@ -81,19 +85,20 @@ def np_rvs(pdf, n, xmin, xmax, sampling=10000):
     pmin = y.min()
     pmax = y.max()
 
+    rng = get_rng(seed)
     rel_area = (xmax - xmin) * (pmax - pmin) / np.trapezoid(y, x)
     m = int(n * rel_area) * 2
     ran = np.array([])
 
     while ran.size < n:
-        X = np.random.uniform(xmin, xmax, m)
-        Y = np.random.uniform(pmin, pmax, m)
+        X = rng.uniform(xmin, xmax, m)
+        Y = rng.uniform(pmin, pmax, m)
         ran = np.append(ran, X[Y <= pdf(X)])  # the evaluation pdf(X) is the slow part for complex distributions
 
     return ran[:n]
 
 
-def _metropolis_sampler(pdf, nsamples, xmin, xmax):
+def _metropolis_sampler(pdf, nsamples, xmin, xmax, rng):
     """
     Taken from here:
     https://stackoverflow.com/questions/51050658/how-to-generate-random-numbers-with-predefined-probability-distribution
@@ -103,19 +108,19 @@ def _metropolis_sampler(pdf, nsamples, xmin, xmax):
         p = lambda r: s1(r)
         samples = list(metropolis_sampler(p, N))
     """
-    x = np.random.uniform(xmin, xmax)  # start somewhere
+    x = rng.uniform(xmin, xmax)  # start somewhere
 
     for i in range(nsamples):
-        trial = np.random.uniform(xmin, xmax)  # random neighbour from the proposal distribution
+        trial = rng.uniform(xmin, xmax)  # random neighbour from the proposal distribution
         acceptance = pdf(trial) / pdf(x)
 
-        if np.random.uniform() < acceptance:
+        if rng.uniform() < acceptance:
             x = trial
 
         yield x
 
 
-def metropolis_sampler(pdf, nsamples, xmin, xmax):
+def metropolis_sampler(pdf, nsamples, xmin, xmax, seed=None):
     """
     This is a version of a metropolis sampler.
 
@@ -123,5 +128,6 @@ def metropolis_sampler(pdf, nsamples, xmin, xmax):
     comparable in speed to rvs
     """
     result = list(_metropolis_sampler(pdf=pdf, nsamples=nsamples,
-                                      xmin=xmin, xmax=xmax))
+                                      xmin=xmin, xmax=xmax,
+                                      rng=get_rng(seed)))
     return np.array(result)

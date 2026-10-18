@@ -26,7 +26,7 @@ from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 from scipy import fft, ndimage
 
-from ..rc import __config__
+from ..utils.general_utils import get_rng
 
 
 __all__ = ["nebulosity"]
@@ -308,7 +308,8 @@ def nebulosity(shape=(1024, 1024), *, power_slope=2.7, outer_scale=0.5,
         of ``min(shape)``. For ``"blob"``, ``radius`` is the 2-sigma
         radius of the Gaussian.
     seed : int, np.random.Generator, optional
-        Random seed. Defaults to ``__config__["!random.seed"]``.
+        Seed or generator. Default None, i.e. a new realisation on every
+        call (unless ``rc.__config__["!random.seed"]`` is set).
     dtype : numpy dtype
         Output dtype.
 
@@ -335,9 +336,7 @@ def nebulosity(shape=(1024, 1024), *, power_slope=2.7, outer_scale=0.5,
         raise ValueError(f"shape must be 2D, got {shape}")
     if not 0 <= filament_strength <= 1:
         raise ValueError("filament_strength must be in [0, 1]")
-    if seed is None:
-        seed = __config__["!random.seed"]
-    rng = np.random.default_rng(seed)
+    rng = get_rng(seed)
 
     kk = _kgrid(shape)
     k_outer = 1 / (outer_scale * min(shape))
