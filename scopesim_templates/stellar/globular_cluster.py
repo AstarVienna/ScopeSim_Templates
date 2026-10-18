@@ -142,6 +142,12 @@ def globular_cluster(density,
     -------
     scopesim.Source
 
+    See Also
+    --------
+    omega_cen : literature-calibrated omega Centauri model (King profile,
+        Jeans kinematics with the IMBH, Kroupa IMF plus RGB) with
+        ``evolve_omega_cen`` for time evolution.
+
     Examples
     --------
     >>> from scopesim_templates.stellar import globular_cluster

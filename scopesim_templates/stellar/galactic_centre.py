@@ -14,21 +14,21 @@ from ..rc import Source
 from ..utils.general_utils import add_function_call_str
 from . import _gillessen
 from . import stars_utils as su
+from ._orbits import RA_SGR_A_STAR, DEC_SGR_A_STAR
+from .gc_background import galactic_centre_background
 
 
 __all__ = ["galactic_centre"]
-
-
-# Sgr A* (J2000)
-RA_SGR_A_STAR = 266.41684  # deg
-DEC_SGR_A_STAR = -29.00781  # deg
 
 
 @add_function_call_str
 def galactic_centre(time,
                     filter_name="Paranal/NACO.Ks",
                     early_type_spec="B0V",
-                    late_type_spec="M8III"):
+                    late_type_spec="M8III",
+                    background_mass=0.0,
+                    seed=None,
+                    background_kwargs=None):
     """
     Source of the Sgr A* star field at a user-specified epoch.
 
@@ -48,16 +48,38 @@ def galactic_centre(time,
     early_type_spec, late_type_spec : str
         Spectral types assigned to early-type (``SpT == "e"``) and
         late-type (``SpT == "l"``) stars respectively.
+    background_mass : float or str
+        [Msun] If > 0, add a hypothetical unseen main-sequence population
+        of this total mass on random orbits about Sgr A*, built by
+        :func:`~scopesim_templates.stellar.galactic_centre_background`.
+        Default 0 (S-stars only). ``"gravity2022"`` selects the
+        3000 Msun upper limit of GRAVITY Collaboration 2022 (A&A 657, L12).
+    seed : int, np.random.Generator, or None
+        Seed for the background population; ignored if
+        ``background_mass == 0``. Re-use an integer seed at different
+        ``time`` values to follow the same background stars through time.
+    background_kwargs : dict, optional
+        Further keyword arguments for
+        :func:`~scopesim_templates.stellar.galactic_centre_background`,
+        e.g. ``{"r_max": 1.0, "mag_limit": 24}``.
 
     Returns
     -------
     scopesim.Source
+        With ``background_mass > 0`` the Source has two fields: the
+        S-stars (``fields[0]``) and the background population
+        (``fields[1]``).
 
     Examples
     --------
     >>> from astropy.time import Time
     >>> from scopesim_templates.stellar import galactic_centre
     >>> src = galactic_centre(Time("2024-01-01"))
+
+    With the GRAVITY 2022 upper limit of unseen stars added:
+
+    >>> src = galactic_centre(Time("2031-10-22"), background_mass=3000,
+    ...                       seed=42, background_kwargs={"mag_limit": 24})
     """
     tbl = _gillessen.stars_at_time(time)
     n_stars = len(tbl)
@@ -121,4 +143,18 @@ def galactic_centre(time,
         "dec": DEC_SGR_A_STAR,
         "filter_name": filter_name,
     })
+
+    if isinstance(background_mass, str) or background_mass > 0:
+        background = galactic_centre_background(
+            time, total_mass=background_mass, filter_name=filter_name,
+            seed=seed, **(background_kwargs or {}))
+        meta = dict(src.meta)
+        meta.update({
+            "background_mass": background.meta["total_mass"],
+            "background_n_stars": len(background.fields[0].field),
+            "seed": background.meta["seed"],
+        })
+        src = src + background
+        src.meta.clear()
+        src.meta.update(meta)
     return src
