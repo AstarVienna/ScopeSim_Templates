@@ -5,8 +5,12 @@ from astar_utils import NestedMapping
 
 import scopesim
 
-Source = scopesim.source.source.Source
+# Prefer ScopeSim's public API; the deep import is kept for older versions.
+Source = getattr(scopesim, "Source", None) or scopesim.source.source.Source
 
+# Not part of ScopeSim's public API. All ScopeSim internals used by this
+# package are imported here, in one place, so a ScopeSim refactor only needs
+# fixing in this module.
 create_wcs_from_points = scopesim.optics.image_plane_utils.create_wcs_from_points
 load_example_optical_train = scopesim.load_example_optical_train
 
