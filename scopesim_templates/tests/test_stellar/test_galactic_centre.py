@@ -121,3 +121,13 @@ class TestGalacticCentre:
         with pytest.warns(UserWarning, match="unrecognised SpT"):
             src = galactic_centre(EPOCH)
         assert src.fields[0].field["spec_types"][0] == "B0V"
+
+
+def test_kepler_solver_converges_at_high_eccentricity():
+    """Plain Newton diverged for e = 0.999 (used by globular_cluster too)."""
+    from scopesim_templates.stellar._gillessen import _solve_kepler
+    M = np.linspace(-np.pi, np.pi, 10001)
+    for e in (0.5, 0.99, 0.999):
+        E = _solve_kepler(M, np.full_like(M, e))
+        resid = np.mod(E - e * np.sin(E) - M + np.pi, 2 * np.pi) - np.pi
+        assert np.abs(resid).max() < 1e-9

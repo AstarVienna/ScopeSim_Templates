@@ -25,6 +25,8 @@ from astropy import units as u
 from astropy.table import QTable, Table
 from astropy.time import Time
 
+from ._orbits import solve_kepler
+
 DEFAULT_CATALOGUE = Path(__file__).resolve().parent / "J_ApJ_837_30_table3.dat.fits"
 DEFAULT_R0 = 8.32 * u.kpc  # Gillessen+2017
 
@@ -47,23 +49,15 @@ def _to_jyear(t) -> float:
     return float(Time(t).jyear)
 
 
-def _solve_kepler(M, e, tol: float = 1e-12, max_iter: int = 50) -> np.ndarray:
+def _solve_kepler(M, e, tol: float = 1e-12, max_iter: int = 60) -> np.ndarray:
     """Solve Kepler's equation ``M = E - e sin E`` for ``E``.
 
-    Vectorised Newton iteration; ``M`` is wrapped to ``[-pi, pi)``.
+    Thin wrapper around :func:`._orbits.solve_kepler` (Danby start + Halley
+    iteration), which stays robust up to e -> 1 where plain Newton from
+    ``E0 = M + e sin M`` diverges (e.g. e = 0.999). ``M`` is wrapped to
+    ``[-pi, pi)``.
     """
-    M = np.asarray(M, dtype=float)
-    e = np.asarray(e, dtype=float)
-    M = np.mod(M + np.pi, 2.0 * np.pi) - np.pi
-    E = M + e * np.sin(M)
-    for _ in range(max_iter):
-        f = E - e * np.sin(E) - M
-        fp = 1.0 - e * np.cos(E)
-        dE = f / fp
-        E = E - dE
-        if np.all(np.abs(dE) < tol):
-            break
-    return E
+    return solve_kepler(M, e, tol=tol, maxiter=max_iter)
 
 
 def _orbital_state(a, e, n, E):
