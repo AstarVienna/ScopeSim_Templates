@@ -3,7 +3,7 @@
 
 import logging
 import functools
-from inspect import signature
+from inspect import signature, Parameter
 
 import numpy as np
 
@@ -50,7 +50,8 @@ def hdu_to_synphot(hdu):
     flux = hdu.data["flux"]
     flux_unit = u.Unit(hdu.header["TUNIT2"])
 
-    assert len(wave) > 3, "At least 4 wavelength points are required."
+    if len(wave) < 4:
+        raise ValueError("At least 4 wavelength points are required.")
     spec = SourceSpectrum(Empirical1D, points=wave*wave_unit,
                           lookup_table=flux*flux_unit)
 
@@ -70,21 +71,39 @@ def ab_spectrum(mag=0):
     return SourceSpectrum(ConstFlux1D, amplitude=mag*u.ABmag)
 
 
-def _get_kwargs_and_defaults(args, kwargs, defaults):
-    # BUG: This sometimes raises StopIteration, find out why and catch it!
-    default_keys = iter(defaults)
-    for arg in args:
-        yield next(default_keys), arg
-    for key in default_keys:
-        yield key, kwargs.get(key, defaults[key].default)
+def _get_kwargs_and_defaults(args, kwargs, func):
+    """Yield (name, value) for every argument of a call, defaults included."""
+    sig = signature(func)
+    try:
+        bound = sig.bind_partial(*args, **kwargs)
+    except TypeError:
+        # The call itself will fail with a proper error message; just
+        # report what was passed.
+        yield from ((f"arg{i}", arg) for i, arg in enumerate(args))
+        yield from kwargs.items()
+        return
+
+    bound.apply_defaults()
+    for name, value in bound.arguments.items():
+        kind = sig.parameters[name].kind
+        if kind is Parameter.VAR_KEYWORD:
+            yield from value.items()
+        elif kind is Parameter.VAR_POSITIONAL:
+            yield from ((f"{name}[{i}]", arg) for i, arg in enumerate(value))
+        else:
+            yield name, value
 
 
 def function_call_str(func, args=None, kwargs=None) -> str:
-    """Generate function call signature string including default values."""
+    """
+    Generate function call signature string including default values.
+
+    This is only used to document how a Source was made, so it never raises:
+    arguments that don't fit the signature are listed as given.
+    """
     args = args or ()
     kwargs = kwargs or {}
-    defaults = signature(func).parameters
-    call_kwargs = dict(_get_kwargs_and_defaults(args, kwargs, defaults))
+    call_kwargs = dict(_get_kwargs_and_defaults(args, kwargs, func))
     kwargs_repr = ", ".join(f"{k}={v!r}" for k, v in call_kwargs.items())
     func_str = f"{func.__module__}.{func.__qualname__}"
     call_str = f"{func_str}({kwargs_repr})"
@@ -117,7 +136,8 @@ def make_img_wcs_header(ra, dec, pixel_scale, image_size):
     pixel_scale : float
         arcsecs
     image_size : tuple
-        x, y where x, y are integers
+        (nx, ny), i.e. the number of pixels along x (NAXIS1) and y (NAXIS2).
+        Note this is the *reverse* of a numpy ``array.shape``.
 
     """
     if isinstance(ra, str):  # just assume is in the classical formats

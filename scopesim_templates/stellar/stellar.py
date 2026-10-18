@@ -215,6 +215,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     """
     if not isinstance(spec_types, (list, tuple, np.ndarray)):
         spec_types = [spec_types]
+    spec_types = list(spec_types)   # never modify the caller's list
 
     if not isinstance(amplitudes, u.Quantity):
         # Don't attempt to convert e.g. Jy to mag
@@ -223,7 +224,7 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
     x <<= u.arcsec
     y <<= u.arcsec
 
-    unique_types = list(set(spec_types))
+    unique_types = list(dict.fromkeys(spec_types))  # unique, ordered
     if library == "pyckles":
         pickles_lib = pyckles.SpectralLibrary("pickles",
                                               return_style="synphot")
@@ -243,12 +244,11 @@ def stars(filter_name, amplitudes, spec_types, x, y, library="pyckles",
                    for spt in cat_spec_types]
 
     else:
-        spectra = [Spextrum(library + "/" + spec.lower()).scale_to_magnitude(
-            amp, filter_curve=filter_name)
-                   for spec, amp in zip(spec_types, amplitudes)]
-        # TODO: actually use weights here instead of spectra scaling to avoid
-        #       O(n) scaling for number of spectra...
-        weight = np.ones(shape=amplitudes.shape)
+        # One spectrum per unique type scaled to ``zero``, like for pyckles;
+        # the per-star amplitudes are carried by ``weight``.
+        spectra = [Spextrum(library + "/" + spt.lower()).scale_to_magnitude(
+            zero, filter_curve=filter_name)
+                   for spt in unique_types]
 
     # get the references to the unique stellar types
     ref = np.array([unique_types.index(i) for i in spec_types])

@@ -46,10 +46,8 @@ def pinhole_mask(x, y, waves, temperature=1500*u.K, sum_factor=1):
     >>> src = pinhole_mask(x, y, waves, sum_factor=9001)
 
     """
-    if not isinstance(waves, u.Quantity):
-        waves *= u.um
-    if not isinstance(temperature, u.Quantity):
-        temperature *= u.K
+    waves = u.Quantity(waves, u.um)
+    temperature = u.Quantity(temperature, u.K)
 
     blackbody_spectrum = BlackBody1D(temperature=temperature)
     flux = blackbody_spectrum(waves.to(u.AA))

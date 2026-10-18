@@ -16,7 +16,7 @@ from spextra import Spextrum
 from ..rc import Source, create_wcs_from_points
 from ..extragalactic import galaxy_utils as gal_utils
 from ..extragalactic.exgal_models import GalaxyBase
-from ..misc.misc import source_from_array
+from ..misc.misc import source_from_array, _make_spectrum
 from ..utils import general_utils as gu
 from ..utils.general_utils import add_function_call_str, hdu_to_synphot
 
@@ -65,7 +65,8 @@ def galaxy(sed,           # The SED of the galaxy
 
     Parameters
     ----------
-    sed : str or Spextrum
+    sed : str, Spextrum or synphot.SourceSpectrum
+        SED of the galaxy: a speXtra library name or a spectrum object.
     z : float
         redshift of the galaxy
     r_eff : float
@@ -97,10 +98,9 @@ def galaxy(sed,           # The SED of the galaxy
     gal = _galaxy_setup(pixel_scale, r_eff, extend,
                         n=n, ellip=ellip, theta=theta)
 
-    if isinstance(sed, str):
-        spec = Spextrum(sed).redshift(z=z)
-    elif isinstance(sed, Spextrum.__bases__):
-        spec = sed.redshift(z=z)
+    spec = _make_spectrum(sed)
+    if z:
+        spec = spec.redshift(z=z)
 
     src = source_from_array(arr=gal.intensity, sed=spec,
                             pixel_scale=pixel_scale, amplitude=amplitude,
@@ -158,8 +158,9 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
     Parameters
     ----------
-    sed : str or Spextrum
-        SED of the galaxy, it can be a string or a Spextrum object.
+    sed : str, Spextrum or synphot.SourceSpectrum
+        SED of the galaxy, a speXtra library name or a spectrum object.
+        It is redshifted to ``z`` and scaled to ``amplitude``.
     z : float
         Redshift of the galaxy.
     amplitude : float, u.Quantity
@@ -199,20 +200,12 @@ def galaxy3d(sed,           # The SED of the galaxy,
                         n=n, ellip=ellip, theta=theta,
                         vmax=vmax, sigma=sigma)
 
-    if isinstance(sed, str):
-        shift_sp = Spextrum(sed).redshift(z=z)
-        scaled_sp = shift_sp.scale_to_magnitude(amplitude=amplitude,
-                                                filter_curve=filter_curve)
-    elif isinstance(sed, Spextrum):
-        scaled_sp = sed
-    else:
-        raise TypeError("Parameter 'sed' must be Spextrum, SourceSpectrum or "
-                        f"str, found {type(sed)=}.")
+    shift_sp = _make_spectrum(sed).redshift(z=z)
+    scaled_sp = shift_sp.scale_to_magnitude(amplitude=amplitude,
+                                            filter_curve=filter_curve)
 
-    # TODO: don't think we really need to call intensity here
-    w, h = gal.intensity.shape
-    assert w == gal.x.shape[0], f"{w}, {gal.x.shape}"
-    assert h == gal.y.shape[1], f"{h}, {gal.y.shape}"
+    # The galaxy image is square, built on a meshgrid of gal.x, gal.y
+    w, h = gal.x.shape
 
     wcs_dict = {"NAXIS": 2,
                 "NAXIS1": 2 * gal.x_0 + 1,
@@ -238,7 +231,7 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
 
 @add_function_call_str
-def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
+def spiral_two_component(extent=60*u.arcsec, fluxes=None, offset=(0, 0)):
     """
     Create a spiral galaxy using NGC1232L as the template.
 
@@ -248,18 +241,22 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
     Parameters
     ----------
-    extent : float
-        [arcsec]
-    fluxes : list of floats, Quantity
-        [mag | ABmag | jansky | FLAM | FNU | PHOTLAM | PHOTNU]
+    extent : float, u.Quantity
+        [arcsec] Side length of the (square) image.
+    fluxes : None
+        Not implemented yet; rescaling the components is not supported.
+        Passing anything other than None raises NotImplementedError.
     offset : tuple of floats
-        [arcsec]
+        [arcsec] (dx, dy) offset of the galaxy centre from the field centre.
 
     Returns
     -------
     gal : scopesim.Source
     """
-    # params["object"] = "two component spiral galaxy"
+    if fluxes is not None and tuple(fluxes) != (0, 0):
+        raise NotImplementedError(
+            "spiral_two_component: rescaling the components with 'fluxes' is "
+            "not implemented yet.")
 
     if isinstance(extent, u.Quantity):
         if extent.unit.physical_type == "angle":
@@ -278,13 +275,13 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
 
         srcs = []
         for i in range(img_ext, spec_ext):
-            w, h = hdulist[i].data.shape
-            hdulist[i].header["CRPIX1"] = (w + 1) / 2,
-            hdulist[i].header["CRPIX2"] = (h + 1) / 2,
-            hdulist[i].header["CRVAL1"] = 0
-            hdulist[i].header["CRVAL2"] = 0
-            hdulist[i].header["CDELT1"] = extent / w
-            hdulist[i].header["CDELT2"] = extent / w
+            ny, nx = hdulist[i].data.shape
+            hdulist[i].header["CRPIX1"] = (nx + 1) / 2
+            hdulist[i].header["CRPIX2"] = (ny + 1) / 2
+            hdulist[i].header["CRVAL1"] = offset[0] / 3600
+            hdulist[i].header["CRVAL2"] = offset[1] / 3600
+            hdulist[i].header["CDELT1"] = extent / nx
+            hdulist[i].header["CDELT2"] = extent / nx
             hdulist[i].header["CUNIT1"] = "deg"
             hdulist[i].header["CUNIT2"] = "deg"
             hdulist[i].header["CTYPE1"] = "RA---TAN"
@@ -295,15 +292,6 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=(0, 0), offset=(0, 0)):
             srcs.append(Source(image_hdu=hdulist[i],
                         spectra=[hdu_to_synphot(hdulist[i_spec_ext])]))
     src = sum(srcs[1:], start=srcs[0])
-
-    # TODO: scale image plane according to fluxes
-    # TODO: shift header values according to offset
-
-    # src.meta.update(params)
-    # Ensure the number of _meta_dicts is the same as the number of _fields.
-    # TODO: check if this still works with the new decorator...
-    # src._meta_dicts += [{}] * (len(src.fields) - len(src._meta_dicts))
-
     return src
 
 

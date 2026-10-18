@@ -80,7 +80,8 @@ def line_list(unit_flux=1*PHOTLAM,
         flux = signal.convolve(flux, kernel, mode="same")
 
     # make spectrum
-    assert len(wave) > 3, "At least 4 wavelength points are required."
+    if len(wave) < 4:
+        raise ValueError("At least 4 wavelength points are required.")
     spec = SourceSpectrum(Empirical1D, points=wave * u.nm,
                           lookup_table=flux * unit_flux)
 
@@ -98,7 +99,7 @@ def line_list(unit_flux=1*PHOTLAM,
     hdr.update(new_wcs.to_header())
 
     hdr["SPEC_REF"] = 0
-    im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
+    im = np.ones((hdr["NAXIS2"], hdr["NAXIS1"]))     # numpy order: (y, x)
     field = fits.ImageHDU(header=hdr, data=im)
 
     line_list_src = Source(image_hdu=field, spectra=[spec])

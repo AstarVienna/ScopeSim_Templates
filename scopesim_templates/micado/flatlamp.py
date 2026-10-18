@@ -45,8 +45,9 @@ def flatlamp(
     ay = np.arange(sy)
     xx, yy = np.meshgrid(ax, ay, sparse=True)
 
-    crpx = (width - 1) / 2
-    crpy = (height - 1) / 2
+    # Centre of the image in (0-based) pixel coordinates
+    crpx = (sx - 1) / 2
+    crpy = (sy - 1) / 2
 
     # * 1. is necessary for the normalization later
     image = - ((xx - crpx) ** 2 + (yy - crpy) ** 2) * 1.

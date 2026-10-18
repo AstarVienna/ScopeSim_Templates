@@ -123,7 +123,7 @@ def uniform_source(sed, amplitude=None, filter_curve="V", extend=60,
     """
     data = np.ones(shape=(extend, extend))
     header = make_img_wcs_header(ra=ra, dec=dec, pixel_scale=1,
-                                 image_size=data.shape)
+                                 image_size=data.shape[::-1])
     hdu = fits.ImageHDU(header=header, data=data)
 
     spec = _make_scaled_spectrum(sed, amplitude, filter_curve)
@@ -220,6 +220,7 @@ def source_from_imagehdu(image_hdu, filter_name, pixel_unit_amplitude=None,
         filter_curve=filter_name, amplitude=amp_unit)
 
     if image_hdu.header.get("SPEC_REF") is None:
+        image_hdu = image_hdu.copy()     # don't modify the caller's HDU
         image_hdu.header["SPEC_REF"] = 0
 
     src = Source(image_hdu=image_hdu, spectra=spec)
@@ -268,7 +269,7 @@ def source_from_imagehdu_with_flux(image_hdu=None, filename=None, ext=1,
 
     """
     if image_hdu is not None:
-        header = image_hdu.header
+        header = image_hdu.header.copy()    # don't modify the caller's HDU
         data = image_hdu.data
     elif filename is not None:
         header = fits.getheader(filename, ext=ext)
@@ -328,7 +329,7 @@ def source_from_array(arr, sed, pixel_scale, amplitude, filter_curve,
     pixel_scale <<= u.arcsec
 
     header = make_img_wcs_header(ra=ra, dec=dec, pixel_scale=pixel_scale,
-                                 image_size=arr.shape)
+                                 image_size=arr.shape[::-1])
     header.update({"SPEC_REF": 0})
 
     data = arr / np.sum(arr)
@@ -361,24 +362,29 @@ def source_from_file(filename, pixel_scale, sed, amplitude, filter_curve,
 
     Parameters
     ----------
-    filename
-    pixel_scale
-    sed
-    amplitude
-    filter_curve
+    filename : str or Path
+        FITS file containing the image.
+    pixel_scale : float, u.Quantity
+        [arcsec] Pixel scale of the image.
+    sed : str, Spextrum or synphot.SourceSpectrum
+        Spectrum of the source, see :func:`source_from_array`.
+    amplitude : float, u.Quantity
+        Magnitude or flux of the whole image in ``filter_curve``.
+    filter_curve : str
+        Filter in which ``amplitude`` is given.
+    cut : float
+        Pixels with values below ``cut`` are set to 0. Default 0.
     ext : int
-       fits extension
-    cut
-    **kwargs : arguments passed to fits.open
+        FITS extension containing the image. Default 1.
+    **kwargs
+        Passed to ``fits.open``.
+
     Returns
     -------
+    src : ``scopesim.Source``
     """
-    hdu = fits.open(filename, **kwargs)
-    data = hdu[ext].data
-#    header = hdu[ext].header
-#    wcs = WCS(header)
-#    if wcs.has_celestial:
-#        ra, dec = wcs.wcs.crval
+    with fits.open(filename, **kwargs) as hdul:
+        data = np.array(hdul[ext].data, dtype=float)    # copy, file can close
 
     data[data < cut] = 0
     src = source_from_array(arr=data, sed=sed, pixel_scale=pixel_scale,
@@ -452,7 +458,8 @@ def poorman_cube_source(filename=None, hdu=None, ext=1, pixel_scale=None,
     zpix = np.arange(specwcs.spectral.array_shape[0])
     # keeping wavelengths in native coordinates
     waves = specwcs.pixel_to_world(zpix)
-    assert len(waves) > 3, "At least 4 wavelength points are required."
+    if len(waves) < 4:
+        raise ValueError("At least 4 wavelength points are required.")
     zero_spec = np.zeros(shape=zpix.shape) * bunit
 
     hdus = []

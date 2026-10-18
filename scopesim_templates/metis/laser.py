@@ -69,7 +69,7 @@ def laser_spectrum(
     hdr.update(new_wcs.to_header())
 
     hdr["SPEC_REF"] = 0
-    im = np.ones((hdr["NAXIS1"], hdr["NAXIS2"]))
+    im = np.ones((hdr["NAXIS2"], hdr["NAXIS1"]))     # numpy order: (y, x)
     field = fits.ImageHDU(header=hdr, data=im)
 
     spec = Spextrum.emission_line_spectrum(centers.round(5), fwhms, fluxes,

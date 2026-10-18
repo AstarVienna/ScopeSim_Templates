@@ -1,3 +1,5 @@
+from astropy import units as u
+
 from .darkness import darkness as _darkness
 from .flatlamp import flatlamp as _flatlamp
 from .pinhole_masks import pinhole_mask as _pinhole_mask
@@ -25,8 +27,12 @@ def flatlamp():
 
 
 @add_function_call_str
-def pinhole_mask():
-    return _pinhole_mask()
+def pinhole_mask(x, y, waves, temperature=1500*u.K, sum_factor=1):
+    return _pinhole_mask(x, y, waves, temperature=temperature,
+                         sum_factor=sum_factor)
+
+
+pinhole_mask.__doc__ = _pinhole_mask.__doc__
 
 
 @add_function_call_str
@@ -34,4 +40,5 @@ def cluster():
     return _cluster()
 
 
-__all__ = [darkness, flatlamp, empty_sky, cluster, pinhole_mask]
+__all__ = ["darkness", "flatlamp", "empty_sky", "cluster", "pinhole_mask",
+           "viking_fields", "spectral_calibrations"]
