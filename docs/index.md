@@ -64,6 +64,7 @@ notebooks/stellar.md
 notebooks/galactic_centre.md
 notebooks/globular_cluster.md
 notebooks/extragalactic.md
+notebooks/hubble_ultra_deep_field.md
 source_object
 ```
 
