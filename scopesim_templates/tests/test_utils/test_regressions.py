@@ -150,11 +150,46 @@ class TestSpiralTwoComponent:
         assert hdr["CRVAL1"] * 3600 == pytest.approx(3)
         assert hdr["CRVAL2"] * 3600 == pytest.approx(-2)
 
-    def test_fluxes_raise_instead_of_being_ignored(self):
+    def test_fluxes_must_be_a_pair(self):
         from scopesim_templates.extragalactic.galaxies import \
             spiral_two_component
-        with pytest.raises(NotImplementedError):
-            spiral_two_component(fluxes=(10, 12))
+        with pytest.raises(ValueError):
+            spiral_two_component(fluxes=(10, 12, 14))
+
+    @pytest.mark.webtest
+    @pytest.mark.parametrize("fluxes, system", [
+        ((12, 14), "AB"),                       # floats are AB mags
+        ((12 * u.ABmag, 14 * u.ABmag), "AB"),
+        ((13 * u.mag, 11 * u.mag), "vega"),
+    ])
+    def test_fluxes_scale_each_component(self, fluxes, system):
+        """`fluxes` used to be silently ignored."""
+        from spextra import Spextrum
+        from scopesim_templates.extragalactic.galaxies import \
+            spiral_two_component
+        src = spiral_two_component(fluxes=fluxes, filter_curve="Ks")
+        for field, flux in zip(src.fields, fluxes):
+            assert field.data.sum() == pytest.approx(1)
+            spec = src.spectra[field.header["SPEC_REF"]]
+            mag = Spextrum(modelclass=spec).get_magnitude(
+                "Ks", system_name=system)
+            assert mag.value == pytest.approx(getattr(flux, "value", flux),
+                                              abs=0.01)
+
+    @pytest.mark.webtest
+    def test_jansky_fluxes(self):
+        from synphot import Observation, units
+        from spextra import Passband
+        from scopesim_templates.extragalactic.galaxies import \
+            spiral_two_component
+        src_1 = spiral_two_component(fluxes=(1, 1) * u.Jy, filter_curve="V")
+        src_2 = spiral_two_component(fluxes=(2, 1) * u.Jy, filter_curve="V")
+        filt = Passband("V")
+        ref = [src.spectra[src.fields[0].header["SPEC_REF"]]
+               for src in (src_1, src_2)]
+        ratio = (Observation(ref[1], filt).effstim(units.PHOTLAM)
+                 / Observation(ref[0], filt).effstim(units.PHOTLAM))
+        assert ratio.value == pytest.approx(2, rel=1e-3)
 
 
 @pytest.mark.webtest

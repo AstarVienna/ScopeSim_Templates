@@ -22,8 +22,10 @@ Branch `kl/globular_cluster_imbh`. Not yet merged to `main` or released.*
     `Spextrum` input.
   - `hubble_ultra_deep_field`: galaxies now actually land on the detector (positions were absolute RA/Dec),
     and position angles are converted correctly.
-- `spiral_two_component(fluxes=...)` raises `NotImplementedError` instead of silently ignoring the argument;
-  `offset=` is now applied.
+- `spiral_two_component`: `fluxes=(arms, bulge)` now scales each component in the new `filter_curve=` (default
+  `"V"`). Floats are AB magnitudes, and `u.mag`/`u.ABmag`/`u.STmag`/`u.Jy`/FLAM/FNU Quantities are accepted.
+  Previously the argument was silently ignored. The default (`None`) leaves the template spectra unscaled;
+  note that an explicit `fluxes=(0, 0)` now means 0 mag each. `offset=` is now applied too.
 - `galaxy`/`galaxy3d` accept `str`, `Spextrum` and `synphot.SourceSpectrum` SEDs alike.
 
 ## New templates

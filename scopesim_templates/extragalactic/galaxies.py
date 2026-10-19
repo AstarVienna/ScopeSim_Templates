@@ -232,32 +232,52 @@ def galaxy3d(sed,           # The SED of the galaxy,
 
 
 @add_function_call_str
-def spiral_two_component(extent=60*u.arcsec, fluxes=None, offset=(0, 0)):
+def spiral_two_component(extent=60*u.arcsec, fluxes=None, offset=(0, 0),
+                         filter_curve="V"):
     """
     Create a spiral galaxy using NGC1232L as the template.
 
-    Two components are included
-        - the newer population (spiral arms), and
-        - the older popultaion (bulge)
+    Two components are included, each an image (normalised to sum to 1) with
+    its own spectrum from Brown et al. (2014):
+
+    0. the younger population (spiral arms), with the SED of NGC 0337, and
+    1. the older population (bulge), with the SED of NGC 4569.
 
     Parameters
     ----------
     extent : float, u.Quantity
         [arcsec] Side length of the (square) image.
-    fluxes : None
-        Not implemented yet; rescaling the components is not supported.
-        Passing anything other than None raises NotImplementedError.
+    fluxes : None, or a pair of float or u.Quantity
+        Total brightness of the (spiral arms, bulge) components in
+        ``filter_curve``. Floats are taken as AB magnitudes. Quantities may
+        be in u.mag (Vega), u.ABmag, u.STmag, u.Jy, or synphot's FLAM/FNU.
+        If None (default), the template spectra are used unscaled.
     offset : tuple of floats
         [arcsec] (dx, dy) offset of the galaxy centre from the field centre.
+    filter_curve : str, Passband
+        Filter in which ``fluxes`` are given: a speXtra filter name, an SVO
+        filter ID or a filter file. Default "V". Ignored if ``fluxes`` is None.
 
     Returns
     -------
     gal : scopesim.Source
+
+    Examples
+    --------
+    A galaxy whose arms have K = 14 mag (Vega) and bulge K = 13.5 mag::
+
+        from astropy import units as u
+        from scopesim_templates.extragalactic import spiral_two_component
+        src = spiral_two_component(fluxes=(14, 13.5) * u.mag,
+                                   filter_curve="Ks")
     """
-    if fluxes is not None and tuple(fluxes) != (0, 0):
-        raise NotImplementedError(
-            "spiral_two_component: rescaling the components with 'fluxes' is "
-            "not implemented yet.")
+    if fluxes is not None:
+        if (isinstance(fluxes, str) or not hasattr(fluxes, "__len__")
+                or len(fluxes) != 2):
+            raise ValueError("spiral_two_component: 'fluxes' must be a pair "
+                             f"(spiral arms, bulge), got {fluxes!r}.")
+        fluxes = [flux if isinstance(flux, u.Quantity) else flux * u.ABmag
+                  for flux in fluxes]
 
     if isinstance(extent, u.Quantity):
         if extent.unit.physical_type == "angle":
@@ -290,8 +310,12 @@ def spiral_two_component(extent=60*u.arcsec, fluxes=None, offset=(0, 0)):
             # hdulist[i].header["SPEC_REF"] = hdulist[i].header["SPEC_EXT"] - spec_ext
 
             i_spec_ext = spec_ext - img_ext + i
-            srcs.append(Source(image_hdu=hdulist[i],
-                        spectra=[hdu_to_synphot(hdulist[i_spec_ext])]))
+            spec = hdu_to_synphot(hdulist[i_spec_ext])
+            if fluxes is not None:
+                # The image sums to 1, so the spectrum is the total flux
+                spec = Spextrum(modelclass=spec).scale_to_magnitude(
+                    amplitude=fluxes[i - img_ext], filter_curve=filter_curve)
+            srcs.append(Source(image_hdu=hdulist[i], spectra=[spec]))
     src = sum(srcs[1:], start=srcs[0])
     return src
 
